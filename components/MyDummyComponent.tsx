@@ -8,8 +8,7 @@ interface Props {
 const MyDummyComponent: React.FC<Props> = ({ name, children }) => {
   return (
     <div>
-      Hi, {name}! I am a strictly typed functional React component! This is my
-      child: <br /> {children}
+      Hi, {name}! I am a strictly typed functional React component! This is my child: <br /> {children}
     </div>
   );
 };
