@@ -19,15 +19,15 @@ Note: Running `yarn build` then `yarn start` will start the application in produ
 
 ## Code/PR Workflow
 
-- Create a new branch in the format `[USERNAME]/[LINEAR-ISSUE-NUMBER]-[SHORT_DESCRIPTION]` by running `git checkout -b [BRANCH NAME]`
-    - example branch name: `KFidan1/H4I-12-init-project`
-    - This way the issues are closed on Linear when we merge the PR with that branch name
-    - see [https://docs.linear.app/GitHub-GitLab-fa4b88df484343e4989538f066c729f3](https://docs.linear.app/GitHub-GitLab-fa4b88df484343e4989538f066c729f3)
+- Create a new branch in the format `[USERNAME]/[JIRA-ISSUE-NUMBER]-[SHORT_DESCRIPTION]` by running `git checkout -b [BRANCH NAME]`
+    - Example branch name: `KFidan1/KKB-12-init-project`
+    - This way the issues are updated and closed on Jira when we merge the PR with that branch name
 - Be sure to lint, format, and type-check your code occasionally to catch errors by running `yarn lint`.
 - Commit changes.
 - Then push your branch by running `git push -u origin [BRANCH NAME]`. This pushes your branch to remote.
 - Create a pull request (PR) on GitHub to merge your branch into `develop`. `main` will serve as production.
 - In your PR, briefly describe the changes, then tag me (KFidan1) and Selena (selxue) to the PR. Others are welcome to comment and give feedback as well.
+- Rebase your branch on top of the `develop` branch.
 
 ## Project Structure
 
