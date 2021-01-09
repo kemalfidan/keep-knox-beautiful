@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 
 // No need to use a relative path, the tsconfig.json has been configured for module aliasing! See: https://nextjs.org/docs/advanced-features/module-path-aliases
-import MyDummyComponent from "components/MyDummyComponent";
+import MyDummyComponent from "src/components/MyDummyComponent";
 
 const Home: NextPage = () => {
   return (
