@@ -11,6 +11,9 @@
 
 1. Clone the repo.
 2. Run `yarn` or `yarn install` to update dependencies.
+2. Run `yarn run secrets` to setup development environment variables.
+    - You will be prompted for a password. Ask me or Selena to send it to you.
+    - Windows users need to run `yarn run secrets:login` and `yarn run secrets:sync` instead.
 3. Run `yarn dev` for development mode with hot-code reloading, error reporting, and more.
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
