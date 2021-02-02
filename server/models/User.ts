@@ -1,7 +1,6 @@
-
 export interface User {
-    name: {
-        type: String,
-        required: true,
-    }
+  name: {
+    type: string;
+    required: true;
+  };
 }

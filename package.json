@@ -16,6 +16,7 @@
     "secrets:sync": "bw sync && bw get item 04740009-37d7-4acf-9ac3-acab003531c3 | fx .notes > \".env.local\""
   },
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
     "next": "10.0.5",
     "react": "17.0.1",
     "react-dom": "17.0.1"
