@@ -13,6 +13,11 @@ const config: Config.InitialOptions = {
     // Setup Enzyme
     snapshotSerializers: ["enzyme-to-json/serializer"],
     setupFilesAfterEnv: ["<rootDir>/src/setupEnzyme.ts"],
+    globals: {
+        "ts-jest": {
+            tsconfig: "tsconfig.test.json",
+        },
+    },
 };
 
 export default config;
