@@ -1,5 +1,6 @@
 import * as React from "react";
 
+// this is used in the example test and can be deleted later
 export class CheckboxWithLabel extends React.Component<{ labelOn: string; labelOff: string }, { isChecked: boolean }> {
   constructor(props: any) {
     super(props);
