@@ -3,7 +3,7 @@
 
 ## Base Dependencies
 
-1. node v10+ (recommend getting nvm to manage versions)
+1. node v12+ (recommend getting nvm to manage versions)
 2. yarn (package manager - similar to npm)
 
 
