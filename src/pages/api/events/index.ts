@@ -11,8 +11,14 @@ export const config = {
     },
 };
 
+<<<<<<< HEAD
 // @route   GET /api/events - Return a list of paginated events. - Public
 // @route   POST /api/events - Create an event from form data. - Private
+=======
+// @route   GET /api/events
+// @desc    Return list of paginated events.
+// @access  Public
+>>>>>>> fe8d178 (Added doc to api)
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
