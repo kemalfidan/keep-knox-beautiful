@@ -3,6 +3,10 @@ import { getEvent } from "server/actions/Event";
 import errors from "utils/errors";
 import { Event } from "utils/types";
 
+// GET /api/events/[eventId] will return info for event eventId
+// DELETE /api/events/[eventId] will delete event eventId
+// UPDATE /api/events/[eventId] will update event eventId with form data
+
 // @route   GET /api/event/[eventId] - Returns a single Event object for event eventId. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
