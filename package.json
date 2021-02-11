@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",
+        "mongodb": "^3.6.4",
         "next": "10.0.5",
         "react": "17.0.1",
         "react-dom": "17.0.1"
@@ -29,6 +30,7 @@
         "@types/enzyme": "^3.10.8",
         "@types/enzyme-adapter-react-16": "^1.0.6",
         "@types/jest": "^26.0.20",
+        "@types/mongodb": "^3.6.6",
         "@types/node": "^14.0.6",
         "@types/react": "^17.0.0",
         "@types/react-dom": "^17.0.0",
