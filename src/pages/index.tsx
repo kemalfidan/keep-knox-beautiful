@@ -2,10 +2,12 @@ import React from "react";
 import { NextPage } from "next";
 import Footer from "src/components/Footer";
 import EventsContainer from "src/components/EventsContainer";
+import Header from "src/components/Header";
 
 const Home: NextPage = () => {
     return (
         <div className="container">
+            <Header />
             <div style={{ height: 100 }}>This is the home page with the list of events</div>
 
             <EventsContainer />
