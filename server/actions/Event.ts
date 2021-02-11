@@ -3,10 +3,10 @@ import EventSchema from "../models/Event";
 import { Event } from "utils/types";
 
 /**
- * @param id String to identify an event in our database.
+ * @param id EventId string to identify an event in our database.
  * @returns A single event.
  */
-export const getEvent = async function (id: String) {
+export const getEvent = async function (id: string) {
     await mongoDB();
     if (!id || id == "") {
         throw new Error("Invalid id");
