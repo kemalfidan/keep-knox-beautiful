@@ -1,9 +1,7 @@
-import { ObjectID } from "mongodb";
-
 // Keep these in sync with the backend schema
 
 export interface User {
-    _id?: ObjectID;
+    _id?: string;
     email: string;
     name: string;
     phone?: string;
@@ -13,7 +11,7 @@ export interface User {
 }
 
 export interface Event {
-    _id?: ObjectID;
+    _id?: string;
     name: string;
     description: string;
     date?: Date;
