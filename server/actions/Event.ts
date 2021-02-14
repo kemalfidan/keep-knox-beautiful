@@ -19,3 +19,15 @@ export const getEvent = async function (id: string) {
 
     return event;
 };
+
+/**
+ * @param event The event to insert into our database.
+ */
+export const addEvent = async function (event: Event) {
+    await mongoDB();
+    if (!event) {
+        throw new Error("Invalid event");
+    }
+
+    await EventSchema.create(event);
+};

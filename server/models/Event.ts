@@ -6,6 +6,18 @@ export const EventSchema = new Schema({
         type: String,
         required: true,
     },
+    description: {
+        type: String,
+        required: true,
+    },
+    location: {
+        type: String,
+        required: true,
+    },
+    hours: {
+        type: String,
+        required: true,
+    },
     image: {
         type: ContentfulImageSchema,
         required: false,
