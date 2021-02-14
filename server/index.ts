@@ -12,7 +12,7 @@ export default async () => {
         })
         .catch((error: any) => {
             console.error("Database connection failed.");
-            console.error(" > " + error);
+            console.error(error instanceof Error && error);
             throw error;
         });
 };

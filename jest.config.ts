@@ -18,7 +18,7 @@ const config: Config.InitialOptions = {
             tsconfig: "tsconfig.test.json",
         },
     },
-    testEnvironment: 'node'
+    testEnvironment: "node",
 };
 
 export default config;

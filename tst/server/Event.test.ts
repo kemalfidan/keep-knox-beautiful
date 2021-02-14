@@ -1,7 +1,7 @@
 import { getEvent } from "server/actions/Event";
 import EventSchema from "server/models/Event";
 
-jest.mock('server');
+jest.mock("server");
 
 test("valid event", () => {
     const mockEvent = {
