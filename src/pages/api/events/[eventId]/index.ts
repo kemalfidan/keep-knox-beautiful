@@ -3,12 +3,7 @@ import { getEvent } from "server/actions/Event";
 import errors from "utils/errors";
 import { Event } from "utils/types";
 
-// GET /api/events will return a list of (paginated) events
-// POST /api/events will create an event
-
-// @route   GET /api/events
-// @desc    Return a list of paginated events.
-// @access  Public
+// @route   GET /api/event/[eventId] - Returns a single Event object for event eventId. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.eventId) {
