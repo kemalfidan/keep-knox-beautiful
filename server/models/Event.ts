@@ -9,7 +9,7 @@ export const EventSchema = new Schema({
     image: {
         type: ContentfulImageSchema,
         required: false,
-    }
+    },
 });
 
 export default models?.Event ?? model("Event", EventSchema);

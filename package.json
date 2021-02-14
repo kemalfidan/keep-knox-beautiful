@@ -7,7 +7,7 @@
         "build": "next build",
         "start": "next start",
         "lint": "yarn lint:tsc ; yarn lint:eslint",
-        "lint:tsc": "tsc -p tsconfig.json --noEmit",
+        "lint:tsc": "tsc -p tsconfig.json",
         "lint:eslint": "eslint '**/*.{tsx,ts,js,jsx,json}' --fix",
         "test": "jest",
         "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login kemalfidan3@gmail.com --raw` \"npm run secrets:sync\"",

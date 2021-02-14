@@ -1,13 +1,17 @@
 import { getEvent } from "server/actions/Event";
-import { Event } from "utils/types";
+import EventSchema from "server/models/Event";
+
+jest.mock('server');
 
 test("valid event", () => {
-    var mockEvent = {
-        name: "test"
-    }
+    const mockEvent = {
+        name: "test",
+    };
 
-    //mock EventSchema.findById to return mockEvent 
-    return expect(getEvent("602734007d7de15fae321153")).resolves.toBe(mockEvent);
+    // when findById is called, jest will return mockEvent so we dont actually
+    // connect to the db during unit tests
+    EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
+    return expect(getEvent("602734007d7de15fae321153")).resolves.toEqual(mockEvent);
 });
 
 test("invalid parameters", () => {
@@ -18,8 +22,9 @@ test("invalid parameters", () => {
 test("no event with that id", () => {
     expect.assertions(1);
     // mongoose returns undefined when a query results in no results
-    var mockEvent = undefined;
+    const mockEvent = undefined;
 
     //mock EventSchema.findById to return mockEvent, which will then throw an error
+    EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
     return expect(getEvent("602734007d7de15fae321152")).rejects.toThrowError("Event does not exist");
 });
