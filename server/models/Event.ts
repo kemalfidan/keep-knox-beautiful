@@ -1,5 +1,6 @@
-import { model, models, Schema } from "mongoose";
+import { model, models, Model, Schema, Document } from "mongoose";
 import ContentfulImageSchema from "./ContentfulImageSchema";
+import { Event } from "utils/types";
 
 export const EventSchema = new Schema({
     name: {
@@ -9,6 +10,22 @@ export const EventSchema = new Schema({
     description: {
         type: String,
         required: true,
+    },
+    start_time: {
+        type: Date,
+        required: true,
+    },
+    end_time: {
+        type: Date,
+        required: true,
+    },
+    start_registration: {
+        type: Date,
+        required: false,
+    },
+    end_registration: {
+        type: Date,
+        required: false,
     },
     location: {
         type: String,
@@ -24,4 +41,6 @@ export const EventSchema = new Schema({
     },
 });
 
-export default models?.Event ?? model("Event", EventSchema);
+export interface EventDocument extends Omit<Event, "_id">, Document {};
+
+export default (models.Event as Model<EventDocument>) || model<EventDocument>("Event", EventSchema);

@@ -21,12 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files
-                const event: Event = fields;
+                const event: Event = fields as unknown as Event;
                 console.log("eventInfo: ", event);
     
                 // TODO check image size and upload to contentful
     
-                // now that all data is prepped, we can add the officer
                 await addEvent(event);
                 res.status(200).json({
                     success: true,

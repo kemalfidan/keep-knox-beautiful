@@ -12,7 +12,7 @@ export const getEvent = async function (id: string) {
         throw new Error("Invalid id");
     }
 
-    const event = (await EventSchema.findById(id)) as Event;
+    const event = await EventSchema.findById(id) as Event;
     if (event == null) {
         throw new Error("Event does not exist");
     }
