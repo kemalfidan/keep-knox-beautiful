@@ -4,7 +4,7 @@ import { Event } from "utils/types";
 
 jest.mock("server");
 
-describe ("getEvent() tests", () => {
+describe("getEvent() tests", () => {
     test("valid event", async () => {
         const mockEvent = {
             name: "test",
@@ -32,8 +32,7 @@ describe ("getEvent() tests", () => {
     });
 });
 
-
-describe ("addEvent() tests", () => {
+describe("addEvent() tests", () => {
     test("valid event", async () => {
         const mockEvent = {
             name: "test",
@@ -47,7 +46,8 @@ describe ("addEvent() tests", () => {
         };
 
         EventSchema.create = jest.fn().mockImplementation(async (event: Event) => event);
-                
+
+        /* eslint @typescript-eslint/unbound-method: "off" */
         await addEvent(mockEvent);
         expect(EventSchema.create).lastCalledWith(mockEvent);
         expect(EventSchema.create).toHaveBeenCalledTimes(1);

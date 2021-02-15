@@ -16,23 +16,23 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
-        }
-        else if (req.method === "POST") {
+            throw new Error("Not implemented yet!");
+        } else if (req.method === "POST") {
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files
-                const event: Event = fields as unknown as Event;
+                const event: Event = (fields as unknown) as Event;
                 console.log("eventInfo: ", event);
-    
+
                 // TODO check image size and upload to contentful
-    
+
                 await addEvent(event);
                 res.status(200).json({
                     success: true,
                     payload: {},
                 });
             });
-        }   
+        }
     } catch (error) {
         console.error(error instanceof Error && error);
         res.status(400).json({

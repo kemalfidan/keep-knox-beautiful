@@ -41,6 +41,6 @@ export const EventSchema = new Schema({
     },
 });
 
-export interface EventDocument extends Omit<Event, "_id">, Document {};
+export interface EventDocument extends Omit<Event, "_id">, Document {}
 
 export default (models.Event as Model<EventDocument>) || model<EventDocument>("Event", EventSchema);
