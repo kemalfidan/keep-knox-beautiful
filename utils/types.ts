@@ -1,8 +1,8 @@
 // Keep these in sync with the backend schema
 
-export interface User {
+export interface Volunteer {
     _id?: string;
-    email: string;
+    email?: string;
     name: string;
     phone?: string;
     filledForm?: boolean;
@@ -13,18 +13,18 @@ export interface User {
 export interface Event {
     _id?: string;
     name: string;
-    description: string;
+    description?: string;
     date?: Date;
-    start_time: Date;
-    end_time: Date;
-    location: string;
-    start_registration?: Date;
-    end_registration?: Date;
+    startTime?: Date;
+    endTime?: Date;
+    location?: string;
+    startRegistration?: Date;
+    endRegistration?: Date;
     hours: number;
     image?: ContentfulImage;
-    registered_attendees?: Array<string>;
-    present_attendees?: Array<string>;
-    absent_attendees?: Array<string>;
+    registeredAttendees?: Array<string>;
+    presentAttendees?: Array<string>;
+    absentAttendees?: Array<string>;
 }
 
 export interface ContentfulImage {
