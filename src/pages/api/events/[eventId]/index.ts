@@ -4,7 +4,7 @@ import errors from "utils/errors";
 import { Event } from "utils/types";
 
 // GET /api/events/[eventId] will return info for event eventId - Public
-// DELETE /api/events/[eventId] will delete event eventId - Private 
+// DELETE /api/events/[eventId] will delete event eventId - Private
 // POST /api/events/[eventId] will update event eventId with form data - Private
 
 // @route   GET /api/event/[eventId] - Returns a single Event object for event eventId. - Public
