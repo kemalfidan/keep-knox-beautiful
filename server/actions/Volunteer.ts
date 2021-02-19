@@ -10,8 +10,20 @@ export async function getAlteredUsername(username: string): Promise<string> {
 /** GET VOLUNTEER
  * @param id VolunteerId to identify a volunteer in our database.
  * @returns A single volunteer.
- * To-Do: Implementation
  */
+export const getVolunteer = async function (id: string) {
+    await mongoDB();
+    if (!id || id == "") {
+        throw new Error("Invalid id");
+    }
+
+    const vol = (await VolunteerSchema.findById(id)) as Volunteer;
+    if (vol == null) {
+        throw new Error("Volunteer does not exist");
+    }
+
+    return vol;
+};
 
 /** ADD VOLUNTEER
  * @param user The user to insert into our database.
