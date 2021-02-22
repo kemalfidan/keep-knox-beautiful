@@ -7,7 +7,7 @@ import { Event } from "utils/types";
 // DELETE /api/events/[eventId] will delete event eventId - Private
 // POST /api/events/[eventId] will update event eventId with form data - Private
 
-// @route   GET /api/event/[eventId] - Returns a single Event object for event eventId. - Public
+// @route   GET /api/events/[eventId] - Returns a single Event object for event eventId. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.eventId) {
