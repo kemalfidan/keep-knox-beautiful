@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import formidable from "formidable";
 import { Event } from "utils/types";
-import { addEvent } from "server/actions/Event";
+import { addEvent, getEvents } from "server/actions/Event";
 
 // formidable config
 export const config = {
@@ -16,7 +16,12 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
-            throw new Error("Not implemented yet!");
+            const events: Array<Event> = await getEvents();
+
+            res.status(200).json({
+                success: true,
+                payload: { events },
+            });
         } else if (req.method === "POST") {
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {

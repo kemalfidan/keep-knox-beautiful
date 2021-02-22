@@ -1,4 +1,4 @@
-import { getEvent, addEvent } from "server/actions/Event";
+import { getEvent, getEvents, addEvent } from "server/actions/Event";
 import EventSchema from "server/models/Event";
 import { Event } from "utils/types";
 
@@ -29,6 +29,24 @@ describe("getEvent() tests", () => {
         //mock EventSchema.findById to return mockEvent, which will then throw an error
         EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
         await expect(getEvent("602734007d7de15fae321152")).rejects.toThrowError("Event does not exist");
+    });
+});
+
+describe("getEvents() tests", () => {
+    test("events exist", async () => {
+        const mockEvents = [{ name: "test1" }, { name: "test2" }];
+
+        EventSchema.find = jest.fn().mockResolvedValue(mockEvents);
+        await expect(getEvents()).resolves.toEqual(mockEvents);
+    });
+
+    test("no events exist", async () => {
+        expect.assertions(1);
+
+        const mockEvents = undefined;
+
+        EventSchema.find = jest.fn().mockResolvedValue(mockEvents);
+        await expect(getEvents()).rejects.toThrowError("No events");
     });
 });
 
