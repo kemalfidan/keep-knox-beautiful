@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextApiRequest, NextApiResponse } from "next";
 import { getVolunteer } from "server/actions/Volunteer";
 import errors from "utils/errors";
@@ -27,3 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         });
     }
 }
+=======
+export {};
+// GET /api/volunteers/[volId] will return a single volunteer profile that matches the volId
+// POST /api/volunteers/[volId] will take new form data and update basic account info
+>>>>>>> b0db44f (Added api and page routes, updated constants, plus some other fixes)
