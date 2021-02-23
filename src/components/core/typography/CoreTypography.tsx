@@ -44,7 +44,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
   h4: {
     fontFamily: "Ubuntu",
     fontWeight: 800,
-    fontSize: "1rem",
+    fontSize: "1.2rem",
     fontStyle: "normal",
     fontFeatureSettings: "'liga' off",
     lineHeight: "130%",
