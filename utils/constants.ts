@@ -14,7 +14,7 @@ export default {
             address: "2743B Wimpole Avenue, Knoxville, TN 37914",
             phone: "(865) 521-6957",
             email: "info@Keepknoxvillebeautiful.org",
-        }
+        },
     },
     revalidate: {
         upcomingEvents: 20,
@@ -24,4 +24,4 @@ export default {
         volunteerProfile: 10,
     },
     contentfulImageLimit: 20 * 1000 * 1000, // 20 MB
-}
+};

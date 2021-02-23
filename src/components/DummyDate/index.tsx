@@ -28,9 +28,7 @@ export default function DateAndTimePickers() {
 
     return (
         <>
-            <CoreTypography variant="h1">
-                {`${constants.org.name.full} events`}
-            </CoreTypography>
+            <CoreTypography variant="h1">{`${constants.org.name.full} events`}</CoreTypography>
             <form className={classes.container} noValidate>
                 <TextField
                     id="date-local"

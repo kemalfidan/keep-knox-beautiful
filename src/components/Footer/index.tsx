@@ -20,8 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         lastText: {
             paddingTop: "5px",
-        }
-
+        },
     })
 );
 
@@ -33,9 +32,15 @@ export default function Footer() {
             <Container maxWidth="xl" className={styles.container}>
                 <img src={`/${constants.org.images.logo}`} width="80px" alt={`${constants.org.name.short} logo`}></img>
                 <Container maxWidth="xl" className={styles.wrapper}>
-                    <CoreTypography variant="h4"> { constants.org.footer.address } </CoreTypography>
-                    <CoreTypography variant="h4"> { `${constants.org.footer.phone} ${constants.org.footer.email}` } </CoreTypography> 
-                    <CoreTypography variant="h4" className={styles.lastText}> created by hack4impact utk </CoreTypography> 
+                    <CoreTypography variant="h4"> {constants.org.footer.address} </CoreTypography>
+                    <CoreTypography variant="h4">
+                        {" "}
+                        {`${constants.org.footer.phone} ${constants.org.footer.email}`}{" "}
+                    </CoreTypography>
+                    <CoreTypography variant="h4" className={styles.lastText}>
+                        {" "}
+                        created by hack4impact utk{" "}
+                    </CoreTypography>
                 </Container>
             </Container>
         </React.Fragment>

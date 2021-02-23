@@ -24,7 +24,11 @@ const Header: React.FC = () => {
     return (
         <React.Fragment>
             <Container maxWidth="xl" className={styles.container}>
-                <img src={`/${constants.org.images.banner}`} className={styles.headerBanner} alt={`${constants.org.name.short} banner`}></img>
+                <img
+                    src={`/${constants.org.images.banner}`}
+                    className={styles.headerBanner}
+                    alt={`${constants.org.name.short} banner`}
+                ></img>
             </Container>
         </React.Fragment>
     );
