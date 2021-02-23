@@ -1,11 +1,14 @@
 export default {
     org: {
-        name: "Keep Knoxville Beautiful",
+        name: {
+            full: "Keep Knoxville Beautiful",
+            short: "KKB",
+        },
         upcomingEventsDesc: "Join us for a workday!",
         images: {
             logo: "logo-transparent.png",
             banner: "banner.png",
-            defaultCard: "logo-transparent.png"
+            defaultCard: "logo-transparent.png",
         },
         footer: {
             address: "2743B Wimpole Avenue, Knoxville, TN 37914",

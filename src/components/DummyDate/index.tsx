@@ -29,13 +29,13 @@ export default function DateAndTimePickers() {
     return (
         <>
             <CoreTypography variant="h1">
-                Fonts Testing from Kemal - {`${constants.org.name} events`}
+                {`${constants.org.name.full} events`}
             </CoreTypography>
             <form className={classes.container} noValidate>
                 <TextField
-                    id="datetime-local"
+                    id="date-local"
                     label="Event Start"
-                    type="datetime-local"
+                    type="date"
                     defaultValue="2021-05-24T10:30"
                     className={classes.textField}
                     InputLabelProps={{
