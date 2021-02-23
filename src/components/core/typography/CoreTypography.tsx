@@ -15,7 +15,7 @@ type Variant =
 
 export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> = {
   h1: {
-    fontFamily: ['"Ubuntu"', 'Open Sans'].join(','), //['"Roboto"', 'sans-serif'].join(','),
+    fontFamily: "Ubuntu",
     fontWeight: 800,
     fontSize: "2.25rem",
     fontStyle: "normal",
@@ -24,7 +24,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   h2: {
-    fontFamily: ['"Roboto"', 'sans-serif'].join(','),
+    fontFamily: "Ubuntu",
     fontWeight: 800,
     fontSize: "1.5rem",
     fontStyle: "normal",
@@ -33,7 +33,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   h3: {
-    fontFamily: "VisbyCF-Bold",
+    fontFamily: "Ubuntu",
     fontWeight: "bold",
     fontSize: "1.5rem",
     fontStyle: "normal",
@@ -42,7 +42,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   h4: {
-    fontFamily: "VisbyCF-ExtraBold",
+    fontFamily: "Ubuntu",
     fontWeight: 800,
     fontSize: "1rem",
     fontStyle: "normal",
@@ -51,7 +51,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   h5: {
-    fontFamily: "VisbyCF-Bold",
+    fontFamily: "Ubuntu",
     fontWeight: "bold",
     fontSize: "1rem",
     fontStyle: "normal",
@@ -60,7 +60,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   body1: {
-    fontFamily: "OpenSans-Regular",
+    fontFamily: "Roboto",
     fontWeight: "normal",
     fontSize: "1.25rem",
     fontStyle: "normal",
@@ -68,7 +68,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   body2: {
-    fontFamily: "OpenSans-Regular",
+    fontFamily: "Roboto",
     fontWeight: "normal",
     fontSize: "1rem",
     fontStyle: "normal",
@@ -76,7 +76,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     letterSpacing: "normal"
   },
   overline: {
-    fontFamily: "VisbyCF-ExtraBold",
+    fontFamily: "Roboto",
     fontWeight: 800,
     fontSize: "0.875rem",
     fontStyle: "normal",
@@ -85,7 +85,7 @@ export const typographyStyles: Readonly<Record<Variant,TypographyStyleOptions>> 
     textTransform: "uppercase"
   },
   caption: {
-    fontFamily: "OpenSans-Regular",
+    fontFamily: "Roboto",
     fontWeight: "normal",
     fontSize: "0.875rem",
     fontStyle: "normal",

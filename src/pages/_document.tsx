@@ -11,8 +11,7 @@ export default class MyDocument extends Document {
                 <Head>
                     {/* PWA primary color */}
                     <meta name="theme-color" content={theme.palette.primary.main} />
-                    {/* no fonts created yet */}
-                    {/* <link rel="stylesheet" href="style/fonts.css" />  */}
+                    <link rel="stylesheet" href="/fonts/style.css" />
                 </Head>
                 <body>
                     <Main />
