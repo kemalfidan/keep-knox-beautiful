@@ -1,6 +1,8 @@
 import React from "react";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import TextField from "@material-ui/core/TextField";
+import CoreTypography from "src/components/core/typography";
+import constants from "utils/constants";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,18 +27,23 @@ export default function DateAndTimePickers() {
     };
 
     return (
-        <form className={classes.container} noValidate>
-            <TextField
-                id="datetime-local"
-                label="Event Start"
-                type="datetime-local"
-                defaultValue="2021-05-24T10:30"
-                className={classes.textField}
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                onChange={printDate}
-            />
-        </form>
+        <>
+            <CoreTypography variant="h1">
+                Fonts Testing from Kemal - {`${constants.org.name} events`}
+            </CoreTypography>
+            <form className={classes.container} noValidate>
+                <TextField
+                    id="datetime-local"
+                    label="Event Start"
+                    type="datetime-local"
+                    defaultValue="2021-05-24T10:30"
+                    className={classes.textField}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    onChange={printDate}
+                />
+            </form>
+        </>
     );
 }

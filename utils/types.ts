@@ -15,8 +15,9 @@ export interface Volunteer {
 export interface Event {
     _id?: string;
     name: string;
-    description?: string; // todo rich text
+    description?: string;
     caption?: string;
+    maxVolunteers?: number;
     startDate?: Date;
     startTime?: Date;
     endDate?: Date;

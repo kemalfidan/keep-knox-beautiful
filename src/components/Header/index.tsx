@@ -8,18 +8,18 @@ import Typography from "@material-ui/core/Typography";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
-            backgroundColor: theme.palette.secondary.main,
+            backgroundColor: theme.palette.primary.main,
             height: "100px",
             width: "100%",
             display: "flex",
             top: "0",
             right: "0",
             left: "0",
-            alignItems: "center",
+            alignItems: "left",
             justifyContent: "space-around",
         },
         headerBanner: {
-            width: "360px",
+            height: "80px",
         },
     })
 );
