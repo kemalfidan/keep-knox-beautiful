@@ -20,9 +20,9 @@ export interface Event {
     maxVolunteers?: number;
     location?: string;
     startDate?: Date;
-    startTime?: Date;
+    // startTime?: Date;
     endDate?: Date;
-    endTime?: Date;
+    // endTime?: Date;
     startRegistration?: Date;
     endRegistration?: Date;
     hours?: number;

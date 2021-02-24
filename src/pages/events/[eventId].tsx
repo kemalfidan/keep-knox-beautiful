@@ -6,17 +6,72 @@ import { GetStaticPropsContext, NextPage } from "next";
 import constants from "utils/constants";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Error from "next/error";
-import errors from "utils/errors";
 import CoreTypography from "src/components/core/typography/CoreTypography";
+import Paper from "@material-ui/core/Paper";
+import Container from "@material-ui/core/Container";
+import colors from "src/components/core/colors";
 
 interface Props {
     event: Event;
 }
 
-const useStyles = makeStyles((theme: Theme) => createStyles({}));
+const useStyles = makeStyles((theme: Theme) => 
+    createStyles({
+        eventHeader: {
+            backgroundColor: theme.palette.primary.main,
+            textAlign: "center",
+            height: "200px",
+            color: colors.white,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",          
+        },
+        logo: {
+            width: "80px",
+            marginRight: "20px"
+        },
+        eventName: {
+            textAlign: "center",
+            height: "110px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",          
+        },
+        caption: {
+            marginTop: "50px",
+            marginBottom: "50px"
+        },
+        bodyContainer: {
+            backgroundColor: theme.palette.primary.main,
+            display: "flex",
+            justifyContent: "center",
+            paddingTop: "20px",
+            paddingBottom: "20px",
+        },
+        dateContainer: {
+            backgroundColor: "blue",
+            display: "flex",
+            flexDirection: "column",
+            // justifyContent: "center",
+        },
+        paper: {
+            width: "150px",
+            height: "120px",
+            margin: "20px",
+            marginRight: "30px",
+            borderRadius: 8,
+        },
+        descContainer: {
+            backgroundColor: "pink",
+            width: "500px",
+            padding: "20px",
+        },
+
+    })
+);
 
 const EventPage: NextPage<Props> = ({ event }) => {
-    const classes = useStyles();
+    const styles = useStyles();
 
     if (!event) {
         return <Error statusCode={404} />;
@@ -26,8 +81,37 @@ const EventPage: NextPage<Props> = ({ event }) => {
         <>
             <Header />
 
-            <CoreTypography variant="h1">{event.name}</CoreTypography>
-            <CoreTypography variant="h5">{JSON.stringify(event)}</CoreTypography>
+            <Container maxWidth="xl" className={styles.eventHeader}>
+                <img src={`/${constants.org.images.logo}`} className={styles.logo} alt={`${constants.org.name.short} logo`} />
+                <CoreTypography variant="h1">Event Description</CoreTypography>
+            </Container>
+            <Container maxWidth="xl" className={styles.eventName}>
+                <CoreTypography variant="h1"> {event.name} </CoreTypography>
+            </Container>
+            <Container maxWidth="xl" className={styles.bodyContainer}>
+                {/* <Container maxWidth="md" style={{backgroundColor: "blue"}}>test</Container>
+                <Container maxWidth="sm">test</Container> */}
+                <div className={styles.dateContainer}>
+                    <Paper className={styles.paper}></Paper>
+                    <Paper className={styles.paper}></Paper>
+                </div>
+                <div className={styles.descContainer}>
+                    <CoreTypography variant="body2">
+                        Join us on the third Saturday of each month for a Saturday Spruce Up.
+                        Each month's location and activity will change. <br /> <br />
+                        This month we will be heading to Danny Mayfield Park in Mechanicsville. 
+                        We will meet at the park pavilion, across from Maynard Elementary. Parking is located along the street. <br /> <br />
+                        Pre-registration is required. Sign ups will close on February 18, 2021. <br /> <br />
+                        All supplies will be provided. Please wear closed-toed shoes and bring water. <br /> <br />
+                        COVID policies: please wear a mask during supplies distribution and safety instruction. Pre-registration is required.
+                    </CoreTypography>
+                </div>
+            </Container>
+            <Container maxWidth="xl" className={ `${styles.eventName} ${styles.caption}`}>
+                <Container maxWidth="sm">
+                    <CoreTypography variant="h4"> {event.caption} </CoreTypography>
+                </Container>
+            </Container>
 
             <Footer />
         </>

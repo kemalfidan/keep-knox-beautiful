@@ -31,6 +31,19 @@ export default function DateAndTimePickers() {
             <CoreTypography variant="h1">{`${constants.org.name.full} events`}</CoreTypography>
             <form className={classes.container} noValidate>
                 <TextField
+                    id="datetime-local"
+                    label="Event Start"
+                    type="datetime-local"
+                    defaultValue="2021-05-24T10:30"
+                    className={classes.textField}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    onChange={printDate}
+                />
+            </form>
+            {/* <form className={classes.container} noValidate>
+                <TextField
                     id="date-local"
                     label="Event Start"
                     type="date"
@@ -42,6 +55,20 @@ export default function DateAndTimePickers() {
                     onChange={printDate}
                 />
             </form>
+            <form className={classes.container} noValidate>
+                <TextField
+                    id="time-local"
+                    label="Event Start"
+                    type="time"
+                    defaultValue="10:30"
+                    className={classes.textField}
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
+                    onChange={printDate}
+                />
+            </form> */}
+
         </>
     );
 }
