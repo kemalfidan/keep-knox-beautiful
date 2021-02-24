@@ -9,31 +9,39 @@ export const EventSchema = new Schema({
     },
     description: {
         type: String,
-        required: true,
+        required: false,
     },
-    start_time: {
-        type: Date,
-        required: true,
+    caption: {
+        type: String,
+        required: false,
     },
-    end_time: {
-        type: Date,
-        required: true,
+    maxVolunteers: {
+        type: Number,
+        required: false,
     },
-    start_registration: {
+    startDate: {
         type: Date,
         required: false,
     },
-    end_registration: {
+    endDate: {
+        type: Date,
+        required: false,
+    },
+    startRegistration: {
+        type: Date,
+        required: false,
+    },
+    endRegistration: {
         type: Date,
         required: false,
     },
     location: {
         type: String,
-        required: true,
+        required: false,
     },
     hours: {
         type: String,
-        required: true,
+        required: false,
     },
     image: {
         type: ContentfulImageSchema,
