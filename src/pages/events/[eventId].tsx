@@ -14,6 +14,7 @@ import Container from "@material-ui/core/Container";
 import CardContent from '@material-ui/core/CardContent';
 import ScheduleIcon from '@material-ui/icons/Schedule';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import { isSameDay, format, addDays } from 'date-fns';
 
 interface Props {
     event: Event;
@@ -53,10 +54,9 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingBottom: "20px",
         },
         dateContainer: {
-            backgroundColor: "blue",
+            // backgroundColor: "blue",
             display: "flex",
             flexDirection: "column",
-            // justifyContent: "center",
         },
         card: {
             width: "160px",
@@ -66,7 +66,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: 8,
         },
         descContainer: {
-            backgroundColor: "pink",
+            // backgroundColor: "pink",
             width: "500px",
             padding: "20px",
         },
@@ -92,16 +92,39 @@ const EventPage: NextPage<Props> = ({ event }) => {
     if (!event) {
         return <Error statusCode={404} />;
     }
+    event.startDate = new Date(event.startDate as Date);
+    event.endDate = new Date(event.endDate as Date); 
+    //TODO remove addDays, adding 2 days to test diff dates
+    // event.endDate = addDays(new Date(event.endDate as Date), 2); 
 
-
+    // slightly diff display between events on the same day vs diff days
     const getTime = () => {
-        return (
-            <div>
-                Tue, September 20, 2021 10:00 AM - 12:00 PM
-            </div>
-        );
+        if (isSameDay(event.startDate as Date, event.endDate as Date)) {
+            return (
+                <div>
+                    <CoreTypography variant="subtitle1" className={styles.cardText}>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} 
+                        <br/>
+                        {`${format(event.startDate as Date, "h:m a")}
+                        – ${format(event.endDate as Date, "h:m a")}`}
+                    </CoreTypography>
+                </div>
+            );
+        }
+        else {
+            return (
+                <div>
+                    <CoreTypography variant="subtitle1" className={styles.cardText}>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} <br/>
+                        {`${format(event.startDate as Date, "h:m a")} – `} 
+                        <br/>
+                        {format(event.endDate as Date, "ccc, MMMM dd, yyyy")} <br/>
+                        {format(event.endDate as Date, "h:m a")}
+                    </CoreTypography>
+                </div>
+            );
+        }
     }
-
 
     return (
         <>
@@ -115,8 +138,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 <CoreTypography variant="h1"> {event.name} </CoreTypography>
             </Container>
             <Container maxWidth="xl" className={styles.bodyContainer}>
-                {/* <Container maxWidth="md" style={{backgroundColor: "blue"}}>test</Container>
-                <Container maxWidth="sm">test</Container> */}
                 <div className={styles.dateContainer}>
                     <Card className={styles.card}>
                         <CardContent>
@@ -147,6 +168,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 </div>
                 <div className={styles.descContainer}>
                     <CoreTypography variant="body2">
+                        {/* Note: This is a placeholder till we get formatted desc */}
                         Join us on the third Saturday of each month for a Saturday Spruce Up.
                         Each month's location and activity will change. <br/> <br/>
                         This month we will be heading to Danny Mayfield Park in Mechanicsville. 
