@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",
+        "@material-ui/icons": "^4.11.2",
         "@types/formidable": "^1.0.32",
         "@types/mongoose": "^5.10.3",
         "formidable": "^1.2.2",
