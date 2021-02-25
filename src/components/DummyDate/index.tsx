@@ -68,7 +68,6 @@ export default function DateAndTimePickers() {
                     onChange={printDate}
                 />
             </form> */}
-
         </>
     );
 }

@@ -11,16 +11,16 @@ import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
 import Container from "@material-ui/core/Container";
-import CardContent from '@material-ui/core/CardContent';
-import ScheduleIcon from '@material-ui/icons/Schedule';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import { isSameDay, format, addDays } from 'date-fns';
+import CardContent from "@material-ui/core/CardContent";
+import ScheduleIcon from "@material-ui/icons/Schedule";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import { isSameDay, format, addDays } from "date-fns";
 
 interface Props {
     event: Event;
 }
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         eventHeader: {
             backgroundColor: theme.palette.primary.main,
@@ -29,32 +29,29 @@ const useStyles = makeStyles((theme: Theme) =>
             color: colors.white,
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",          
+            justifyContent: "center",
         },
         logo: {
             width: "80px",
-            marginRight: "20px"
+            marginRight: "20px",
         },
         eventName: {
             textAlign: "center",
             height: "110px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",          
+            justifyContent: "center",
         },
         caption: {
             marginTop: "50px",
-            marginBottom: "50px"
+            marginBottom: "50px",
         },
         bodyContainer: {
-            backgroundColor: theme.palette.primary.main,
+            backgroundColor: theme.palette.primary.light,
             display: "flex",
             justifyContent: "center",
-            paddingTop: "20px",
-            paddingBottom: "20px",
         },
         dateContainer: {
-            // backgroundColor: "blue",
             display: "flex",
             flexDirection: "column",
         },
@@ -66,7 +63,6 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: 8,
         },
         descContainer: {
-            // backgroundColor: "pink",
             width: "500px",
             padding: "20px",
         },
@@ -82,7 +78,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         cardText: {
             marginTop: "15px",
-        }
+        },
     })
 );
 
@@ -93,9 +89,9 @@ const EventPage: NextPage<Props> = ({ event }) => {
         return <Error statusCode={404} />;
     }
     event.startDate = new Date(event.startDate as Date);
-    event.endDate = new Date(event.endDate as Date); 
+    event.endDate = new Date(event.endDate as Date);
     //TODO remove addDays, adding 2 days to test diff dates
-    // event.endDate = addDays(new Date(event.endDate as Date), 2); 
+    // event.endDate = addDays(new Date(event.endDate as Date), 2);
 
     // slightly diff display between events on the same day vs diff days
     const getTime = () => {
@@ -103,35 +99,38 @@ const EventPage: NextPage<Props> = ({ event }) => {
             return (
                 <div>
                     <CoreTypography variant="subtitle1" className={styles.cardText}>
-                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} 
-                        <br/>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")}
+                        <br />
                         {`${format(event.startDate as Date, "h:m a")}
                         – ${format(event.endDate as Date, "h:m a")}`}
                     </CoreTypography>
                 </div>
             );
-        }
-        else {
+        } else {
             return (
                 <div>
                     <CoreTypography variant="subtitle1" className={styles.cardText}>
-                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} <br/>
-                        {`${format(event.startDate as Date, "h:m a")} – `} 
-                        <br/>
-                        {format(event.endDate as Date, "ccc, MMMM dd, yyyy")} <br/>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} <br />
+                        {`${format(event.startDate as Date, "h:m a")} – `}
+                        <br />
+                        {format(event.endDate as Date, "ccc, MMMM dd, yyyy")} <br />
                         {format(event.endDate as Date, "h:m a")}
                     </CoreTypography>
                 </div>
             );
         }
-    }
+    };
 
     return (
         <>
             <Header />
 
             <Container maxWidth="xl" className={styles.eventHeader}>
-                <img src={`/${constants.org.images.logo}`} className={styles.logo} alt={`${constants.org.name.short} logo`} />
+                <img
+                    src={`/${constants.org.images.logo}`}
+                    className={styles.logo}
+                    alt={`${constants.org.name.short} logo`}
+                />
                 <CoreTypography variant="h1">Event Description</CoreTypography>
             </Container>
             <Container maxWidth="xl" className={styles.eventName}>
@@ -142,7 +141,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <Card className={styles.card}>
                         <CardContent>
                             <div className={styles.cardTitle}>
-                                <ScheduleIcon className={styles.titleIcon}/>
+                                <ScheduleIcon className={styles.titleIcon} />
                                 <CoreTypography variant="h5" className={styles.titleName}>
                                     Event Time
                                 </CoreTypography>
@@ -155,7 +154,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <Card className={styles.card}>
                         <CardContent>
                             <div className={styles.cardTitle}>
-                                <LocationOnIcon className={styles.titleIcon}/>
+                                <LocationOnIcon className={styles.titleIcon} />
                                 <CoreTypography variant="h5" className={styles.titleName}>
                                     Location
                                 </CoreTypography>
@@ -169,17 +168,18 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 <div className={styles.descContainer}>
                     <CoreTypography variant="body2">
                         {/* Note: This is a placeholder till we get formatted desc */}
-                        Join us on the third Saturday of each month for a Saturday Spruce Up.
-                        Each month's location and activity will change. <br/> <br/>
-                        This month we will be heading to Danny Mayfield Park in Mechanicsville. 
-                        We will meet at the park pavilion, across from Maynard Elementary. Parking is located along the street. <br/> <br/>
-                        Pre-registration is required. Sign ups will close on February 18, 2021. <br/> <br/>
-                        All supplies will be provided. Please wear closed-toed shoes and bring water. <br/> <br/>
-                        COVID policies: please wear a mask during supplies distribution and safety instruction. Pre-registration is required.
+                        Join us on the third Saturday of each month for a Saturday Spruce Up. Each month&apos;s location
+                        and activity will change. <br /> <br />
+                        This month we will be heading to Danny Mayfield Park in Mechanicsville. We will meet at the park
+                        pavilion, across from Maynard Elementary. Parking is located along the street. <br /> <br />
+                        Pre-registration is required. Sign ups will close on February 18, 2021. <br /> <br />
+                        All supplies will be provided. Please wear closed-toed shoes and bring water. <br /> <br />
+                        COVID policies: please wear a mask during supplies distribution and safety instruction.
+                        Pre-registration is required.
                     </CoreTypography>
                 </div>
             </Container>
-            <Container maxWidth="xl" className={ `${styles.eventName} ${styles.caption}`}>
+            <Container maxWidth="xl" className={`${styles.eventName} ${styles.caption}`}>
                 <Container maxWidth="sm">
                     <CoreTypography variant="h4"> {event.caption} </CoreTypography>
                 </Container>

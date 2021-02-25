@@ -90,7 +90,7 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "125%",
         letterSpacing: "normal",
-    }
+    },
 };
 
 type Props = Omit<React.ComponentProps<typeof Typography>, "variant"> & {
