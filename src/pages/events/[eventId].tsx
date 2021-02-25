@@ -25,19 +25,20 @@ const useStyles = makeStyles((theme: Theme) =>
         eventHeader: {
             backgroundColor: theme.palette.primary.main,
             textAlign: "center",
-            height: "200px",
+            height: "220px",
             color: colors.white,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
+            paddingBottom: "30px",
         },
         logo: {
-            width: "80px",
+            width: "90px",
             marginRight: "20px",
         },
         eventName: {
             textAlign: "center",
-            height: "110px",
+            minHeight: "110px",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -134,7 +135,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 <CoreTypography variant="h1">Event Description</CoreTypography>
             </Container>
             <Container maxWidth="xl" className={styles.eventName}>
-                <CoreTypography variant="h1"> {event.name} </CoreTypography>
+                <CoreTypography variant="h2"> {event.name} </CoreTypography>
             </Container>
             <Container maxWidth="xl" className={styles.bodyContainer}>
                 <div className={styles.dateContainer}>

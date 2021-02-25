@@ -8,7 +8,7 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
     h1: {
         fontFamily: "Ubuntu",
         fontWeight: 800,
-        fontSize: "2.25rem",
+        fontSize: "3.5rem",
         fontStyle: "normal",
         fontFeatureSettings: "'liga' off",
         lineHeight: "150%",
@@ -17,7 +17,7 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
     h2: {
         fontFamily: "Ubuntu",
         fontWeight: 800,
-        fontSize: "1.5rem",
+        fontSize: "2.25rem",
         fontStyle: "normal",
         fontFeatureSettings: "'liga' off",
         lineHeight: "140%",
