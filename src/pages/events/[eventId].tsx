@@ -10,6 +10,7 @@ import colors from "src/components/core/colors";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
 import CardContent from "@material-ui/core/CardContent";
 import ScheduleIcon from "@material-ui/icons/Schedule";
@@ -48,11 +49,18 @@ const useStyles = makeStyles((theme: Theme) =>
             marginBottom: "50px",
         },
         bodyContainer: {
+            [theme.breakpoints.down("sm")]: {
+                flexDirection: "column",
+                alignItems: "center",
+            },
             backgroundColor: theme.palette.primary.light,
             display: "flex",
             justifyContent: "center",
         },
         dateContainer: {
+            [theme.breakpoints.down("sm")]: {
+                flexDirection: "row",
+            },
             display: "flex",
             flexDirection: "column",
         },
