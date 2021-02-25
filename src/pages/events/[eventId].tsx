@@ -8,9 +8,7 @@ import constants from "utils/constants";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
 import Card from "@material-ui/core/Card";
-import useMediaQuery from "@material-ui/core/useMediaQuery";
 import Container from "@material-ui/core/Container";
 import CardContent from "@material-ui/core/CardContent";
 import ScheduleIcon from "@material-ui/icons/Schedule";
@@ -99,8 +97,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
     }
     event.startDate = new Date(event.startDate as Date);
     event.endDate = new Date(event.endDate as Date);
-    //TODO remove addDays, adding 2 days to test diff dates
-    // event.endDate = addDays(new Date(event.endDate as Date), 2);
 
     // slightly diff display between events on the same day vs diff days
     const getTime = () => {
