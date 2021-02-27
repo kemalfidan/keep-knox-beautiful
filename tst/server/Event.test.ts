@@ -1,4 +1,5 @@
-import { getEvent, getEvents, addEvent } from "server/actions/Event";
+import { ObjectId } from "mongodb";
+import { getEvent, getEvents, addEvent, deleteEvent } from "server/actions/Event";
 import EventSchema from "server/models/Event";
 import { Event } from "utils/types";
 
@@ -69,5 +70,23 @@ describe("addEvent() tests", () => {
         await addEvent(mockEvent);
         expect(EventSchema.create).lastCalledWith(mockEvent);
         expect(EventSchema.create).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("deleteEvent() tests", () => {
+    test("invalid parameters", async () => {
+        expect.assertions(1);
+        await expect(deleteEvent("")).rejects.toThrowError("Invalid id");
+    });
+
+    test("event deleted", async () => {
+        const mockEvent = {
+            name: "test",
+        };
+
+        EventSchema.findByIdAndDelete = jest.fn().mockImplementation(async (event: Event) => event);
+        await deleteEvent("testid123");
+        expect(EventSchema.findByIdAndDelete).lastCalledWith("testid123");
+        expect(EventSchema.findByIdAndDelete).toHaveBeenCalledTimes(1);
     });
 });
