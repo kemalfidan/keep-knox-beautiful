@@ -4,10 +4,6 @@ import { makeStyles, createStyles, Theme, withTheme } from "@material-ui/core/st
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 import Container from "@material-ui/core/Container";
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
-import constants from "utils/constants";
-import { relative } from "path";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,17 +11,35 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             alignItems: "center",
             textAlign: "center",
+            width: "50%",
         },
+
         leftWrapper: {
             backgroundColor: colors.green,
             color: colors.white,
-            paddingTop: "200px",
-            paddingBottom: "200px",
+            paddingTop: "230px",
+            paddingBottom: "230px",
+            width: "107%",
         },
 
         rightWrapper: {
-            paddingTop: "200px",
-            paddingBottom: "200px",
+            paddingTop: "230px",
+            paddingBottom: "230px",
+        },
+
+        textWrapper: {
+            paddingBottom: "20px",
+        },
+
+        form: {
+            textAlign: "left",
+            paddingLeft: "30px",
+            fontSmooth: "true",
+        },
+
+        input: {
+            backgroundColor: colors.gray,
+            border: "none",
         },
     })
 );
@@ -37,10 +51,32 @@ export default function EventsForm() {
         <React.Fragment>
             <Container className={styles.container}>
                 <Container className={styles.leftWrapper}>
-                    <CoreTypography variant="h2">Left</CoreTypography>
+                    <CoreTypography variant="h1" className={styles.textWrapper}>
+                        Sign Up
+                    </CoreTypography>
+                    <CoreTypography variant="h2" className={styles.textWrapper}>
+                        We&#39;d love for you to join us!
+                    </CoreTypography>
                 </Container>
                 <Container className={styles.rightWrapper}>
-                    <CoreTypography variant="h4">Right</CoreTypography>
+                    <form className={styles.form}>
+                        <label>
+                            <CoreTypography variant="body1">First Name</CoreTypography>
+                            <input type="text" name="firstName" className={styles.input} />
+                        </label>
+                        <label>
+                            <CoreTypography variant="body1">Last Name</CoreTypography>
+                            <input type="text" name="lastName" className={styles.input} />
+                        </label>
+                        <label>
+                            <CoreTypography variant="body1">Email</CoreTypography>
+                            <input type="text" name="email" className={styles.input} />
+                        </label>
+                        <label>
+                            <CoreTypography variant="body1">Phone Number</CoreTypography>
+                            <input type="text" name="phoneNumber" className={styles.input} />
+                        </label>
+                    </form>
                 </Container>
             </Container>
         </React.Fragment>
