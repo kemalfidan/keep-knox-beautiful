@@ -28,7 +28,7 @@ export default function EventsContainer(props: Props) {
                 <Grid container direction="row" spacing={6} justify="center">
                     {props.events.map((event: Event, i: number) => {
                         return (
-                            <Grid item xs={12} sm={6} md={4} xl={3} key={i}>
+                            <Grid item xs={12} sm={8} md={5} lg={4} key={i}>
                                 <EventCard event={event} />
                             </Grid>
                         );

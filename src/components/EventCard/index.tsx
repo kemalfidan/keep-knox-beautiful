@@ -98,13 +98,13 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
     ];
     const eventDate = new Date(event.startDate as Date).getDate();
     const eventLocation = event.location?.split(",")[0];
-    console.log(eventLocation);
-    const eventStartTime = `${new Date(event.startDate as Date).getHours() % 12 || 12}:${new Date(
+    const eventStartTime = `${new Date(event.startDate as Date).getHours() % 12 || 12}:${`0${new Date(
         event.startDate as Date
-    ).getMinutes()} ${new Date(event.startDate as Date).getHours() > 11 ? "PM" : "AM"}`;
-    const eventEndTime = `${new Date(event.endDate as Date).getHours() % 12 || 12}:${new Date(
+    ).getMinutes()}`.slice(-2)} ${new Date(event.startDate as Date).getHours() >= 11 ? "PM" : "AM"}`;
+    const eventEndTime = `${new Date(event.endDate as Date).getHours() % 12 || 12}:${`0${new Date(
         event.endDate as Date
-    ).getMinutes()} ${new Date(event.endDate as Date).getHours() > 11 ? "PM" : "AM"}`;
+    ).getMinutes()}`.slice(-2)} ${new Date(event.endDate as Date).getHours() > 11 ? "PM" : "AM"}`;
+
     // state
     const [hover, setHover] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -130,6 +130,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
         return (
             <div
                 className={`${classes.thumbnailPlaceholder}`}
+                id="eventThumb"
                 style={
                     hasImage
                         ? {
@@ -195,8 +196,8 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
                     ) : null}
                 </EventThumbnail>
                 <CardContent>
-                    <div style={{ height: 100, overflow: "hidden" }}>
-                        <CoreTypography gutterBottom variant="h3" className={classes.title}>
+                    <div style={{ height: 105, overflow: "hidden" }}>
+                        <CoreTypography gutterBottom variant="h3" className={classes.title} id="eventName">
                             {event.name}
                         </CoreTypography>
                         <CoreTypography
@@ -205,6 +206,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
                                 color: "rgba(0,0,0,.4)",
                                 fontFamily: "Ubuntu",
                             }}
+                            id="eventDesc"
                         >
                             {event.description}
                         </CoreTypography>
@@ -224,6 +226,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
                                     fontFamily: "Ubuntu",
                                     fontSize: 13,
                                 }}
+                                id="eventLoc"
                                 component="p"
                             >
                                 {eventLocation}
@@ -242,6 +245,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
                                     fontFamily: "Ubuntu",
                                     fontSize: 13,
                                 }}
+                                id="eventTime"
                                 component="p"
                             >
                                 {eventStartTime} - {eventEndTime}
