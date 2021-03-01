@@ -38,6 +38,7 @@ describe("EventCard.tsx", () => {
     //     console.log(thumbnail.getElement().props);
     // });
 
+    // TODO
     it("handles hover", () => {
         const component = shallow(<EventCard event={evNoImg} />);
     });
