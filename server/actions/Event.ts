@@ -27,7 +27,7 @@ export const getEvents = async function () {
     await mongoDB();
 
     const events = (await EventSchema.find({})) as Array<Event>;
-    if (!!events && !events.length) {
+    if (!events || !events.length) {
         throw new Error("No events");
     }
 

@@ -29,6 +29,7 @@ describe("EventCard.tsx", () => {
         expect(evTime.children().reduce((acc, cur) => (acc += cur.text()), "")).toBe("12:00 PM - 2:00 PM");
     });
 
+    // probably unneccessary
     // it("renders placeholder when image is missing", () => {
     //     const component = shallow(<EventCard event={evNoImg} />);
 
@@ -37,7 +38,17 @@ describe("EventCard.tsx", () => {
     //     console.log(thumbnail.getElement().props);
     // });
 
-    it("handles hover correctly", () => {
+    it("handles hover", () => {
         const component = shallow(<EventCard event={evNoImg} />);
+    });
+
+    it("interacts with admins on hover", () => {
+        const component = shallow(<EventCard event={evNoImg} />);
+    });
+
+    it("matches snapshot", () => {
+        const component = shallow(<EventCard event={evNoImg} />);
+
+        expect(component).toMatchSnapshot();
     });
 });
