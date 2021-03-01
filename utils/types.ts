@@ -18,11 +18,11 @@ export interface Event {
     description?: string;
     caption?: string;
     maxVolunteers?: number;
-    startDate?: Date;
-    startTime?: Date;
-    endDate?: Date;
-    endTime?: Date;
     location?: string;
+    startDate?: Date;
+    // startTime?: Date;
+    endDate?: Date;
+    // endTime?: Date;
     startRegistration?: Date;
     endRegistration?: Date;
     hours?: number;

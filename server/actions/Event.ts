@@ -27,7 +27,7 @@ export const getEvents = async function () {
     await mongoDB();
 
     const events = (await EventSchema.find({})) as Array<Event>;
-    if (!events || !events.length) {
+    if (!events.length) {
         throw new Error("No events");
     }
 
@@ -44,4 +44,16 @@ export const addEvent = async function (event: Event) {
     }
 
     await EventSchema.create(event);
+};
+
+/**
+ * @param id EventId of event that will be deleted
+ */
+export const deleteEvent = async function (id: string) {
+    await mongoDB();
+    if (!id || id == "") {
+        throw new Error("Invalid id");
+    }
+
+    await EventSchema.findByIdAndDelete(id);
 };

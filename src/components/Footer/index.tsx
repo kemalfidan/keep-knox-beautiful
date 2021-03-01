@@ -9,12 +9,15 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             backgroundColor: theme.palette.primary.main,
-            height: "120px",
-            display: "flex",
-            alignItems: "center",
         },
         wrapper: {
-            height: "80px",
+            display: "flex",
+            alignItems: "center",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            paddingLeft: "0px",
+        },
+        textWrapper: {
             textAlign: "center",
             color: colors.white,
         },
@@ -30,17 +33,21 @@ export default function Footer() {
     return (
         <React.Fragment>
             <Container maxWidth="xl" className={styles.container}>
-                <img src={`/${constants.org.images.logo}`} width="80px" alt={`${constants.org.name.short} logo`}></img>
                 <Container maxWidth="xl" className={styles.wrapper}>
-                    <CoreTypography variant="h4"> {constants.org.footer.address} </CoreTypography>
-                    <CoreTypography variant="h4">
-                        {" "}
-                        {`${constants.org.footer.phone} ${constants.org.footer.email}`}{" "}
-                    </CoreTypography>
-                    <CoreTypography variant="h4" className={styles.lastText}>
-                        {" "}
-                        created by hack4impact utk{" "}
-                    </CoreTypography>
+                    <img
+                        src={`/${constants.org.images.logo}`}
+                        width="80px"
+                        alt={`${constants.org.name.short} logo`}
+                    ></img>
+                    <Container maxWidth="xl" className={styles.textWrapper}>
+                        <CoreTypography variant="h4"> {constants.org.footer.address} </CoreTypography>
+                        <CoreTypography variant="h4">
+                            {`${constants.org.footer.phone} ${constants.org.footer.email}`}
+                        </CoreTypography>
+                        <CoreTypography variant="h4" className={styles.lastText}>
+                            created by hack4impact utk
+                        </CoreTypography>
+                    </Container>
                 </Container>
             </Container>
         </React.Fragment>
