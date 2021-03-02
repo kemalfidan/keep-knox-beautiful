@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
 
         input: {
-            backgroundColor: colors.gray,
+            backgroundColor: colors.lightGray,
             border: "none",
             height: "40px",
             fontSize: "20px",
