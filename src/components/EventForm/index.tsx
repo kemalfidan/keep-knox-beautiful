@@ -7,6 +7,7 @@ import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import constants from "utils/constants";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
+import DescriptionIcon from "@material-ui/icons/Description";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -54,12 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
         bottomContainer: {
             paddingLeft: "0px",
-            paddingTop: "10px",
+            paddingTop: "5px",
         },
 
         waiverLink: {
-            color: "black",
-            paddingLeft: "5px",
+            color: colors.grays[80],
         },
 
         symbol: {
@@ -132,13 +132,10 @@ export default function EventsForm() {
                         <Container className={styles.bottomContainer}>
                             <br></br>
                             <Container className={styles.waiverWrapper}>
-                                <img
-                                    src={`/${constants.symbols.waiver}`}
-                                    width="28px"
-                                    className={styles.symbol}
-                                    alt={`Waiver symbol`}
-                                ></img>
-                                <Link className={styles.waiverLink}>{constants.org.name.short} Volunteer Waiver</Link>
+                                <Link className={styles.waiverLink}>
+                                    <DescriptionIcon htmlColor="gray" /> &nbsp;
+                                    {constants.org.name.short} Volunteer Waiver
+                                </Link>
                             </Container>
                             <FormControlLabel
                                 control={<Checkbox />}
