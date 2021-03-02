@@ -24,8 +24,4 @@ export default {
         volunteerProfile: 10,
     },
     contentfulImageLimit: 20 * 1000 * 1000, // 20 MB
-
-    symbols: {
-        waiver: "waiver-symbol-transparent.png",
-    },
 };
