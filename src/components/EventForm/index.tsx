@@ -62,10 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
             color: colors.grays[80],
         },
 
-        symbol: {
-            paddingRight: "5px",
-        },
-
         waiverWrapper: {
             paddingLeft: "0px",
         },
@@ -76,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
 
         button: {
-            marginTop: "30px",
+            marginTop: "25px",
             marginLeft: "140px",
             padding: "15px",
             backgroundColor: colors.green,
@@ -147,11 +143,16 @@ export default function EventsForm() {
                             />
                         </Container>
                         <Container>
-                            <input type="submit" value="Sign Up" className={styles.button} />
+                            <input type="submit" value="Sign Up" onClick={submitButton} className={styles.button} />
                         </Container>
                     </form>
                 </Container>
             </Container>
         </React.Fragment>
     );
+}
+
+function submitButton() {
+    event?.preventDefault();
+    console.log("button pressed");
 }
