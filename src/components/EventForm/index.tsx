@@ -143,7 +143,7 @@ export default function EventsForm() {
                             />
                         </Container>
                         <Container>
-                            <input type="submit" value="Sign Up" onClick={submitButton} className={styles.button} />
+                            <input type="button" value="Sign Up" onClick={submitButton} className={styles.button} />
                         </Container>
                     </form>
                 </Container>
