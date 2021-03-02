@@ -4,7 +4,7 @@ export default {
     lightGreen: "#CEECDA",
     blue: "#97BBCB",
     gray: "#A8B3B8",
-    lightGray: "3D3D3D",
+    lightGray: "D2D2D2",
     pink: "#F298AE",
     grays: {
         40: "#999999",
