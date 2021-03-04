@@ -8,7 +8,9 @@ import Link from "@material-ui/core/Link";
 import constants from "utils/constants";
 import { Checkbox, FormControlLabel } from "@material-ui/core";
 import DescriptionIcon from "@material-ui/icons/Description";
+import useMediaQuery from "@material-ui/core/useMediaQuery";
 
+const resizeThreshold = 720;
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
@@ -17,24 +19,45 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "750px",
             borderStyle: "solid",
             borderWidth: "2px",
-            borderColor: colors.green,
-            height: "700px",
+            borderColor: theme.palette.primary.main,
+            height: "auto",
             paddingLeft: "0",
+
+            [theme.breakpoints.between(0, resizeThreshold)]: {
+                flexDirection: "column",
+                width: "375px",
+            },
         },
 
         leftWrapper: {
-            backgroundColor: colors.green,
+            backgroundColor: theme.palette.primary.main,
             color: colors.white,
             paddingTop: "220px",
+            height: "700px",
+            [theme.breakpoints.between(0, resizeThreshold)]: {
+                width: "371px",
+            },
         },
 
         rightWrapper: {
             paddingTop: "50px",
             width: "310px",
+            height: "700px",
+
+            [theme.breakpoints.between(0, resizeThreshold)]: {
+                width: "375",
+                textAlign: "center",
+                position: "relative",
+                left: "20px",
+            },
         },
 
         textWrapper: {
             paddingBottom: "20px",
+
+            [theme.breakpoints.between(0, resizeThreshold)]: {
+                paddingBottom: "35px",
+            },
         },
 
         form: {
@@ -58,12 +81,12 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: "5px",
         },
 
-        waiverLink: {
-            color: colors.grays[80],
-        },
-
         waiverWrapper: {
             paddingLeft: "0px",
+        },
+
+        waiverLink: {
+            color: colors.grays[80],
         },
 
         checkboxText: {
@@ -75,7 +98,7 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: "25px",
             marginLeft: "140px",
             padding: "15px",
-            backgroundColor: colors.green,
+            backgroundColor: theme.palette.primary.main,
             border: "none",
             color: colors.white,
             borderRadius: "6px",
