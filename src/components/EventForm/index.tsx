@@ -108,7 +108,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function EventsForm() {
+export default function EventForm() {
     const styles = useStyles();
 
     return (
@@ -151,10 +151,9 @@ export default function EventsForm() {
                         <Container className={styles.bottomContainer}>
                             <br></br>
                             <Container className={styles.waiverWrapper}>
-                                <Link className={styles.waiverLink}>
-                                    <DescriptionIcon htmlColor="gray" /> &nbsp;
-                                    {constants.org.name.short} Volunteer Waiver
-                                </Link>
+                                <DescriptionIcon htmlColor="gray" />
+                                &nbsp;
+                                <Link className={styles.waiverLink}>{constants.org.name.short} Volunteer Waiver</Link>
                             </Container>
                             <FormControlLabel
                                 control={<Checkbox />}
@@ -176,6 +175,5 @@ export default function EventsForm() {
 }
 
 function submitButton() {
-    event?.preventDefault();
     console.log("button pressed");
 }
