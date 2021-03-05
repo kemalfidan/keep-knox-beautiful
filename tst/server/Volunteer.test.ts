@@ -1,18 +1,8 @@
-import { getAlteredUsername, addVolunteer, getVolunteer } from "server/actions/Volunteer";
+import { addVolunteer, getVolunteer } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
 import { Volunteer } from "utils/types";
 
 jest.mock("server");
-
-// Begin getAlteredUsername test cases
-test("valid username", () => {
-    return expect(getAlteredUsername("Kemal Fidan")).resolves.toBe("Kemal Fidan123");
-});
-
-test("invalid username", () => {
-    expect.assertions(1);
-    return expect(getAlteredUsername("")).rejects.toThrowError("Invalid username");
-});
 
 // Begin getVolunteer test cases
 describe("getVolunteer() tests", () => {

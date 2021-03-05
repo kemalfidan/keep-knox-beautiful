@@ -5,11 +5,11 @@ export interface Volunteer {
     email?: string;
     name: string;
     phone?: string;
-    filledForm?: boolean;
+    // filledForm?: boolean;
     totalEvents?: number;
     totalHours?: number;
-    attendedEvents?: Array<Event>;
-    signedUpEvents?: Array<Event>;
+    attendedEvents?: Event[];
+    signedUpEvents?: Event[];
 }
 
 export interface Event {
@@ -20,15 +20,13 @@ export interface Event {
     maxVolunteers?: number;
     location?: string;
     startDate?: Date;
-    // startTime?: Date;
     endDate?: Date;
-    // endTime?: Date;
     startRegistration?: Date;
     endRegistration?: Date;
     hours?: number;
     image?: ContentfulImage;
-    registeredAttendees?: Array<string>;
-    presentAttendees?: Array<string>;
+    registeredVolunteers?: Volunteer[];
+    presentVolunteers?: Volunteer[];
 }
 
 export interface ContentfulImage {
@@ -37,7 +35,7 @@ export interface ContentfulImage {
 }
 
 export class APIError extends Error {
-    constructor(public statusCode: number, message?: string) {
+    constructor(public statusCode: number, message: string) {
         super(message);
     }
 }

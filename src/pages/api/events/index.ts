@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import formidable from "formidable";
-import { Event } from "utils/types";
+import { Event, APIError } from "utils/types";
 import { addEvent, getEvents } from "server/actions/Event";
 
 // formidable config
@@ -16,7 +16,7 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
-            const events: Array<Event> = await getEvents();
+            const events: Event[] = await getEvents();
 
             res.status(200).json({
                 success: true,
@@ -27,7 +27,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files
                 const event: Event = (fields as unknown) as Event;
-                console.log("eventInfo: ", event);
 
                 // TODO check image size and upload to contentful
 
@@ -39,10 +38,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
     } catch (error) {
-        console.error(error instanceof Error && error);
-        res.status(400).json({
-            success: false,
-            message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
-        });
+        if (error instanceof APIError) {
+            res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+            });
+        }
+        else {
+            console.error(error instanceof Error && error);
+            res.status(500).json({
+                success: false,
+                message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
+            });
+        }
     }
 }

@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getVolunteer } from "server/actions/Volunteer";
 import errors from "utils/errors";
-import { Volunteer } from "utils/types";
+import { Volunteer, APIError } from "utils/types";
 
 // GET /api/volunteers/[volId] will return a single volunteer profile that matches the volId
 // POST /api/volunteers/[volId] will take new form data and update basic account info
@@ -20,10 +20,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             payload: vol,
         });
     } catch (error) {
-        console.error(error instanceof Error && error);
-        res.status(400).json({
-            success: false,
-            payload: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
-        });
+        if (error instanceof APIError) {
+            res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+            });
+        }
+        else {
+            console.error(error instanceof Error && error);
+            res.status(500).json({
+                success: false,
+                message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
+            });
+        }
     }
 }

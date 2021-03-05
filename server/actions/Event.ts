@@ -1,6 +1,6 @@
 import mongoDB from "../index";
 import EventSchema from "../models/Event";
-import { Event } from "utils/types";
+import { Event, APIError } from "utils/types";
 
 /**
  * @param id EventId string to identify an event in our database.
@@ -9,12 +9,12 @@ import { Event } from "utils/types";
 export const getEvent = async function (id: string) {
     await mongoDB();
     if (!id || id == "") {
-        throw new Error("Invalid id");
+        throw new APIError(400, "Invalid id");
     }
 
     const event = (await EventSchema.findById(id)) as Event;
     if (event == null) {
-        throw new Error("Event does not exist");
+        throw new APIError(404, "Event does not exist");
     }
 
     return event;
@@ -26,9 +26,9 @@ export const getEvent = async function (id: string) {
 export const getEvents = async function () {
     await mongoDB();
 
-    const events = (await EventSchema.find({})) as Array<Event>;
+    const events = (await EventSchema.find({})) as Event[];
     if (!events || !events.length) {
-        throw new Error("No events");
+        throw new APIError(404, "No events");
     }
 
     return events;
@@ -40,7 +40,7 @@ export const getEvents = async function () {
 export const addEvent = async function (event: Event) {
     await mongoDB();
     if (!event) {
-        throw new Error("Invalid event");
+        throw new APIError(400, "Invalid event");
     }
 
     await EventSchema.create(event);
@@ -52,7 +52,7 @@ export const addEvent = async function (event: Event) {
 export const deleteEvent = async function (id: string) {
     await mongoDB();
     if (!id || id == "") {
-        throw new Error("Invalid id");
+        throw new APIError(400, "Invalid id");
     }
 
     await EventSchema.findByIdAndDelete(id);

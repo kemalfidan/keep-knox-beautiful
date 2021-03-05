@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import formidable from "formidable";
-import { Volunteer } from "utils/types";
+import { Volunteer, APIError } from "utils/types";
 import { addVolunteer } from "server/actions/Volunteer";
 
 // formidable config
@@ -31,10 +31,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             });
         }
     } catch (error) {
-        console.error(error instanceof Error && error);
-        res.status(400).json({
-            success: false,
-            message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
-        });
+        if (error instanceof APIError) {
+            res.status(error.statusCode).json({
+                success: false,
+                message: error.message,
+            });
+        }
+        else {
+            console.error(error instanceof Error && error);
+            res.status(500).json({
+                success: false,
+                message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
+            });
+        }
     }
 }

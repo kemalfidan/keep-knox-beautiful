@@ -9,42 +9,50 @@ export const EventSchema = new Schema({
     },
     description: {
         type: String,
-        required: false,
+        required: true,
     },
     caption: {
         type: String,
-        required: false,
+        required: true,
     },
     maxVolunteers: {
         type: Number,
-        required: false,
+        required: true,
     },
     startDate: {
         type: Date,
-        required: false,
+        required: true,
     },
     endDate: {
         type: Date,
-        required: false,
+        required: true,
     },
     startRegistration: {
         type: Date,
-        required: false,
+        required: true,
     },
     endRegistration: {
         type: Date,
-        required: false,
+        required: true,
     },
     location: {
         type: String,
-        required: false,
+        required: true,
     },
     hours: {
         type: String,
-        required: false,
+        required: true,
     },
     image: {
         type: ContentfulImageSchema,
+        required: false,
+    },
+    registeredVolunteers: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'Volunteer' }],
+        required: false,
+    },
+    presentVolunteers: {
+        type: [{ type: Schema.Types.ObjectId, ref: 'Volunteer' }],
         required: false,
     },
 });
