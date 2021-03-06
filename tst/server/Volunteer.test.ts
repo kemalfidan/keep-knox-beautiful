@@ -8,7 +8,9 @@ jest.mock("server");
 describe("getVolunteer() tests", () => {
     test("valid volunteer", async () => {
         const mockVol = {
+            email: "test",
             name: "test",
+            phone: "123-123-1234",
         };
 
         VolunteerSchema.findById = jest.fn().mockResolvedValue(mockVol);
@@ -36,7 +38,7 @@ describe("addVolunteer() tests", () => {
             email: "test",
             name: "test",
             phone: "123-123-1234",
-            filledForm: false,
+            // filledForm: false,
             // attendedEvents and signedUpEvents default to empty arrays in mongoose
         };
 

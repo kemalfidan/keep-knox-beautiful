@@ -10,10 +10,10 @@
         "lint:tsc": "tsc -p tsconfig.json",
         "lint:eslint": "eslint '**/*.{tsx,ts,js,jsx,json}' --fix",
         "test": "jest",
-        "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login kemalfidan3@gmail.com --raw` \"npm run secrets:sync\"",
+        "secrets": "npm run secrets:logout && cross-env-shell BW_SESSION=`bw login kkbkeepknoxbeautiful@gmail.com --raw` \"npm run secrets:sync\"",
         "secrets:logout": "(bw logout || exit 0)",
-        "secrets:login": "bw login kemalfidan3@gmail.com",
-        "secrets:sync": "bw sync && bw get item 04740009-37d7-4acf-9ac3-acab003531c3 | fx .notes > \".env.local\""
+        "secrets:login": "bw login kkbkeepknoxbeautiful@gmail.com",
+        "secrets:sync": "bw sync && bw get item 4ada9111-4b22-408b-89b2-ace20153a7fb | fx .notes > \".env.local\""
     },
     "dependencies": {
         "@material-ui/core": "^4.11.3",
