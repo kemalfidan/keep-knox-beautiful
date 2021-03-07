@@ -16,13 +16,15 @@
         "secrets:sync": "bw sync && bw get item 4ada9111-4b22-408b-89b2-ace20153a7fb | fx .notes > \".env.local\""
     },
     "dependencies": {
+        "@date-io/date-fns": "1.x",
         "@material-ui/core": "^4.11.3",
         "@material-ui/icons": "^4.11.2",
         "@material-ui/lab": "^4.0.0-alpha.57",
         "@types/formidable": "^1.0.32",
-        "@types/mongoose": "^5.10.3",
         "@types/react-input-mask": "^3.0.0",
-        "date-fns": "^2.0.0-beta.5",
+        "@material-ui/pickers": "^3.2.10",
+        "@types/mongoose": "^5.10.3",
+        "date-fns": "^2.19.0",
         "formidable": "^1.2.2",
         "mongodb": "^3.6.4",
         "mongoose": "^5.11.15",

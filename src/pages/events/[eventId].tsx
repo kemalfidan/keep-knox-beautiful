@@ -13,7 +13,7 @@ import Container from "@material-ui/core/Container";
 import CardContent from "@material-ui/core/CardContent";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import { isSameDay, format, addDays } from "date-fns";
+import { isSameDay, format } from "date-fns";
 import EventSignUp from "src/components/EventSignUp";
 
 interface Props {
