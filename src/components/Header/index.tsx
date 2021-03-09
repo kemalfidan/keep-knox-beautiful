@@ -7,10 +7,12 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             backgroundColor: theme.palette.primary.main,
-            height: "80px",
+            height: "100px",
             width: "100%",
             display: "flex",
             alignItems: "center",
+            position: "relative",
+            top: 0,
         },
         headerBanner: {
             height: "60px",

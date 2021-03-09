@@ -5,6 +5,8 @@ import { AppProps } from "next/app";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "utils/theme";
+import Header from "src/components/Header";
+import Footer from "src/components/Footer";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     React.useEffect(() => {
@@ -24,7 +26,32 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <ThemeProvider theme={theme}>
                 {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                 <CssBaseline />
-                <Component {...pageProps} />
+                <Header />
+                <div className="container">
+                    <Component {...pageProps} />
+                    <style jsx>{`
+                        .container {
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: center;
+                            align-items: center;
+                        }
+                    `}</style>
+
+                    <style jsx global>{`
+                        html,
+                        body {
+                            padding: 0;
+                            margin: 0;
+                            font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell,
+                                Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+                        }
+                        * {
+                            box-sizing: border-box;
+                        }
+                    `}</style>
+                    <Footer />
+                </div>
             </ThemeProvider>
         </React.Fragment>
     );

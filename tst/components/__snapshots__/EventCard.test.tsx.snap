@@ -1,0 +1,168 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EventCard.tsx matches snapshot 1`] = `
+<div>
+  <WithStyles(ForwardRef(Card))
+    className="makeStyles-eventCard-1"
+    elevation={7}
+    onClick={[Function]}
+    onMouseEnter={[Function]}
+    onMouseLeave={[Function]}
+  >
+    <EventThumbnail
+      localHover={false}
+    >
+      <Styled(MuiBox)
+        className="makeStyles-eventDate-6"
+      >
+        <span>
+          <CoreTypography
+            style={
+              Object {
+                "marginBottom": 0,
+                "textTransform": "uppercase",
+              }
+            }
+            variant="h5"
+          >
+            Mar
+          </CoreTypography>
+          <CoreTypography
+            style={
+              Object {
+                "fontSize": "1.75em",
+                "lineHeight": "20px",
+                "marginBottom": 0,
+              }
+            }
+            variant="h3"
+          >
+            1
+          </CoreTypography>
+        </span>
+      </Styled(MuiBox)>
+    </EventThumbnail>
+    <WithStyles(ForwardRef(CardContent))>
+      <div
+        style={
+          Object {
+            "height": 105,
+            "overflow": "hidden",
+          }
+        }
+      >
+        <CoreTypography
+          className="makeStyles-title-7"
+          gutterBottom={true}
+          id="eventName"
+          variant="h3"
+        >
+          Test Event
+        </CoreTypography>
+        <CoreTypography
+          id="eventDesc"
+          style={
+            Object {
+              "color": "rgba(0,0,0,.4)",
+              "fontFamily": "Ubuntu",
+            }
+          }
+          variant="body2"
+        >
+          This is an event with a test description an no image
+        </CoreTypography>
+      </div>
+      <WithStyles(ForwardRef(Grid))
+        alignItems="center"
+        container={true}
+        justify="center"
+        spacing={1}
+        wrap="nowrap"
+      >
+        <Memo([object Object])
+          color="primary"
+        />
+        <WithStyles(ForwardRef(Grid))
+          item={true}
+          style={
+            Object {
+              "alignItems": "center",
+              "display": "flex",
+            }
+          }
+          xs={6}
+        >
+          <CoreTypography
+            component="p"
+            id="eventLoc"
+            style={
+              Object {
+                "color": "#F298AE",
+                "fontFamily": "Ubuntu",
+                "fontSize": 13,
+                "fontWeight": 600,
+                "overflow": "hidden",
+                "textOverflow": "ellipsis",
+                "whiteSpace": "nowrap",
+              }
+            }
+            variant="caption"
+          >
+            1200 Baker St Knoxville
+          </CoreTypography>
+        </WithStyles(ForwardRef(Grid))>
+        <Memo([object Object])
+          color="primary"
+        />
+        <WithStyles(ForwardRef(Grid))
+          item={true}
+          xs={5}
+        >
+          <CoreTypography
+            component="p"
+            id="eventTime"
+            style={
+              Object {
+                "color": "#F298AE",
+                "fontFamily": "Ubuntu",
+                "fontSize": 13,
+                "fontWeight": 600,
+                "overflow": "hidden",
+                "textOverflow": "ellipsis",
+                "whiteSpace": "nowrap",
+              }
+            }
+            variant="caption"
+          >
+            12:00 PM
+             - 
+            2:00 PM
+          </CoreTypography>
+        </WithStyles(ForwardRef(Grid))>
+      </WithStyles(ForwardRef(Grid))>
+    </WithStyles(ForwardRef(CardContent))>
+  </WithStyles(ForwardRef(Card))>
+  <WithStyles(ForwardRef(Menu))
+    anchorEl={null}
+    id="simple-menu"
+    keepMounted={true}
+    open={false}
+  >
+    <WithStyles(ForwardRef(MenuItem))
+      onClick={[Function]}
+    >
+      Edit
+    </WithStyles(ForwardRef(MenuItem))>
+    <WithStyles(ForwardRef(MenuItem))
+      onClick={[Function]}
+    >
+      Manage
+    </WithStyles(ForwardRef(MenuItem))>
+    <WithStyles(ForwardRef(MenuItem))
+      onClick={[Function]}
+    >
+      Delete
+    </WithStyles(ForwardRef(MenuItem))>
+  </WithStyles(ForwardRef(Menu))>
+</div>
+`;

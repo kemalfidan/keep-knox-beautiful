@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ElementType } from "react";
 import { Typography } from "@material-ui/core";
 import { TypographyStyleOptions } from "@material-ui/core/styles/createTypography";
 
@@ -95,7 +95,7 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
 
 type Props = Omit<React.ComponentProps<typeof Typography>, "variant"> & {
     variant?: Variant;
-};
+} & { component?: string | HTMLElement };
 
 const CoreTypography: React.FC<Props> = ({ children, variant, ...rest }) => {
     const coreVariant: Variant = variant ?? "body2";

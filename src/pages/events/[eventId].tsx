@@ -128,8 +128,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
 
     return (
         <>
-            <Header />
-
             <Container maxWidth="xl" className={styles.eventHeader}>
                 <img
                     src={`/${constants.org.images.logo}`}
@@ -189,8 +187,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <CoreTypography variant="h4"> {event.caption} </CoreTypography>
                 </Container>
             </Container>
-
-            <Footer />
         </>
     );
 };

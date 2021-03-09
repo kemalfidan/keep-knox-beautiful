@@ -1,9 +1,12 @@
 import React from "react";
 
-import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
+import EventCard from "../EventCard";
 import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+
+import { Event } from "utils/types";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -13,13 +16,28 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-export default function EventsContainer() {
+interface Props {
+    events: Event[];
+}
+
+export default function EventsContainer(props: Props) {
     const styles = useStyles();
 
     return (
         <React.Fragment>
             <Container maxWidth="xl" className={styles.container}>
                 <Grid container direction="row" spacing={6} justify="center">
+                    {props.events.map((event: Event, i: number) => {
+                        return (
+                            <Grid item xs={12} sm={8} md={5} lg={4} key={i}>
+                                <EventCard event={event} />
+                            </Grid>
+                        );
+                    })}
+                    {/* 
+                    
+                    TODO: remove placeholder
+
                     <Grid item>
                         <Paper style={{ height: 250, width: 220 }} />
                     </Grid>
@@ -37,7 +55,9 @@ export default function EventsContainer() {
                     </Grid>
                     <Grid item>
                         <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
+                    </Grid> 
+                    
+                    */}
                 </Grid>
             </Container>
         </React.Fragment>
