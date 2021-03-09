@@ -31,4 +31,4 @@ export const VolunteerSchema = new Schema({
 
 export interface VolunteerDocument extends Omit<Volunteer, "_id">, Document {}
 
-export default (models.User as Model<VolunteerDocument>) || model<VolunteerDocument>("Volunteer", VolunteerSchema);
+export default (models.Volunteer as Model<VolunteerDocument>) || model<VolunteerDocument>("Volunteer", VolunteerSchema);
