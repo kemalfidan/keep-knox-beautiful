@@ -14,6 +14,7 @@ import CardContent from "@material-ui/core/CardContent";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import { isSameDay, format, addDays } from "date-fns";
+import EventSignUp from "src/components/EventSignUp";
 
 interface Props {
     event: Event;
@@ -187,6 +188,11 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <CoreTypography variant="h4"> {event.caption} </CoreTypography>
                 </Container>
             </Container>
+
+            <EventSignUp />
+            
+            <Footer />
+
         </>
     );
 };
