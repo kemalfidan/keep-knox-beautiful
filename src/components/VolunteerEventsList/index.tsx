@@ -13,73 +13,6 @@ import Paper from "@material-ui/core/Paper";
 import SortIcon from "@material-ui/icons/Sort";
 import Pagination from "@material-ui/lab/Pagination";
 
-// style attended event table header row cells
-const StyledTableCell = withStyles((theme: Theme) =>
-    createStyles({
-        head: {
-            backgroundColor: theme.palette.primary.light,
-            color: theme.palette.text.primary,
-            padding: "10px",
-            verticalAlign: "middle",
-        },
-    })
-)(TableCell);
-
-// style attended event table container and cells
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        tableContainer: {
-            border: `1px solid ${theme.palette.primary.light}`,
-            width: "90vw",
-            minWidth: "300px",
-            maxWidth: "1400px",
-            minHeight: "450px",
-            padding: "10px 8px",
-            backgroundColor: colors.white,
-        },
-        eventRow: {
-            borderBottom: `2px solid ${theme.palette.text.secondary}`,
-        },
-        tableFooter: {
-            marginTop: "45px",
-            height: "35px",
-            width: "100%",
-            display: "flex",
-            alignItems: "end",
-            justifyContent: "space-between",
-        },
-    })
-);
-
-// create dummy data for design purposes -- comment out to use volId data
-function createData(name: string, endDate: Date, hours: number) {
-    return { name, endDate, hours };
-}
-
-const rows = [
-    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
-    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
-    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
-    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
-    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-    createData("January Saturday Spruce Up", new Date("2021-01-10"), 1),
-    createData("2020 North Knoxville Community Clean Up", new Date("2020-02-16"), 4),
-    createData("Keep the Little River Beautiful Knoxville Clean Up", new Date("2020-04-12"), 3),
-    createData("February Saturday Spruce Up 5", new Date("2021-02-05"), 2),
-    createData("2021 South Knoxville Community Clean Up", new Date("2021-03-1"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
-    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
-    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
-    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
-    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-];
-
 // create attended events table for current volunteer
 export default function VolunteerEventsList(props: Volunteer) {
     const classes = useStyles();
@@ -171,3 +104,70 @@ export default function VolunteerEventsList(props: Volunteer) {
         </TableContainer>
     );
 }
+
+// style attended event table header row cells
+const StyledTableCell = withStyles((theme: Theme) =>
+    createStyles({
+        head: {
+            backgroundColor: theme.palette.primary.light,
+            color: theme.palette.text.primary,
+            padding: "10px",
+            verticalAlign: "middle",
+        },
+    })
+)(TableCell);
+
+// style attended event table container and cells
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        tableContainer: {
+            border: `1px solid ${theme.palette.primary.light}`,
+            width: "90vw",
+            minWidth: "300px",
+            maxWidth: "1400px",
+            minHeight: "450px",
+            padding: "10px 8px",
+            backgroundColor: colors.white,
+        },
+        eventRow: {
+            borderBottom: `2px solid ${theme.palette.text.secondary}`,
+        },
+        tableFooter: {
+            marginTop: "45px",
+            height: "35px",
+            width: "100%",
+            display: "flex",
+            alignItems: "end",
+            justifyContent: "space-between",
+        },
+    })
+);
+
+// create dummy data for design purposes -- comment out to use volId data
+function createData(name: string, endDate: Date, hours: number) {
+    return { name, endDate, hours };
+}
+
+const rows = [
+    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
+    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
+    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
+    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
+    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
+    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
+    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
+    createData("January Saturday Spruce Up", new Date("2021-01-10"), 1),
+    createData("2020 North Knoxville Community Clean Up", new Date("2020-02-16"), 4),
+    createData("Keep the Little River Beautiful Knoxville Clean Up", new Date("2020-04-12"), 3),
+    createData("February Saturday Spruce Up 5", new Date("2021-02-05"), 2),
+    createData("2021 South Knoxville Community Clean Up", new Date("2021-03-1"), 1),
+    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
+    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
+    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
+    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
+    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
+    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
+    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
+    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
+    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
+];

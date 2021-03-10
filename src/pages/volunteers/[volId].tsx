@@ -13,14 +13,6 @@ interface Props {
     vol: Volunteer;
 }
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            margin: "50px",
-        },
-    })
-);
-
 const VolunteerPage: NextPage<Props> = ({ vol }) => {
     const classes = useStyles();
 
@@ -66,5 +58,13 @@ export async function getStaticPaths() {
 
     return { paths, fallback: true };
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        container: {
+            margin: "50px",
+        },
+    })
+);
 
 export default VolunteerPage;
