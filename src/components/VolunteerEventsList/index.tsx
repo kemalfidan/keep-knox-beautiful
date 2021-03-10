@@ -30,7 +30,10 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         tableContainer: {
             border: `1px solid ${theme.palette.primary.light}`,
+            width: "90vw",
             minWidth: "300px",
+            maxWidth: "1400px",
+            minHeight: "450px",
             padding: "10px 8px",
             backgroundColor: colors.white,
         },
@@ -44,10 +47,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             alignItems: "end",
             justifyContent: "space-between",
-        },
-        pageArrow: {
-            background: "none",
-            border: "none",
         },
     })
 );
@@ -95,6 +94,7 @@ export default function VolunteerEventsList(props: Volunteer) {
     //const rows: Array<Event> = props.attendedEvents ? props.attendedEvents : [];
 
     const numPages = rows.length > 0 ? Math.ceil(rows.length / eventsPerPage) : 0;
+    const emptyRows = numPages > 0 ? numPages * eventsPerPage - rows.length : eventsPerPage;
 
     return (
         <TableContainer component={Paper} className={classes.tableContainer}>
@@ -119,28 +119,46 @@ export default function VolunteerEventsList(props: Volunteer) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {(numPages > 0
-                        ? rows.slice((page - 1) * eventsPerPage, (page - 1) * eventsPerPage + eventsPerPage)
-                        : rows
-                    ).map(row => (
-                        <TableRow key={row.name} className={classes.eventRow}>
-                            <TableCell component="th" scope="row">
-                                <CoreTypography variant="body2">{row.name}</CoreTypography>
-                            </TableCell>
-                            <TableCell align="center">
-                                <CoreTypography variant="body2">
-                                    {row.endDate?.toLocaleDateString("en-us", {
-                                        month: "2-digit",
-                                        day: "2-digit",
-                                        year: "numeric",
-                                    })}
-                                </CoreTypography>
-                            </TableCell>
-                            <TableCell align="center">
-                                <CoreTypography variant="body2">{row.hours}</CoreTypography>
+                    {rows.length > 0 &&
+                        (numPages > 0
+                            ? rows.slice((page - 1) * eventsPerPage, (page - 1) * eventsPerPage + eventsPerPage)
+                            : rows
+                        ).map(row => (
+                            <TableRow key={row.name} className={classes.eventRow}>
+                                <TableCell component="th" scope="row">
+                                    <CoreTypography variant="body2">{row.name}</CoreTypography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <CoreTypography variant="body2">
+                                        {row.endDate?.toLocaleDateString("en-us", {
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            year: "numeric",
+                                        })}
+                                    </CoreTypography>
+                                </TableCell>
+                                <TableCell align="center">
+                                    <CoreTypography variant="body2">{row.hours}</CoreTypography>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    {page == numPages && emptyRows > 0 && (
+                        <TableRow style={{ height: 58 * emptyRows }}>
+                            <TableCell colSpan={3} style={{ border: "none" }} />
+                        </TableRow>
+                    )}
+                    {numPages === 0 && (
+                        <TableRow style={{ height: 58 * emptyRows }}>
+                            <TableCell
+                                colSpan={3}
+                                style={{
+                                    border: "none",
+                                }}
+                            >
+                                <CoreTypography variant="body1">No Attended Events</CoreTypography>
                             </TableCell>
                         </TableRow>
-                    ))}
+                    )}
                 </TableBody>
             </Table>
             <div className={classes.tableFooter}>

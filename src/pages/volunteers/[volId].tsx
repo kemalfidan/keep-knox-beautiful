@@ -29,11 +29,9 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
     }
     return (
         <>
-            <Header />
             <div className={classes.container}>
                 <VolunteerEventsList {...vol} />
             </div>
-            <Footer />
         </>
     );
 };
