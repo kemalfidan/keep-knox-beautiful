@@ -9,7 +9,7 @@ export interface Volunteer {
     totalEvents?: number;
     totalHours?: number;
     attendedEvents?: Event[];
-    signedUpEvents?: Event[];
+    registeredEvents?: Event[];
 }
 
 export interface Event {
@@ -26,7 +26,7 @@ export interface Event {
     hours?: number;
     image?: ContentfulImage;
     registeredVolunteers?: Volunteer[];
-    presentVolunteers?: Volunteer[];
+    attendedVolunteers?: Volunteer[];
 }
 
 export interface ContentfulImage {

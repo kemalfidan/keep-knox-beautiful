@@ -2,7 +2,7 @@ import React, { ElementType } from "react";
 import { Typography } from "@material-ui/core";
 import { TypographyStyleOptions } from "@material-ui/core/styles/createTypography";
 
-type Variant = "h1" | "h2" | "h3" | "h4" | "h5" | "body1" | "body2" | "overline" | "caption" | "subtitle1";
+type Variant = "h1" | "h2" | "h3" | "h4" | "h5" | "body1" | "body2" | "overline" | "caption" | "subtitle1" | "button";
 
 export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>> = {
     h1: {
@@ -90,6 +90,15 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "125%",
         letterSpacing: "normal",
+    },
+    button: {
+        fontFamily: "Roboto",
+        fontWeight: "normal",
+        fontSize: "1.25rem",
+        fontStyle: "normal",
+        lineHeight: "150%",
+        letterSpacing: "normal",
+        textTransform: "none",
     },
 };
 

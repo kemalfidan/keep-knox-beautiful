@@ -6,28 +6,72 @@ import { NextPage } from "next";
 import constants from "utils/constants";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
+import { isSameDay, format } from "date-fns";
+
+// material ui
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import { isSameDay, format } from "date-fns";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import { DateTimePicker } from "@material-ui/pickers";
-import TodayIcon from "@material-ui/icons/Today";
 import FormControl from "@material-ui/core/FormControl";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+
+import TodayIcon from "@material-ui/icons/Today";
+import PublishIcon from "@material-ui/icons/Publish";
+
+interface IFormValues {
+    startDate?: MaterialUiPickersDate | undefined;
+    endDate?: MaterialUiPickersDate | undefined;
+    startRegistration?: MaterialUiPickersDate | undefined;
+    endRegistration?: MaterialUiPickersDate | undefined;
+    [key: string]: MaterialUiPickersDate | undefined;
+}
 
 const AddEventPage: NextPage = () => {
     const styles = useStyles();
-    const [selectedDate, handleDateChange] = useState<Date | null>(new Date());
+    const [values, setValues] = useState<IFormValues>({});
+    const [image, setImage] = useState<File | null>();
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(event.target.value);
+    // check required date fields on submit since MUI doesnt check it for dates
+    const handleDateChange = (id: string) => (date: MaterialUiPickersDate) => {
+        setValues(values => ({ ...values, [id]: date }));
+        console.log(values);
     };
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         console.log(event.target);
+    };
+
+    const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        event.preventDefault();
+
+        if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+            setImage(event.dataTransfer.files[0]);
+        }
+    };
+
+    const handleFileUpload = (event: React.SyntheticEvent) => {
+        event.persist();
+
+        const target = event.target as HTMLInputElement;
+        if (target.files && target.files[0]) {
+            setImage(target.files?.item(0));
+        }
+    };
+
+    // these 2 below are needed to handle onFileDrop properly
+    const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        event.preventDefault();
+    };
+    const handleDragEnter = (event: React.DragEvent<HTMLDivElement>) => {
+        event.stopPropagation();
+        event.preventDefault();
     };
 
     return (
@@ -40,26 +84,20 @@ const AddEventPage: NextPage = () => {
 
             <Container maxWidth="xl" className={styles.bodyWrapper}>
                 <Container maxWidth="md" className={styles.formWrapper}>
-                    <form className={styles.root} noValidate autoComplete="off" onSubmit={handleSubmit}>
+                    <form className={styles.root} autoComplete="off" onSubmit={handleSubmit}>
                         <div>
-                            <TextField
-                                id="name"
-                                label="Event Name"
-                                fullWidth
-                                color="secondary"
-                                rowsMax={4}
-                                onChange={handleChange}
-                            />
+                            <TextField id="name" label="Event Name" required fullWidth color="secondary" rowsMax={4} />
                         </div>
 
                         <div>
                             <DateTimePicker
-                                value={selectedDate}
+                                value={values["startDate"]}
                                 variant="inline"
+                                required
                                 disablePast
-                                onChange={handleDateChange}
+                                onChange={handleDateChange("startDate")}
                                 label="Start Date"
-                                showTodayButton
+                                // showTodayButton // cant show in inline mode
                                 color="secondary"
                                 InputProps={{
                                     endAdornment: (
@@ -70,12 +108,12 @@ const AddEventPage: NextPage = () => {
                                 }}
                             />
                             <DateTimePicker
-                                value={selectedDate}
+                                value={values["endDate"]}
                                 variant="inline"
+                                required
                                 disablePast
-                                onChange={handleDateChange}
+                                onChange={handleDateChange("endDate")}
                                 label="End Date"
-                                showTodayButton
                                 color="secondary"
                                 InputProps={{
                                     endAdornment: (
@@ -89,12 +127,12 @@ const AddEventPage: NextPage = () => {
 
                         <div>
                             <DateTimePicker
-                                value={selectedDate}
+                                value={values["startRegistration"]}
                                 variant="inline"
+                                required
                                 disablePast
-                                onChange={handleDateChange}
+                                onChange={handleDateChange("startRegistration")}
                                 label="Registration Starts"
-                                showTodayButton
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -104,12 +142,12 @@ const AddEventPage: NextPage = () => {
                                 }}
                             />
                             <DateTimePicker
-                                value={selectedDate}
+                                value={values["endRegistration"]}
                                 variant="inline"
+                                required
                                 disablePast
-                                onChange={handleDateChange}
+                                onChange={handleDateChange("endRegistration")}
                                 label="Registration Ends"
-                                showTodayButton
                                 InputProps={{
                                     endAdornment: (
                                         <InputAdornment position="end">
@@ -125,12 +163,13 @@ const AddEventPage: NextPage = () => {
                                 id="duration"
                                 label="Event Duration"
                                 type="number"
+                                required
                                 rowsMax={4}
                                 color="secondary"
                                 // InputProps={{
                                 //     endAdornment: <InputAdornment position="start">Hours</InputAdornment>,
                                 // }}
-                                onChange={handleChange}
+                                // onChange={handleChange}
                             />
                             <TextField
                                 id="maxVolunteers"
@@ -138,7 +177,7 @@ const AddEventPage: NextPage = () => {
                                 type="number"
                                 rowsMax={4}
                                 color="secondary"
-                                onChange={handleChange}
+                                // onChange={handleChange}
                             />
                         </div>
 
@@ -147,11 +186,12 @@ const AddEventPage: NextPage = () => {
                                 id="location"
                                 label="Location"
                                 variant="filled"
+                                required
                                 fullWidth
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
-                                onChange={handleChange}
+                                // onChange={handleChange}
                             />
                         </div>
                         <div>
@@ -159,11 +199,12 @@ const AddEventPage: NextPage = () => {
                                 id="description"
                                 label="Description"
                                 variant="filled"
+                                required
                                 fullWidth
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
-                                onChange={handleChange}
+                                // onChange={handleChange}
                             />
                         </div>
                         <div>
@@ -171,34 +212,41 @@ const AddEventPage: NextPage = () => {
                                 id="caption"
                                 label="Caption"
                                 variant="filled"
+                                required
                                 fullWidth
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
-                                onChange={handleChange}
+                                // onChange={handleChange}
                             />
                         </div>
-                        <div>
-                            {/* <input
-                            accept="image/*"
-                            style={{ display: 'none' }}
-                            id="raised-button-file"
-                            multiple
-                            type="file"
-                            />
-                            <label htmlFor="raised-button-file">
-                            <Button variant="outlined" component="span">
-                                Upload
-                            </Button>
-                            </label>  */}
 
-                            <Button variant="contained" component="label" className={styles.button}>
-                                <CoreTypography variant="body1">Browse</CoreTypography>
-                                <input type="file" hidden />
-                            </Button>
+                        <div className={styles.fileUploadContainer}>
+                            <div
+                                className={styles.fileUploadWrapper}
+                                onDragEnter={handleDragEnter}
+                                onDragOver={handleDragOver}
+                                onDrop={handleFileDrop}
+                            >
+                                <PublishIcon style={{ fontSize: "100px" }} />
+                                <CoreTypography variant="body1" style={{ paddingBottom: "20px" }}>
+                                    Drag and Drop Image
+                                </CoreTypography>
+                                <Button variant="contained" component="label" className={styles.button}>
+                                    <input type="file" hidden onChange={handleFileUpload} />
+                                    <CoreTypography variant="button">Browse</CoreTypography>
+                                </Button>
+                                <CoreTypography variant="body2">{image && image.name}</CoreTypography>
+                            </div>
                         </div>
-                        <Button variant="contained" type="submit" className={styles.button}>
-                            <CoreTypography variant="body1">Create Event</CoreTypography>
+
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            className={styles.button}
+                            style={{ marginTop: "40px", float: "right" }}
+                        >
+                            <CoreTypography variant="button">Create Event</CoreTypography>
                         </Button>
                     </form>
                 </Container>
@@ -241,9 +289,28 @@ const useStyles = makeStyles((theme: Theme) =>
         button: {
             backgroundColor: theme.palette.accent.main,
             color: colors.white,
+            minWidth: "150px",
             "&:hover": {
                 backgroundColor: theme.palette.accent.main,
             },
+        },
+        fileUploadContainer: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "20px",
+        },
+        fileUploadWrapper: {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            borderStyle: "dashed",
+            borderColor: colors.grays["60"],
+            borderRadius: "5px",
+            borderWidth: "2px",
+            padding: "30px 90px",
+            paddingTop: "20px",
         },
     })
 );
