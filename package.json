@@ -24,6 +24,7 @@
         "@types/react-input-mask": "^3.0.0",
         "@material-ui/pickers": "^3.2.10",
         "@types/mongoose": "^5.10.3",
+        "contentful-management": "^7.9.0",
         "date-fns": "^2.19.0",
         "formidable": "^1.2.2",
         "mongodb": "^3.6.4",

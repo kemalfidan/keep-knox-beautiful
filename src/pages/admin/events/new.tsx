@@ -24,26 +24,59 @@ import TodayIcon from "@material-ui/icons/Today";
 import PublishIcon from "@material-ui/icons/Publish";
 
 interface IFormValues {
+    name?: string;
     startDate?: MaterialUiPickersDate | undefined;
     endDate?: MaterialUiPickersDate | undefined;
     startRegistration?: MaterialUiPickersDate | undefined;
     endRegistration?: MaterialUiPickersDate | undefined;
-    [key: string]: MaterialUiPickersDate | undefined;
+    hours?: number;
+    volunteers?: number;
+    location?: string;
+    description?: string;
+    caption?: string;
+    image?: File | null;
+    [key: string]: MaterialUiPickersDate | string | number | File | undefined | null;
 }
 
 const AddEventPage: NextPage = () => {
     const styles = useStyles();
-    const [values, setValues] = useState<IFormValues>({});
-    const [image, setImage] = useState<File | null>();
+    const initialDate = new Date(Date.now());
+    const [values, setValues] = useState<IFormValues>({
+        startDate: initialDate,
+        endDate: initialDate,
+        startRegistration: initialDate,
+        endRegistration: initialDate,
+    });
 
     // check required date fields on submit since MUI doesnt check it for dates
     const handleDateChange = (id: string) => (date: MaterialUiPickersDate) => {
         setValues(values => ({ ...values, [id]: date }));
-        console.log(values);
     };
 
-    const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        console.log(event.target);
+    // text and number state changes
+    const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        setValues(values => ({ ...values, [event.target.id]: event.target.value }));
+    };
+
+    // handle form submission, essentially just creating formdata to send
+    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const fd = new FormData();
+        let key: string;
+        for (key in values) {
+            if (typeof values[key] === "string") {
+                fd.append(key, values[key] as string);
+            } else if (values[key] && values[key] instanceof Date) {
+                fd.append(key, new Date(values[key] as Date).toUTCString());
+            } else {
+                fd.append(key, values[key] as Blob);
+            }
+        }
+        const response = await fetch("/api/events", {
+            method: "POST",
+            body: fd,
+        });
     };
 
     const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -51,16 +84,16 @@ const AddEventPage: NextPage = () => {
         event.preventDefault();
 
         if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-            setImage(event.dataTransfer.files[0]);
+            setValues(values => ({ ...values, ["image"]: event.dataTransfer.files[0] }));
         }
     };
 
     const handleFileUpload = (event: React.SyntheticEvent) => {
         event.persist();
 
-        const target = event.target as HTMLInputElement;
-        if (target.files && target.files[0]) {
-            setImage(target.files?.item(0));
+        const target = event?.target as HTMLInputElement;
+        if (target.files && target.files.length > 0 && target.files[0]) {
+            setValues(values => ({ ...values, ["image"]: target?.files?.item(0) }));
         }
     };
 
@@ -86,7 +119,15 @@ const AddEventPage: NextPage = () => {
                 <Container maxWidth="md" className={styles.formWrapper}>
                     <form className={styles.root} autoComplete="off" onSubmit={handleSubmit}>
                         <div>
-                            <TextField id="name" label="Event Name" required fullWidth color="secondary" rowsMax={4} />
+                            <TextField
+                                id="name"
+                                label="Event Name"
+                                required
+                                fullWidth
+                                color="secondary"
+                                rowsMax={4}
+                                onChange={handleTextChange}
+                            />
                         </div>
 
                         <div>
@@ -160,12 +201,13 @@ const AddEventPage: NextPage = () => {
 
                         <div>
                             <TextField
-                                id="duration"
+                                id="hours"
                                 label="Event Duration"
                                 type="number"
                                 required
                                 rowsMax={4}
                                 color="secondary"
+                                onChange={handleTextChange}
                                 // InputProps={{
                                 //     endAdornment: <InputAdornment position="start">Hours</InputAdornment>,
                                 // }}
@@ -177,6 +219,7 @@ const AddEventPage: NextPage = () => {
                                 type="number"
                                 rowsMax={4}
                                 color="secondary"
+                                onChange={handleTextChange}
                                 // onChange={handleChange}
                             />
                         </div>
@@ -191,6 +234,7 @@ const AddEventPage: NextPage = () => {
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
+                                onChange={handleTextChange}
                                 // onChange={handleChange}
                             />
                         </div>
@@ -204,6 +248,7 @@ const AddEventPage: NextPage = () => {
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
+                                onChange={handleTextChange}
                                 // onChange={handleChange}
                             />
                         </div>
@@ -217,6 +262,7 @@ const AddEventPage: NextPage = () => {
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
+                                onChange={handleTextChange}
                                 // onChange={handleChange}
                             />
                         </div>
@@ -236,7 +282,7 @@ const AddEventPage: NextPage = () => {
                                     <input type="file" hidden onChange={handleFileUpload} />
                                     <CoreTypography variant="button">Browse</CoreTypography>
                                 </Button>
-                                <CoreTypography variant="body2">{image && image.name}</CoreTypography>
+                                <CoreTypography variant="body2">{values.image && values.image.name}</CoreTypography>
                             </div>
                         </div>
 

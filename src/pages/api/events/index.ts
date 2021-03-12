@@ -1,8 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
-import formidable from "formidable";
+import formidable, { File } from "formidable";
 import { Event, APIError } from "utils/types";
 import { addEvent, getEvents } from "server/actions/Event";
+import { uploadImage } from "server/actions/Contentful";
 
 // formidable config
 export const config = {
@@ -23,12 +24,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 payload: { events },
             });
         } else if (req.method === "POST") {
+            console.log("in POST /api/events");
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files
                 const event: Event = (fields as unknown) as Event;
 
-                // TODO check image size and upload to contentful
+                // TODO check image size
+                event.image = await uploadImage(files.image as File);
 
                 await addEvent(event);
                 res.status(200).json({
@@ -43,8 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 success: false,
                 message: error.message,
             });
-        }
-        else {
+        } else {
             console.error(error instanceof Error && error);
             res.status(500).json({
                 success: false,
