@@ -1,27 +1,32 @@
 import React, { useState } from "react";
 import Header from "src/components/Header";
 import Footer from "src/components/Footer";
-import { Event } from "utils/types";
 import { NextPage } from "next";
-import constants from "utils/constants";
+import dynamic from 'next/dynamic';
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
-import { isSameDay, format } from "date-fns";
+
+// quill
+const ReactQuill = dynamic(
+    import('react-quill'),
+    {ssr: false}
+);  
+import { Delta, Sources } from 'quill';
+import 'react-quill/dist/quill.snow.css';
 
 // material ui
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-import { DateTimePicker } from "@material-ui/pickers";
-import FormControl from "@material-ui/core/FormControl";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
+import { DateTimePicker } from "@material-ui/pickers";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
-
 import TodayIcon from "@material-ui/icons/Today";
 import PublishIcon from "@material-ui/icons/Publish";
+import DescriptionIcon from '@material-ui/icons/Description';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import SubjectIcon from '@material-ui/icons/Subject';
 
 interface IFormValues {
     name?: string;
@@ -35,7 +40,8 @@ interface IFormValues {
     description?: string;
     caption?: string;
     image?: File | null;
-    [key: string]: MaterialUiPickersDate | string | number | File | undefined | null;
+    delta?: Delta;
+    [key: string]: MaterialUiPickersDate | string | number | File | Delta | undefined | null;
 }
 
 const AddEventPage: NextPage = () => {
@@ -47,6 +53,31 @@ const AddEventPage: NextPage = () => {
         startRegistration: initialDate,
         endRegistration: initialDate,
     });
+
+    // quill formatted text options
+    var modules = {
+        toolbar: {
+            container: [
+                ["bold", "italic", "underline", "strike", "blockquote"],
+                [{ size: ["small", false, "large", "huge"] }, { color: [] }],
+                [
+                    { list: "ordered" },
+                    { list: "bullet" },
+                    { indent: "-1" },
+                    { indent: "+1" },
+                    { align: [] }
+                ],
+                ["link", "clean"]
+            ],
+        },
+        clipboard: { matchVisual: false }
+    };
+
+
+    const handleQuillChange = (content: string, delta: Delta, source: Sources, editor: any) => {
+        console.log("editor.getContents():", editor.getContents());
+        setValues(values => ({ ...values, ["delta"]: editor.getContents() }));
+    }
 
     // check required date fields on submit since MUI doesnt check it for dates
     const handleDateChange = (id: string) => (date: MaterialUiPickersDate) => {
@@ -211,7 +242,6 @@ const AddEventPage: NextPage = () => {
                                 // InputProps={{
                                 //     endAdornment: <InputAdornment position="start">Hours</InputAdornment>,
                                 // }}
-                                // onChange={handleChange}
                             />
                             <TextField
                                 id="maxVolunteers"
@@ -220,25 +250,39 @@ const AddEventPage: NextPage = () => {
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
-                                // onChange={handleChange}
                             />
                         </div>
 
-                        <div>
+                        <div className={styles.align}>
+                        <LocationOnIcon style={{ fontSize: "40px", marginTop: "20px" }} />
                             <TextField
                                 id="location"
                                 label="Location"
-                                variant="filled"
+                                // variant="filled"
                                 required
                                 fullWidth
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
-                                // onChange={handleChange}
                             />
                         </div>
-                        <div>
+                        <div className={styles.align}>
+                            <DescriptionIcon style={{ fontSize: "40px", marginTop: "10px" }} />
+                            <div className={styles.quillWrapper}>
+                                <ReactQuill
+                                    id="description"
+                                    value={values.delta}
+                                    defaultValue={""}
+                                    onChange={handleQuillChange}
+                                    theme="snow"
+                                    modules={modules}
+                                    placeholder="Add description"
+                                />
+                            </div>
+                        </div>
+
+                        {/* <div>
                             <TextField
                                 id="description"
                                 label="Description"
@@ -249,21 +293,20 @@ const AddEventPage: NextPage = () => {
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
-                                // onChange={handleChange}
                             />
-                        </div>
-                        <div>
+                        </div> */}
+                        <div className={styles.align}>
+                            <SubjectIcon style={{ fontSize: "40px", marginTop: "20px" }} />
                             <TextField
                                 id="caption"
                                 label="Caption"
-                                variant="filled"
+                                //variant="filled"
                                 required
                                 fullWidth
                                 multiline
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
-                                // onChange={handleChange}
                             />
                         </div>
 
@@ -339,6 +382,16 @@ const useStyles = makeStyles((theme: Theme) =>
             "&:hover": {
                 backgroundColor: theme.palette.accent.main,
             },
+        },
+        align: {
+            display: "flex",
+            alignItems: "top",
+            justifyContent: "left",
+            marginLeft: "-50px",
+        },
+        quillWrapper: {
+            margin: "15px",
+            width: "100%",
         },
         fileUploadContainer: {
             display: "flex",
