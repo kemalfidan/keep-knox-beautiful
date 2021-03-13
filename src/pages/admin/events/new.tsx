@@ -4,6 +4,7 @@ import Footer from "src/components/Footer";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 import errorConstants from "utils/errors";
+import urls from "utils/urls";
 import constants from "utils/constants";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
@@ -119,7 +120,7 @@ const AddEventPage: NextPage = () => {
         }
 
         // create an event
-        const response = await fetch("/api/events", {
+        const response = await fetch(urls.api.events, {
             method: "POST",
             body: fd,
         });
@@ -418,7 +419,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             alignItems: "top",
             justifyContent: "left",
-            marginLeft: "-50px",
+            marginLeft: "-40px",
         },
         quillWrapper: {
             margin: "15px",
