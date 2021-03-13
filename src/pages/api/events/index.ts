@@ -24,7 +24,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 payload: { events },
             });
         } else if (req.method === "POST") {
-            console.log("in POST /api/events");
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files

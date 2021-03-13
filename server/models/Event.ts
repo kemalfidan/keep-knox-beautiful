@@ -40,7 +40,7 @@ export const EventSchema = new Schema({
         required: true,
     },
     hours: {
-        type: String,
+        type: Number,
         required: true,
     },
     image: {
@@ -48,11 +48,11 @@ export const EventSchema = new Schema({
         required: false,
     },
     registeredVolunteers: {
-        type: [{ type: Schema.Types.ObjectId, ref: 'Volunteer' }],
+        type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
     },
     presentVolunteers: {
-        type: [{ type: Schema.Types.ObjectId, ref: 'Volunteer' }],
+        type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
     },
 });

@@ -6,6 +6,7 @@ export default {
     gray: "#A8B3B8",
     lightGray: "#D2D2D2",
     pink: "#F298AE",
+    red: "#D32F2F",
     grays: {
         40: "#999999",
         60: "#666666",
