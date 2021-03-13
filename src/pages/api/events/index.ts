@@ -30,8 +30,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 // fields includes everything but files
                 const event: Event = (fields as unknown) as Event;
 
-                // TODO check image size
-                event.image = await uploadImage(files.image as File);
+                // fields are strings so convert the numbers
+                event.hours = Number(event?.hours);
+                event.maxVolunteers = Number(event?.maxVolunteers);
+                console.log(event);
+
+                if (files.image) {
+                    // TODO check image size
+                    event.image = await uploadImage(files.image as File);
+                }
 
                 await addEvent(event);
                 res.status(200).json({

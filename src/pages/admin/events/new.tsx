@@ -2,17 +2,23 @@ import React, { useState } from "react";
 import Header from "src/components/Header";
 import Footer from "src/components/Footer";
 import { NextPage } from "next";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 
 // quill
-const ReactQuill = dynamic(
-    import('react-quill'),
-    {ssr: false}
-);  
-import { Delta, Sources } from 'quill';
-import 'react-quill/dist/quill.snow.css';
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false, loading: () => <p>Loading ...</p> });
+
+// import { Quill } from "react-quill";
+// const Quill = dynamic(
+//     () => import('quill'),
+//     { ssr: false, loading: () => <p>Loading ...</p> },
+// )
+// const ReactQuill = typeof window === 'object' ? require('react-quill') : () => false;
+// const Quill = typeof window === 'object' ? require('quill') : () => false;
+// import { Delta, Sources } from 'quill';
+// import Delta from 'quill-delta'
+import "react-quill/dist/quill.snow.css";
 
 // material ui
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -24,9 +30,9 @@ import { DateTimePicker } from "@material-ui/pickers";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import TodayIcon from "@material-ui/icons/Today";
 import PublishIcon from "@material-ui/icons/Publish";
-import DescriptionIcon from '@material-ui/icons/Description';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import SubjectIcon from '@material-ui/icons/Subject';
+import DescriptionIcon from "@material-ui/icons/Description";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import SubjectIcon from "@material-ui/icons/Subject";
 
 interface IFormValues {
     name?: string;
@@ -40,8 +46,7 @@ interface IFormValues {
     description?: string;
     caption?: string;
     image?: File | null;
-    delta?: Delta;
-    [key: string]: MaterialUiPickersDate | string | number | File | Delta | undefined | null;
+    [key: string]: MaterialUiPickersDate | string | number | File | undefined | null;
 }
 
 const AddEventPage: NextPage = () => {
@@ -55,29 +60,21 @@ const AddEventPage: NextPage = () => {
     });
 
     // quill formatted text options
-    var modules = {
+    const modules = {
         toolbar: {
             container: [
                 ["bold", "italic", "underline", "strike", "blockquote"],
                 [{ size: ["small", false, "large", "huge"] }, { color: [] }],
-                [
-                    { list: "ordered" },
-                    { list: "bullet" },
-                    { indent: "-1" },
-                    { indent: "+1" },
-                    { align: [] }
-                ],
-                ["link", "clean"]
+                [{ list: "ordered" }, { list: "bullet" }, { indent: "-1" }, { indent: "+1" }, { align: [] }],
+                ["link", "clean"],
             ],
         },
-        clipboard: { matchVisual: false }
+        clipboard: { matchVisual: false },
     };
 
-
-    const handleQuillChange = (content: string, delta: Delta, source: Sources, editor: any) => {
-        console.log("editor.getContents():", editor.getContents());
-        setValues(values => ({ ...values, ["delta"]: editor.getContents() }));
-    }
+    const handleQuillChange = (content: string) => {
+        setValues(values => ({ ...values, ["description"]: content }));
+    };
 
     // check required date fields on submit since MUI doesnt check it for dates
     const handleDateChange = (id: string) => (date: MaterialUiPickersDate) => {
@@ -98,9 +95,9 @@ const AddEventPage: NextPage = () => {
         for (key in values) {
             if (typeof values[key] === "string") {
                 fd.append(key, values[key] as string);
-            } else if (values[key] && values[key] instanceof Date) {
+            } else if (values[key] instanceof Date) {
                 fd.append(key, new Date(values[key] as Date).toUTCString());
-            } else {
+            } else if (values[key] instanceof File) {
                 fd.append(key, values[key] as Blob);
             }
         }
@@ -108,6 +105,7 @@ const AddEventPage: NextPage = () => {
             method: "POST",
             body: fd,
         });
+        console.log(response);
     };
 
     const handleFileDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -254,7 +252,7 @@ const AddEventPage: NextPage = () => {
                         </div>
 
                         <div className={styles.align}>
-                        <LocationOnIcon style={{ fontSize: "40px", marginTop: "20px" }} />
+                            <LocationOnIcon style={{ fontSize: "40px", marginTop: "30px" }} />
                             <TextField
                                 id="location"
                                 label="Location"
@@ -268,12 +266,11 @@ const AddEventPage: NextPage = () => {
                             />
                         </div>
                         <div className={styles.align}>
-                            <DescriptionIcon style={{ fontSize: "40px", marginTop: "10px" }} />
+                            <DescriptionIcon style={{ fontSize: "40px", marginTop: "15px" }} />
                             <div className={styles.quillWrapper}>
                                 <ReactQuill
                                     id="description"
-                                    value={values.delta}
-                                    defaultValue={""}
+                                    value={values.description || ""}
                                     onChange={handleQuillChange}
                                     theme="snow"
                                     modules={modules}
@@ -296,7 +293,7 @@ const AddEventPage: NextPage = () => {
                             />
                         </div> */}
                         <div className={styles.align}>
-                            <SubjectIcon style={{ fontSize: "40px", marginTop: "20px" }} />
+                            <SubjectIcon style={{ fontSize: "40px", marginTop: "30px" }} />
                             <TextField
                                 id="caption"
                                 label="Caption"
