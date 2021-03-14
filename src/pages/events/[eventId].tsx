@@ -20,6 +20,135 @@ interface Props {
     event: Event;
 }
 
+const EventPage: NextPage<Props> = ({ event }) => {
+    const styles = useStyles();
+
+    if (!event) {
+        return <Error statusCode={404} />;
+    }
+    event.startDate = new Date(event.startDate as Date);
+    event.endDate = new Date(event.endDate as Date);
+
+    // slightly diff display between events on the same day vs diff days
+    const getTime = () => {
+        if (isSameDay(event.startDate as Date, event.endDate as Date)) {
+            return (
+                <div>
+                    <CoreTypography variant="subtitle1" className={styles.cardText}>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")}
+                        <br />
+                        {`${format(event.startDate as Date, "h:mm a")}
+                        – ${format(event.endDate as Date, "h:mm a")}`}
+                    </CoreTypography>
+                </div>
+            );
+        } else {
+            return (
+                <div>
+                    <CoreTypography variant="subtitle1" className={styles.cardText}>
+                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} <br />
+                        {`${format(event.startDate as Date, "h:mm a")} – `}
+                        <br />
+                        {format(event.endDate as Date, "ccc, MMMM dd, yyyy")} <br />
+                        {format(event.endDate as Date, "h:mm a")}
+                    </CoreTypography>
+                </div>
+            );
+        }
+    };
+
+    return (
+        <>
+            <Container maxWidth="xl" className={styles.eventHeader}>
+                <img
+                    src={`/${constants.org.images.logo}`}
+                    className={styles.logo}
+                    alt={`${constants.org.name.short} logo`}
+                />
+                <CoreTypography variant="h1">Event Description</CoreTypography>
+            </Container>
+            <Container maxWidth="xl" className={styles.eventName}>
+                <CoreTypography variant="h2"> {event.name} </CoreTypography>
+            </Container>
+            <Container maxWidth="xl" className={styles.bodyContainer}>
+                <div className={styles.dateContainer}>
+                    <Card className={styles.card}>
+                        <CardContent>
+                            <div className={styles.cardTitle}>
+                                <ScheduleIcon className={styles.titleIcon} />
+                                <CoreTypography variant="h5" className={styles.titleName}>
+                                    Event Time
+                                </CoreTypography>
+                            </div>
+                            <CoreTypography variant="subtitle1" className={styles.cardText}>
+                                {getTime()}
+                            </CoreTypography>
+                        </CardContent>
+                    </Card>
+                    <Card className={styles.card}>
+                        <CardContent>
+                            <div className={styles.cardTitle}>
+                                <LocationOnIcon className={styles.titleIcon} />
+                                <CoreTypography variant="h5" className={styles.titleName}>
+                                    Location
+                                </CoreTypography>
+                            </div>
+                            <CoreTypography variant="subtitle1" className={styles.cardText}>
+                                {event.location}
+                            </CoreTypography>
+                        </CardContent>
+                    </Card>
+                </div>
+                <div
+                    className={styles.descContainer}
+                    dangerouslySetInnerHTML={{ __html: event.description as string }}
+                ></div>
+            </Container>
+            <Container maxWidth="xl" className={`${styles.eventName} ${styles.caption}`}>
+                <Container maxWidth="sm">
+                    <CoreTypography variant="h4"> {event.caption} </CoreTypography>
+                </Container>
+            </Container>
+
+            <EventSignUp />
+            
+            <Footer />
+
+        </>
+    );
+};
+
+// query data and pass it to component here. this is run server-side
+export async function getStaticProps(context: GetStaticPropsContext) {
+    try {
+        console.log(context.params?.eventId);
+        const event: Event = await getEvent(context.params?.eventId as string);
+
+        return {
+            props: {
+                event: JSON.parse(JSON.stringify(event)) as Event,
+            },
+            revalidate: constants.revalidate.eventDesc,
+        };
+    } catch (error) {
+        return {
+            props: {},
+            revalidate: constants.revalidate.eventDesc,
+        };
+    }
+}
+
+// required for dynamic pages: prerender events at build time
+export async function getStaticPaths() {
+    const events: Event[] = []; //await getEvents({});
+
+    const paths = events.map(event => ({
+        params: { name: event._id },
+    }));
+
+    return { paths, fallback: true };
+}
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         eventHeader: {
@@ -87,145 +216,12 @@ const useStyles = makeStyles((theme: Theme) =>
         cardText: {
             marginTop: "15px",
         },
+        "@global": {
+            "p, ol, ul": {
+                margin: "0px",
+            },
+        },
     })
 );
-
-const EventPage: NextPage<Props> = ({ event }) => {
-    const styles = useStyles();
-
-    if (!event) {
-        return <Error statusCode={404} />;
-    }
-    event.startDate = new Date(event.startDate as Date);
-    event.endDate = new Date(event.endDate as Date);
-
-    // slightly diff display between events on the same day vs diff days
-    const getTime = () => {
-        if (isSameDay(event.startDate as Date, event.endDate as Date)) {
-            return (
-                <div>
-                    <CoreTypography variant="subtitle1" className={styles.cardText}>
-                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")}
-                        <br />
-                        {`${format(event.startDate as Date, "h:m a")}
-                        – ${format(event.endDate as Date, "h:m a")}`}
-                    </CoreTypography>
-                </div>
-            );
-        } else {
-            return (
-                <div>
-                    <CoreTypography variant="subtitle1" className={styles.cardText}>
-                        {format(event.startDate as Date, "ccc, MMMM dd, yyyy")} <br />
-                        {`${format(event.startDate as Date, "h:m a")} – `}
-                        <br />
-                        {format(event.endDate as Date, "ccc, MMMM dd, yyyy")} <br />
-                        {format(event.endDate as Date, "h:m a")}
-                    </CoreTypography>
-                </div>
-            );
-        }
-    };
-
-    return (
-        <>
-            <Container maxWidth="xl" className={styles.eventHeader}>
-                <img
-                    src={`/${constants.org.images.logo}`}
-                    className={styles.logo}
-                    alt={`${constants.org.name.short} logo`}
-                />
-                <CoreTypography variant="h1">Event Description</CoreTypography>
-            </Container>
-            <Container maxWidth="xl" className={styles.eventName}>
-                <CoreTypography variant="h2"> {event.name} </CoreTypography>
-            </Container>
-            <Container maxWidth="xl" className={styles.bodyContainer}>
-                <div className={styles.dateContainer}>
-                    <Card className={styles.card}>
-                        <CardContent>
-                            <div className={styles.cardTitle}>
-                                <ScheduleIcon className={styles.titleIcon} />
-                                <CoreTypography variant="h5" className={styles.titleName}>
-                                    Event Time
-                                </CoreTypography>
-                            </div>
-                            <CoreTypography variant="subtitle1" className={styles.cardText}>
-                                {getTime()}
-                            </CoreTypography>
-                        </CardContent>
-                    </Card>
-                    <Card className={styles.card}>
-                        <CardContent>
-                            <div className={styles.cardTitle}>
-                                <LocationOnIcon className={styles.titleIcon} />
-                                <CoreTypography variant="h5" className={styles.titleName}>
-                                    Location
-                                </CoreTypography>
-                            </div>
-                            <CoreTypography variant="subtitle1" className={styles.cardText}>
-                                {event.location}
-                            </CoreTypography>
-                        </CardContent>
-                    </Card>
-                </div>
-                <div className={styles.descContainer}>
-                    <CoreTypography variant="body2">
-                        {/* Note: This is a placeholder till we get formatted desc */}
-                        Join us on the third Saturday of each month for a Saturday Spruce Up. Each month&apos;s location
-                        and activity will change. <br /> <br />
-                        This month we will be heading to Danny Mayfield Park in Mechanicsville. We will meet at the park
-                        pavilion, across from Maynard Elementary. Parking is located along the street. <br /> <br />
-                        Pre-registration is required. Sign ups will close on February 18, 2021. <br /> <br />
-                        All supplies will be provided. Please wear closed-toed shoes and bring water. <br /> <br />
-                        COVID policies: please wear a mask during supplies distribution and safety instruction.
-                        Pre-registration is required.
-                    </CoreTypography>
-                </div>
-            </Container>
-            <Container maxWidth="xl" className={`${styles.eventName} ${styles.caption}`}>
-                <Container maxWidth="sm">
-                    <CoreTypography variant="h4"> {event.caption} </CoreTypography>
-                </Container>
-            </Container>
-
-            <EventSignUp />
-            
-            <Footer />
-
-        </>
-    );
-};
-
-// query data and pass it to component here. this is run server-side
-export async function getStaticProps(context: GetStaticPropsContext) {
-    try {
-        console.log(context.params?.eventId);
-        const event: Event = await getEvent(context.params?.eventId as string);
-
-        return {
-            props: {
-                event: JSON.parse(JSON.stringify(event)) as Event,
-            },
-            revalidate: constants.revalidate.eventDesc,
-        };
-    } catch (error) {
-        return {
-            props: {},
-            revalidate: constants.revalidate.eventDesc,
-        };
-    }
-}
-
-// required for dynamic pages: prerender events at build time
-export async function getStaticPaths() {
-    const events: Event[] = []; //await getEvents({});
-
-    const paths = events.map(event => ({
-        params: { name: event._id },
-    }));
-
-    return { paths, fallback: true };
-}
 
 export default EventPage;

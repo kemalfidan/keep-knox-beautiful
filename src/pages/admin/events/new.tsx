@@ -93,12 +93,13 @@ const AddEventPage: NextPage = () => {
     // handle form submission, essentially just creating formdata to send
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        const emptyDescription = "<p><br></p>";
 
         // clear past submission error since this is a new submission
         if (errors.submissionError) {
             setErrors({ ...errors, ["submissionError"]: false });
         }
-        if (!values.description || values.description == "") {
+        if (!values.description || values.description == "" || values.description == emptyDescription) {
             setErrors({ ...errors, ["emptyQuill"]: true });
             return;
         } else {
