@@ -182,8 +182,6 @@ const AddEventPage: NextPage = () => {
 
     return (
         <>
-            <Header />
-
             <Container maxWidth="xl" className={styles.pageHeader}>
                 <CoreTypography variant="h1">Add New Event</CoreTypography>
             </Container>
@@ -373,8 +371,6 @@ const AddEventPage: NextPage = () => {
                     </form>
                 </Container>
             </Container>
-
-            <Footer />
         </>
     );
 };
