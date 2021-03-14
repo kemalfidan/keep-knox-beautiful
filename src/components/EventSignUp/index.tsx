@@ -4,12 +4,18 @@ import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Link from "@material-ui/core/Link";
+import Button from "@material-ui/core/Button";
+import Checkbox from "@material-ui/core/Checkbox";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 import constants from "utils/constants";
 import { Volunteer } from "utils/types";
 
-export default function EventSignUp() {
+interface Props {
+    id: string;
+}
+
+const EventSignUp: React.FC<Props> = ({ id }) => {
     const styles = useStyles();
     const firstName = useRef<HTMLInputElement>(null);
     const lastName = useRef<HTMLInputElement>(null);
@@ -26,7 +32,7 @@ export default function EventSignUp() {
             email: email.current!.value,
             phone: phoneNumber,
         };
-        console.log(volunteer);
+        console.log("eventId:" + id, "\nvol info:", volunteer);
     };
 
     const handleInputMaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -108,32 +114,32 @@ export default function EventSignUp() {
                         />
 
                         <Container className={styles.waiverLinkWrapper}>
-                            <br></br>
-                            <DescriptionIcon htmlColor="gray" />
-                            &nbsp;
+                            {/* <br></br> */}
+                            <DescriptionIcon htmlColor={colors.grays["60"]} style={{ marginRight: "10px" }} />
                             <Link className={styles.waiverLink}>{constants.org.name.short} Volunteer Waiver</Link>
                         </Container>
                         <Container className={styles.waiverCheckboxWrapper}>
-                            <input
-                                type="checkbox"
-                                name="waiverCheckbox"
-                                required
-                                className={styles.waiverCheckbox}
-                                id="waiverCheckbox"
-                            />
+                            <Checkbox required name="waiverCheckbox" id="waiverCheckbox" color="secondary" />
                             <label htmlFor="waiverCheckbox">
                                 <CoreTypography variant="body2" className={styles.waiverCheckboxText}>
                                     By checking this box, I have read and acknowledged the waiver.
                                 </CoreTypography>
                             </label>
                         </Container>
-                        <input type="submit" value="Sign Up" className={styles.button} />
+                        <Button
+                            variant="contained"
+                            type="submit"
+                            className={styles.button}
+                            style={{ marginTop: "40px", float: "right" }}
+                        >
+                            <CoreTypography variant="button">Sign Up</CoreTypography>
+                        </Button>
                     </form>
                 </Container>
             </Container>
         </React.Fragment>
     );
-}
+};
 
 // styles
 const useStyles = makeStyles((theme: Theme) =>
@@ -153,7 +159,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: "375px",
             },
         },
-
         leftWrapper: {
             backgroundColor: theme.palette.primary.main,
             color: colors.white,
@@ -165,7 +170,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingTop: "60px",
             },
         },
-
         rightWrapper: {
             paddingTop: "50px",
             width: "310px",
@@ -178,7 +182,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 left: "20px",
             },
         },
-
         textWrapper: {
             paddingBottom: "20px",
 
@@ -186,60 +189,56 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingBottom: "35px",
             },
         },
-
         form: {
             textAlign: "left",
         },
-
         input: {
             backgroundColor: colors.lightGray,
             border: "none",
             height: "40px",
             fontSize: "20px",
+            marginLeft: "8px",
         },
-
         inputLabel: {
             paddingTop: "25px",
             paddingBottom: "5px",
+            marginLeft: "8px",
         },
-
         waiverLinkWrapper: {
+            display: "flex",
+            alignItems: "center",
             paddingLeft: "0px",
             paddingTop: "5px",
+            marginTop: "20px",
+            marginLeft: "8px",
         },
-
         waiverLink: {
             color: colors.grays[80],
             cursor: "pointer",
         },
-
         waiverCheckboxWrapper: {
             display: "flex",
             paddingTop: "10px",
             paddingLeft: "0px",
         },
-
         waiverCheckbox: {
             marginTop: "15px",
             cursor: "pointer",
         },
-
         waiverCheckboxText: {
             width: "240px",
             paddingLeft: "10px",
             cursor: "pointer",
         },
-
         button: {
-            marginTop: "25px",
-            marginLeft: "160px",
-            padding: "15px",
             backgroundColor: theme.palette.primary.main,
-            border: "none",
             color: colors.white,
-            borderRadius: "6px",
-            fontSize: "20px",
-            fontFamily: "Roboto",
+            minWidth: "100px",
+            "&:hover": {
+                backgroundColor: theme.palette.primary.main,
+            },
         },
     })
 );
+
+export default EventSignUp;

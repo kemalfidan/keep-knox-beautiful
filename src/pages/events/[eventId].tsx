@@ -110,10 +110,9 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 </Container>
             </Container>
 
-            <EventSignUp />
-            
-            <Footer />
-
+            <Container maxWidth="xl" className={styles.signUpForm}>
+                <EventSignUp id={event._id as string} />
+            </Container>
         </>
     );
 };
@@ -220,6 +219,9 @@ const useStyles = makeStyles((theme: Theme) =>
             "p, ol, ul": {
                 margin: "0px",
             },
+        },
+        signUpForm: {
+            marginBottom: "100px",
         },
     })
 );
