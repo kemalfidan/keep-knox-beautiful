@@ -8,6 +8,7 @@ import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
+import urls from "utils/urls";
 import constants from "utils/constants";
 import { Volunteer } from "utils/types";
 
@@ -23,7 +24,7 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
 
     // on sign-up button click
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // creates Volunteer object
@@ -32,7 +33,13 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
             email: email.current!.value,
             phone: phoneNumber,
         };
-        console.log("eventId:" + id, "\nvol info:", volunteer);
+
+        const response = await fetch(urls.api.signup(id), {
+            method: "POST",
+            body: JSON.stringify(volunteer),
+        });
+
+        console.log("response:", response);
     };
 
     const handleInputMaskChange = (e: React.ChangeEvent<HTMLInputElement>) => {

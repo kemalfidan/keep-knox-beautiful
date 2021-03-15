@@ -50,10 +50,12 @@ export const EventSchema = new Schema({
     registeredVolunteers: {
         type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
+        default: [],
     },
-    presentVolunteers: {
+    attendedVolunteers: {
         type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
+        default: [],
     },
 });
 

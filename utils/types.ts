@@ -8,8 +8,8 @@ export interface Volunteer {
     // filledForm?: boolean;
     totalEvents?: number;
     totalHours?: number;
-    attendedEvents?: Event[];
-    registeredEvents?: Event[];
+    registeredEvents?: (string | Event)[]; // objectid ref is a string
+    attendedEvents?: (string | Event)[];
 }
 
 export interface Event {
@@ -25,8 +25,8 @@ export interface Event {
     endRegistration?: Date;
     hours?: number;
     image?: ContentfulImage;
-    registeredVolunteers?: Volunteer[];
-    attendedVolunteers?: Volunteer[];
+    registeredVolunteers?: (string | Volunteer)[]; // objectid ref is a string
+    attendedVolunteers?: (string | Volunteer)[];
 }
 
 export interface ContentfulImage {

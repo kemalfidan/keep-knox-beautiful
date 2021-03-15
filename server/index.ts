@@ -9,6 +9,7 @@ export default async () => {
         .connect(DB_URL, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
+            useFindAndModify: false,
         })
         .catch((error: any) => {
             console.error("Database connection failed.");
