@@ -25,8 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 success: false,
                 message: error.message,
             });
-        }
-        else {
+        } else {
             console.error(error instanceof Error && error);
             res.status(500).json({
                 success: false,

@@ -3,18 +3,16 @@ import errors from "utils/errors";
 import { Event, Volunteer, APIError } from "utils/types";
 import { registerVolunteerToEvent } from "server/actions/Volunteer";
 
-
 // POST /api/events/[eventId]/signup will take form data and sign up volunteer for event eventId
 //   ... will need to create new volunteer or find existing
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {
-            // // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            const eventId: string = req.query.eventId as string;
+            /* eslint @typescript-eslint/no-unsafe-assignment: "off" */
+            const eventId = req.query.eventId as string;
             const vol: Volunteer = JSON.parse(req.body);
-            console.log(vol);
-            await registerVolunteerToEvent(vol, eventId);
 
+            await registerVolunteerToEvent(vol, eventId);
             res.status(200).json({
                 success: true,
                 payload: {},
@@ -35,4 +33,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }
 }
-

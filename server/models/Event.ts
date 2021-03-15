@@ -17,7 +17,12 @@ export const EventSchema = new Schema({
     },
     maxVolunteers: {
         type: Number,
+        required: false,
+    },
+    volunteerCount: {
+        type: Number,
         required: true,
+        default: 0,
     },
     startDate: {
         type: Date,

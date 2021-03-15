@@ -18,6 +18,7 @@ export interface Event {
     description?: string;
     caption?: string;
     maxVolunteers?: number;
+    volunteerCount?: number; // registered + attended
     location?: string;
     startDate?: Date;
     endDate?: Date;

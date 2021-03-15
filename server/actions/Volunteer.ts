@@ -34,40 +34,35 @@ export const addVolunteer = async function (vol: Volunteer) {
 };
 
 /**
- * Registers a volunteer to an event. Also adds the event to a volunteer's registered 
+ * Registers a volunteer to an event. Also adds the event to a volunteer's registered
  * events list. If the volunteer does not exist, it will create one first.
  * @param vol The volunteer data to register.
  * @param eventId The event id to register the volunter for.
  */
- export const registerVolunteerToEvent = async function (vol: Volunteer, eventId: string) {
+export const registerVolunteerToEvent = async function (vol: Volunteer, eventId: string) {
     await mongoDB();
     if (!vol || !eventId) {
         throw new APIError(400, "Invalid input. Need both volunteer and event information.");
     }
 
-    // see if event exists, if not return an error
-    const eventDoc = await EventSchema.findById(eventId);
-    if (!eventDoc) {
-        throw new APIError(404, "Event does not exist");
+    const event = await EventSchema.findById(eventId);
+    if (!event) {
+        throw new APIError(404, "Event does not exist.");
     }
 
-    // if !exists, create volunteer. Note that this might update the 
+    // if !exists, create volunteer. Note that this might update the
     // info on a volunteer if other data other than email is different
-    // VolunteerSchema. 
-    var volDoc = await VolunteerSchema.findOneAndUpdate(
-        { email: vol.email }, 
-        vol, 
-        { new: true, upsert: true }
-    );
+    // VolunteerSchema.
+    const volunteer = await VolunteerSchema.findOneAndUpdate({ email: vol.email }, vol, { new: true, upsert: true });
+    if (event.registeredVolunteers?.indexOf(volunteer._id) !== -1) {
+        throw new APIError(404, "The volunteer has already been registered to this event.");
+    }
 
-    var volunteer = volDoc.toObject();
-    var event = eventDoc.toObject();
-
-    // these arent atomic updates
     volunteer.registeredEvents?.push(eventId);
     event.registeredVolunteers?.push(volunteer._id);
+    event.volunteerCount! += 1; // default to 0 so will never be undefined
+    // these are not atomic updates
     const volPromise = VolunteerSchema.updateOne({ email: vol.email }, volunteer);
     const eventPromise = EventSchema.updateOne({ _id: eventId }, event);
     await Promise.all([volPromise, eventPromise]);
 };
-
