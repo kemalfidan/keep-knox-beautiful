@@ -132,14 +132,8 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
                         />
 
                         <Container className={styles.waiverLinkWrapper}>
-<<<<<<< HEAD
-
-                            {/* <br></br> */}
-=======
->>>>>>> 4897c28 (Added loading+error messages to sign up form)
                             <DescriptionIcon htmlColor={colors.grays["60"]} style={{ marginRight: "10px" }} />
                             <Link className={styles.waiverLink}>{constants.org.name.short} Volunteer Waiver</Link>
-
                         </Container>
                         <Container className={styles.waiverCheckboxWrapper}>
                             <Checkbox required name="waiverCheckbox" id="waiverCheckbox" color="secondary" />
