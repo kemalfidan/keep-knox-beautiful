@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Header from "src/components/Header";
-import Footer from "src/components/Footer";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 import errorConstants from "utils/errors";
@@ -121,19 +119,18 @@ const AddEventPage: NextPage = () => {
         }
 
         // create an event
-        const response = await fetch(urls.api.events, {
+        const r = await fetch(urls.api.events, {
             method: "POST",
             body: fd,
         });
+        const response = await r.json();
         setLoading(false);
 
         // error check response
         if (response) {
-            if (response?.status == 200) {
-                /*eslint-disable */
+            if (response?.success) {
                 // TODO redirect to admin home page
                 router.push("/");
-                /*eslint-enable */
             } else {
                 setErrors(errors => ({ ...errors, ["submissionError"]: true }));
             }
