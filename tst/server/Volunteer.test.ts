@@ -79,7 +79,7 @@ describe("registerVolunteerToEvent() tests", () => {
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
             },
             registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3"],
-            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],        
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
         };
         const mockVolunteer: Volunteer = {
             _id: "604d6730ca1c1d7fcd4fbde0",
@@ -91,7 +91,7 @@ describe("registerVolunteerToEvent() tests", () => {
             registeredEvents: ["604d6730ca1c1d7fcd4fbdc2"],
             attendedEvents: ["604d6730ca1c1d7fcd4fbdc3", "604d6730ca1c1d7fcd4fbdc4"],
         };
-        const options = {"new": true, "upsert": true};
+        const options = { new: true, upsert: true };
 
         // insert vol into this event and update vol's fields
         const updatedEvent: Event = {
@@ -112,7 +112,7 @@ describe("registerVolunteerToEvent() tests", () => {
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
             },
             registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3", "604d6730ca1c1d7fcd4fbde0"],
-            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],        
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
         };
         const updatedVolunteer: Volunteer = {
             _id: "604d6730ca1c1d7fcd4fbde0",
@@ -134,11 +134,7 @@ describe("registerVolunteerToEvent() tests", () => {
         await registerVolunteerToEvent(newVolunteer, eventId);
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
-        expect(VolunteerSchema.findOneAndUpdate).lastCalledWith(
-            { email: newVolunteer.email }, 
-            newVolunteer, 
-            options,
-        );
+        expect(VolunteerSchema.findOneAndUpdate).lastCalledWith({ email: newVolunteer.email }, newVolunteer, options);
         expect(VolunteerSchema.findOneAndUpdate).toHaveBeenCalledTimes(1);
         expect(EventSchema.updateOne).lastCalledWith({ _id: eventId }, updatedEvent);
         expect(EventSchema.updateOne).toHaveBeenCalledTimes(1);
@@ -160,7 +156,7 @@ describe("registerVolunteerToEvent() tests", () => {
     test("user already registered", async () => {
         expect.assertions(5);
         const eventId = "604d6730ca1c1d7fcd4fbdc4";
-        const options = {"new": true, "upsert": true};
+        const options = { new: true, upsert: true };
         const mockEvent: Event = {
             _id: "604d6730ca1c1d7fcd4fbdc4",
             name: "February Spruce Up",
@@ -179,12 +175,12 @@ describe("registerVolunteerToEvent() tests", () => {
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
             },
             registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbde0"],
-            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],        
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
         };
 
         // this volunteer is already in the registeredVolunteers array above
         const mockVolunteer: Volunteer = {
-            _id: "604d6730ca1c1d7fcd4fbde0", 
+            _id: "604d6730ca1c1d7fcd4fbde0",
             name: "John Smith",
             email: "jsmith@gmail.com",
             phone: "(931) 931-9319",
@@ -196,14 +192,12 @@ describe("registerVolunteerToEvent() tests", () => {
 
         EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
         VolunteerSchema.findOneAndUpdate = jest.fn().mockResolvedValue(mockVolunteer);
-        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError("The volunteer has already been registered to this event.");
+        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError(
+            "The volunteer has already been registered to this event."
+        );
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
-        expect(VolunteerSchema.findOneAndUpdate).lastCalledWith(
-            { email: newVolunteer.email }, 
-            newVolunteer, 
-            options,
-        );
+        expect(VolunteerSchema.findOneAndUpdate).lastCalledWith({ email: newVolunteer.email }, newVolunteer, options);
         expect(VolunteerSchema.findOneAndUpdate).toHaveBeenCalledTimes(1);
     });
 
@@ -229,10 +223,10 @@ describe("registerVolunteerToEvent() tests", () => {
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
             },
             registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbde0"],
-            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],        
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
         };
         const mockVolunteer: Volunteer = {
-            _id: "604d6730ca1c1d7fcd4fbde0", 
+            _id: "604d6730ca1c1d7fcd4fbde0",
             name: "John Smith",
             email: "jsmith@gmail.com",
             phone: "(931) 931-9319",
@@ -244,7 +238,9 @@ describe("registerVolunteerToEvent() tests", () => {
 
         EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
         VolunteerSchema.findOneAndUpdate = jest.fn().mockResolvedValue(mockVolunteer);
-        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError("Event is at max volunteers.");
+        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError(
+            "Event is at max volunteers."
+        );
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
         expect(VolunteerSchema.findOneAndUpdate).toHaveBeenCalledTimes(0);

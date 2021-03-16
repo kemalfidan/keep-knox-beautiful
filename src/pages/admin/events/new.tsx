@@ -7,6 +7,7 @@ import constants from "utils/constants";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
+import { ApiResponse } from "utils/types";
 
 // quill
 const ReactQuill = dynamic(import("react-quill"), { ssr: false, loading: () => <p>Loading ...</p> });
@@ -123,14 +124,14 @@ const AddEventPage: NextPage = () => {
             method: "POST",
             body: fd,
         });
-        const response = await r.json();
+        const response = (await r.json()) as ApiResponse;
         setLoading(false);
 
         // error check response
         if (response) {
-            if (response?.success) {
+            if (response.success) {
                 // TODO redirect to admin home page
-                router.push("/");
+                await router.push("/");
             } else {
                 setErrors(errors => ({ ...errors, ["submissionError"]: true }));
             }

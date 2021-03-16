@@ -13,7 +13,7 @@ import colors from "src/components/core/colors";
 import urls from "utils/urls";
 import constants from "utils/constants";
 import errors from "utils/errors";
-import { Volunteer } from "utils/types";
+import { Volunteer, ApiResponse } from "utils/types";
 
 interface Props {
     id: string;
@@ -45,15 +45,15 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
             method: "POST",
             body: JSON.stringify(volunteer),
         });
-        const response = await r.json();
+        const response = (await r.json()) as ApiResponse;
         setLoading(false);
 
         // error check response
         if (response) {
-            if (response?.success) {
-                router.push("/");
+            if (response.success) {
+                await router.push("/");
             } else {
-                setError(response?.message);
+                setError(response?.message || errors.GENERIC_ERROR);
             }
         } else {
             setError(errors.GENERIC_ERROR);

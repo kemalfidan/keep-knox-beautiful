@@ -40,3 +40,9 @@ export class APIError extends Error {
         super(message);
     }
 }
+
+export interface ApiResponse {
+    success: boolean;
+    message?: string;
+    payload?: unknown;
+}
