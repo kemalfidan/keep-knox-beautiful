@@ -49,6 +49,9 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
     if (!event) {
         throw new APIError(404, "Event does not exist.");
     }
+    if (event.maxVolunteers && event.volunteerCount! >= event.maxVolunteers) {
+        throw new APIError(404, "Event is at max volunteers.");
+    }
 
     // if !exists, create volunteer. Note that this might update the
     // info on a volunteer if other data other than email is different
@@ -59,6 +62,7 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
     }
 
     volunteer.registeredEvents?.push(eventId);
+    volunteer.totalHours! += event.hours!;
     event.registeredVolunteers?.push(volunteer._id);
     event.volunteerCount! += 1; // default to 0 so will never be undefined
     // these are not atomic updates

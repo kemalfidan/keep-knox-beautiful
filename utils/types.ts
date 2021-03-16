@@ -6,8 +6,8 @@ export interface Volunteer {
     name: string;
     phone?: string;
     // filledForm?: boolean;
-    totalEvents?: number;
-    totalHours?: number;
+    totalEvents?: number; // num attended events
+    totalHours?: number; // aggregate of attended event hours
     registeredEvents?: (string | Event)[]; // objectid ref is a string
     attendedEvents?: (string | Event)[];
 }

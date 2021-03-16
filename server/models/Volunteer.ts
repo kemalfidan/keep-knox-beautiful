@@ -15,10 +15,16 @@ export const VolunteerSchema = new Schema({
         type: String,
         required: false,
     },
-    // filledForm: {
-    //     type: Boolean,
-    //     required: true,
-    // },
+    totalEvents: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
+    totalHours: {
+        type: Number,
+        required: true,
+        default: 0,
+    },
     attendedEvents: {
         type: [{ type: Schema.Types.ObjectId, ref: "Event" }],
         required: false,
@@ -31,6 +37,6 @@ export const VolunteerSchema = new Schema({
     },
 });
 
-export interface VolunteerDocument extends Omit<Volunteer, "_id" | "totalEvents" | "totalHours">, Document {}
+export interface VolunteerDocument extends Omit<Volunteer, "_id">, Document {}
 
 export default (models.Volunteer as Model<VolunteerDocument>) || model<VolunteerDocument>("Volunteer", VolunteerSchema);

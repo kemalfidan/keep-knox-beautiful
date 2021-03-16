@@ -7,7 +7,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import Link from "@material-ui/core/Link";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from '@material-ui/core/CircularProgress';
+import CircularProgress from "@material-ui/core/CircularProgress";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 import urls from "utils/urls";
@@ -158,7 +158,7 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
                         >
                             <CoreTypography variant="button">Sign Up</CoreTypography>
                         </Button>
-                        <CoreTypography variant="body2" className={styles.error} style={{marginTop: "10px"}}>
+                        <CoreTypography variant="body2" className={styles.error} style={{ marginTop: "10px" }}>
                             {error}
                         </CoreTypography>
                     </form>
@@ -176,7 +176,7 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: "center",
             width: "750px",
             borderStyle: "solid",
-            borderWidth: "2px",
+            borderWidth: "1px",
             borderColor: theme.palette.primary.main,
             height: "auto",
             paddingLeft: "0",
