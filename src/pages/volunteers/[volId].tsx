@@ -58,7 +58,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                         <Paper className={classes.rightCards} elevation={2}>
                             <div className={classes.rightCardsContent}>
                                 <CoreTypography variant="body1" style={{ fontSize: "130px" }}>
-                                    {/*vol.totalHours*/}6
+                                    {vol.totalEvents == undefined ? 0 : vol.totalEvents}
                                 </CoreTypography>
                                 <CoreTypography variant="body1">Events Attended</CoreTypography>
                             </div>
@@ -66,8 +66,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                         <Paper className={classes.rightCards} elevation={2}>
                             <div className={classes.rightCardsContent}>
                                 <CoreTypography variant="body1" style={{ fontSize: "130px" }}>
-                                    {/*vol.totalHours*/}
-                                    24
+                                    {vol.totalHours == undefined ? 0 : vol.totalHours}
                                 </CoreTypography>
                                 <CoreTypography variant="body1">Total Hours</CoreTypography>
                             </div>
