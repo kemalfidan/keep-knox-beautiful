@@ -15,6 +15,7 @@ export default {
             phone: "(865) 521-6957",
             email: "info@Keepknoxvillebeautiful.org",
         },
+        // Waiver page at /src/pages/waiver.tsx needs to be changed for different orgs
     },
     revalidate: {
         upcomingEvents: 20,
