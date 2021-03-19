@@ -153,7 +153,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         nameCard: {
-            border: `2px solid ${theme.palette.primary.light}`,
+            border: `1px solid ${theme.palette.primary.light}`,
             [theme.breakpoints.between(0, "sm")]: {
                 width: "90%",
             },
@@ -186,7 +186,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         rightCards: {
             marginLeft: "40px",
-            border: `2px solid ${theme.palette.primary.light}`,
+            border: `1px solid ${theme.palette.primary.light}`,
             [theme.breakpoints.between(0, "sm")]: {
                 marginLeft: "0px",
             },
@@ -200,7 +200,7 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: "center",
         },
         nameHeader: {
-            border: `2px solid ${theme.palette.primary.light}`,
+            border: `1px solid ${theme.palette.primary.light}`,
             marginTop: "50px",
             marginBottom: "30px",
             width: "100%",
