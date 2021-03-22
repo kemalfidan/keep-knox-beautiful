@@ -13,6 +13,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontFeatureSettings: "'liga' off",
         lineHeight: "150%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "2.5rem",
+        },
     },
     h2: {
         fontFamily: "Ubuntu",
@@ -22,6 +25,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontFeatureSettings: "'liga' off",
         lineHeight: "140%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1.5rem",
+        },
     },
     h3: {
         fontFamily: "Ubuntu",
@@ -31,6 +37,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontFeatureSettings: "'liga' off",
         lineHeight: "140%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1.25rem",
+        },
     },
     h4: {
         fontFamily: "Ubuntu",
@@ -40,6 +49,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontFeatureSettings: "'liga' off",
         lineHeight: "130%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1rem",
+        },
     },
     h5: {
         fontFamily: "Ubuntu",
@@ -49,6 +61,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontFeatureSettings: "'liga' off",
         lineHeight: "130%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1rem",
+        },
     },
     body1: {
         fontFamily: "Roboto",
@@ -57,6 +72,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "150%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1rem",
+        },
     },
     body2: {
         fontFamily: "Roboto",
@@ -65,6 +83,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "150%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "0.9rem",
+        },
     },
     overline: {
         fontFamily: "Roboto",
@@ -74,6 +95,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         lineHeight: "130%",
         letterSpacing: "0.05em",
         textTransform: "uppercase",
+        "@media (max-width:600px)": {
+            fontSize: "0.8rem",
+        },
     },
     caption: {
         fontFamily: "Roboto",
@@ -82,6 +106,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "130%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "1.0rem",
+        },
     },
     subtitle1: {
         fontFamily: "Roboto",
@@ -90,6 +117,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         fontStyle: "normal",
         lineHeight: "125%",
         letterSpacing: "normal",
+        "@media (max-width:600px)": {
+            fontSize: "0.7rem",
+        },
     },
     button: {
         fontFamily: "Roboto",
@@ -99,6 +129,9 @@ export const typographyStyles: Readonly<Record<Variant, TypographyStyleOptions>>
         lineHeight: "150%",
         letterSpacing: "normal",
         textTransform: "none",
+        "@media (max-width:600px)": {
+            fontSize: "1rem",
+        },
     },
 };
 
