@@ -6,8 +6,10 @@ import {
     registerVolunteerToEvent,
 } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
+import { Query } from "mongoose";
 import EventSchema from "server/models/Event";
 import { Volunteer, Event } from "utils/types";
+import { Search } from "@material-ui/icons";
 
 jest.mock("server");
 
@@ -35,6 +37,51 @@ describe("getVolunteer() tests", () => {
 
         VolunteerSchema.findById = jest.fn().mockReturnValue(mockVol);
         await expect(getVolunteer("602734007d7de15fae321152")).rejects.toThrowError("Volunteer does not exist");
+    });
+});
+
+describe("getVolunteers() tests", () => {
+    test("valid volunteer", async () => {
+        const testVol = {
+            email: "test1@test.com",
+            name: "test1",
+            phone: "123-123-1234",
+        };
+        const mockVols = Array(20).fill(testVol, 0, 20);
+        const VOLS_PER_PAGE = 6;
+        const search = "test search";
+        const page = 1;
+
+        const expectedFilter = { name: { $regex: `.*${search}.*`, $options: "i" } };
+        const expectedProjection = { name: 1, email: 1, _id: 1 };
+
+        /* eslint-disable */
+        // the return value of each chained call is this VolsMock object.
+        // then the next call in the chain will call these functions again
+        const VolsMock: any = {
+            getVolunteers, // to be tested
+            sort: jest.fn(() => VolsMock),
+            skip: jest.fn(() => VolsMock),
+            limit: jest.fn(() => []),
+        };
+        VolunteerSchema.find = jest.fn(() => VolsMock);
+        VolsMock.limit.mockImplementation(() => mockVols); // mock final return val
+
+        await VolsMock.getVolunteers(page, search);
+        expect(VolunteerSchema.find).toHaveBeenLastCalledWith(expectedFilter, expectedProjection);
+        expect(VolsMock.skip).toHaveBeenLastCalledWith(page * VOLS_PER_PAGE);
+        expect(VolsMock.limit).toHaveBeenLastCalledWith(VOLS_PER_PAGE);
+        /* eslint-enable */
+    });
+
+    test("negative page number", async () => {
+        expect.assertions(1);
+        await expect(getVolunteers(-1, "search string")).rejects.toThrowError("Invalid page number.");
+    });
+
+    test("page is not a number", async () => {
+        expect.assertions(1);
+        await expect(getVolunteers(NaN)).rejects.toThrowError("Invalid page number.");
     });
 });
 
