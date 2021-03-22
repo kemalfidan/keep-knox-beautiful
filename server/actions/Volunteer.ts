@@ -3,6 +3,13 @@ import VolunteerSchema from "../models/Volunteer";
 import EventSchema from "../models/Event";
 import { Volunteer, APIError } from "utils/types";
 
+// only return these fields from mongodb
+const VOL_FIELDS = {
+    name: 1,
+    email: 1,
+    _id: 1,
+};
+
 /**
  * @param id VolunteerId to identify a volunteer in our database.
  * @returns A single volunteer.
@@ -19,6 +26,32 @@ export const getVolunteer = async function (id: string) {
     }
 
     return vol;
+};
+
+/**
+ * @param page Since this data is paginated, page is used to return a certain subset of the data.
+ * @param search Optional parameter used to search volunteers by name.
+ * @returns A limited number of volunteers in an array.
+ */
+export const getVolunteers = async function (page: number, search = "") {
+    await mongoDB();
+    if (isNaN(page) || page < 0) {
+        throw new APIError(400, "Invalid page number.");
+    }
+    const VOLS_PER_PAGE = 6;
+
+    // optional search, ignores case
+    const vols = await VolunteerSchema.find(
+        { name: { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } },
+        VOL_FIELDS
+    )
+        .sort({ name: 1 })
+        .skip(page * VOLS_PER_PAGE)
+        .limit(VOLS_PER_PAGE);
+
+    // 0 vols found is a valid state and not an error
+    // since search might return none
+    return vols;
 };
 
 /**
@@ -167,3 +200,8 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
 
     await Promise.all([volPromise, eventPromise]);
 };
+
+//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
+function escapeRegExp(string: string) {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
+}

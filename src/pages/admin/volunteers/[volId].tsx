@@ -1,5 +1,5 @@
 import React from "react";
-import VolunteerEventsList from "../../components/VolunteerEventsList";
+import VolunteerEventsList from "../../../components/VolunteerEventsList";
 import { getVolunteer } from "server/actions/Volunteer";
 import { Volunteer } from "utils/types";
 import { GetStaticPropsContext, NextPage } from "next";
