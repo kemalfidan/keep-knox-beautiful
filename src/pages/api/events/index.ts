@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import formidable, { File } from "formidable";
 import { Event, APIError } from "utils/types";
+import constants from "utils/constants";
 import { addEvent, getEvents } from "server/actions/Event";
 import { uploadImage } from "server/actions/Contentful";
 
@@ -28,15 +29,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 // fields includes everything but files
                 const event: Event = (fields as unknown) as Event;
+                const file: File = files?.image as File;
 
                 // fields are strings so convert the numbers
                 event.hours = Number(event?.hours);
                 event.maxVolunteers = Number(event?.maxVolunteers);
-                console.log(event);
 
-                if (files.image) {
-                    // TODO check image size
-                    event.image = await uploadImage(files.image as File);
+                if (file) {
+                    if (file?.size > constants.contentfulImageLimit) {
+                        throw new APIError(400, "Image too large.");
+                    }
+
+                    event.image = await uploadImage(file);
                 }
 
                 await addEvent(event);

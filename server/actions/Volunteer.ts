@@ -67,6 +67,16 @@ export const addVolunteer = async function (vol: Volunteer) {
 };
 
 /**
+ * @param ids An array of volunteer objectIds whose hours need to be updated.
+ * @param ids The change that needs to be applied to each volunteer's hours. Can be negative.
+ */
+export const updateVolunteerHours = async function (ids: string[], change: number) {
+    await mongoDB();
+
+    await VolunteerSchema.updateMany({ _id: { $in: ids } }, { $inc: { totalHours: change } });
+};
+
+/**
  * Registers a volunteer to an event. Also adds the event to a volunteer's registered
  * events list. If the volunteer does not exist, it will create one first.
  * @param vol The volunteer data to register.

@@ -47,6 +47,22 @@ export const addEvent = async function (event: Event) {
 };
 
 /**
+ * @param id The _id of the event we want to update.
+ * @param event The nwe event object to insert into our database.
+ */
+export const updateEvent = async function (id: string, event: Event) {
+    await mongoDB();
+    if (!id || !event) {
+        throw new APIError(400, "Invalid past event or invalid event.");
+    }
+
+    const model = await EventSchema.findByIdAndUpdate(id, event);
+    if (!model) {
+        throw new APIError(404, "Event not found.");
+    }
+};
+
+/**
  * @param id EventId of event that will be deleted
  */
 export const deleteEvent = async function (id: string) {
@@ -55,5 +71,8 @@ export const deleteEvent = async function (id: string) {
         throw new APIError(400, "Invalid id");
     }
 
-    await EventSchema.findByIdAndDelete(id);
+    const model = await EventSchema.findByIdAndDelete(id);
+    if (!model) {
+        throw new APIError(404, "Event not found.");
+    }
 };
