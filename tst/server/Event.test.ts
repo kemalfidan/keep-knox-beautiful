@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import { getEvent, getEvents, addEvent, deleteEvent } from "server/actions/Event";
+import { getEvent, getEvents, addEvent, deleteEvent, updateEvent } from "server/actions/Event";
 import EventSchema from "server/models/Event";
 import { Event } from "utils/types";
 
@@ -88,5 +88,37 @@ describe("deleteEvent() tests", () => {
         await deleteEvent("testid123");
         expect(EventSchema.findByIdAndDelete).lastCalledWith("testid123");
         expect(EventSchema.findByIdAndDelete).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("updateEvent() tests", () => {
+    test("invalid parameters", async () => {
+        expect.assertions(1);
+        await expect(updateEvent("", { name: "event name" })).rejects.toThrowError(
+            "Invalid past event or invalid event."
+        );
+    });
+
+    test("existing event not found", async () => {
+        const mockEvent = {
+            name: "event name",
+        };
+        const mockId = "602734007d7de15fae123456";
+        expect.assertions(1);
+        EventSchema.findByIdAndUpdate = jest.fn().mockImplementation(async (event: Event) => undefined);
+
+        await expect(updateEvent(mockId, mockEvent)).rejects.toThrowError("Event not found.");
+    });
+
+    test("event successfully updated", async () => {
+        const mockEvent = {
+            name: "event name",
+        };
+        const mockId = "602734007d7de15fae123456";
+
+        EventSchema.findByIdAndUpdate = jest.fn().mockImplementation(async (event: Event) => event);
+        await updateEvent(mockId, mockEvent);
+        expect(EventSchema.findByIdAndUpdate).lastCalledWith(mockId, mockEvent);
+        expect(EventSchema.findByIdAndUpdate).toHaveBeenCalledTimes(1);
     });
 });

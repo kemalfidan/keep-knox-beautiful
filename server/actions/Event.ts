@@ -12,8 +12,8 @@ export const getEvent = async function (id: string) {
         throw new APIError(400, "Invalid id");
     }
 
-    const event = (await EventSchema.findById(id)) as Event;
-    if (event == null) {
+    const event = await EventSchema.findById(id);
+    if (!event) {
         throw new APIError(404, "Event does not exist");
     }
 

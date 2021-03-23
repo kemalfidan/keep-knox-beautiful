@@ -1,7 +1,5 @@
 import React from "react";
-
 import CoreTypography from "src/components/core/typography";
-
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
@@ -104,16 +102,13 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             textAlign: "justify",
         },
-
         header: {
             textAlign: "center",
             paddingBottom: "30px",
         },
-
         list: {
             paddingLeft: "10px",
         },
-
         bottomText: {
             textAlign: "center",
             paddingBottom: "20px",
