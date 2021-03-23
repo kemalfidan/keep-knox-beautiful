@@ -9,6 +9,7 @@ export default {
         login: "/login",
         adminHome: "/admin",
         addEvent: "/admin/events/new",
+        updateEvent: (eventId: string) => `/admin/events/${eventId}/update`,
         manageEvent: (eventId: string) => `/admin/events/${eventId}`,
         volunteers: "/admin/volunteers",
         volunteer: (volId: string) => `/admin/volunteers/${volId}`,
