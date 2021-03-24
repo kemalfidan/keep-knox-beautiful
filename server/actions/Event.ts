@@ -1,6 +1,7 @@
 import mongoDB from "../index";
 import EventSchema from "../models/Event";
-import { Event, APIError, Volunteer } from "utils/types";
+import { Types } from "mongoose";
+import { Event, APIError, Volunteer, PaginatedVolunteers } from "utils/types";
 
 /**
  * @param id EventId string to identify an event in our database.
@@ -83,35 +84,87 @@ export const deleteEvent = async function (id: string) {
 export const getEventVolunteers = async function (eventId: string, page: number, search?: string) {
     await mongoDB();
     const VOLS_PER_PAGE = 6;
+    let volunteers: Volunteer[] = [];
+    let numberRegistered = 0;
 
-    // 1. get size of registeredVolunteers
+    // get size of registeredVolunteers
+    interface aggregationRet {
+        numberRegistered: number;
+    }
+    const model: aggregationRet[] = await EventSchema.aggregate([
+        { $match: { _id: new Types.ObjectId(eventId) } },
+        { $project: { numberRegistered: { $size: "$registeredVolunteers" } } },
+    ]);
+    if (!model || model.length != 1) {
+        throw new APIError(404, "Event not found.");
+    }
+    const totalRegistered = model[0]?.numberRegistered;
 
-    // 2. determine what to fill the return array with:
-    // if size >= (page+1) * VOLS_PER_PAGE
-    //   skip: page * VOLS_PER_PAGE
-    //   all registered
-    // else if size > page * VOLS_PER_PAGE
-    //   // numberRegistered = VOLS_PER_PAGE * (page+1) - size
-    //   numberAttendedMixed = size % VOLS_PER_PAGE
-    //   numberRegisteredMixed = VOLS_PER_PAGE - numberAttended
-    //   mixed
-    // else
-    //   skip: numberAttendedMixed + (page * VOLS_PER_PAGE) - (numberAttendedMixed + size)
-    //   all attended
+    // determine what to fill the return array with
+    if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
+        console.log("all registered vols");
+        // return array will contain all registered vols
+        const event = await EventSchema.findById(eventId).populate({
+            path: "registeredVolunteers",
+            select: "_id name email phone",
+            options: {
+                sort: { name: 1 },
+                skip: page * VOLS_PER_PAGE,
+                limit: VOLS_PER_PAGE,
+            },
+        });
 
-    // 3. return vols array + registered count
+        volunteers = event?.registeredVolunteers as Volunteer[];
+        numberRegistered = VOLS_PER_PAGE;
+    } else if (totalRegistered > page * VOLS_PER_PAGE) {
+        console.log("mixed vols");
+        // mixed w/ registered + attended
+        const numberAttendedMixed = totalRegistered % VOLS_PER_PAGE;
+        const numberRegisteredMixed = VOLS_PER_PAGE - numberAttendedMixed;
+        const event = await EventSchema.findById(eventId)
+            .populate({
+                path: "registeredVolunteers",
+                select: "_id name email phone",
+                options: {
+                    sort: { name: 1 },
+                    skip: page * VOLS_PER_PAGE,
+                    limit: numberRegisteredMixed,
+                },
+            })
+            .populate({
+                path: "attendedVolunteers",
+                select: "_id name email phone",
+                options: {
+                    sort: { name: 1 },
+                    // start of attendedVols so no need to skip any
+                    limit: numberAttendedMixed,
+                },
+            });
 
-    const event = await EventSchema.findById(eventId).populate({
-        path: "registeredVolunteers",
-        select: "_id name email phone",
-        options: {
-            sort: { name: 1 },
-            skip: page * VOLS_PER_PAGE,
-            limit: VOLS_PER_PAGE,
-        },
-    });
+        volunteers = event?.registeredVolunteers?.concat(event?.attendedVolunteers as Volunteer[]) as Volunteer[];
+        numberRegistered = numberRegisteredMixed;
+    } else {
+        console.log("all attended vols");
+        // all attended volunteers
+        const numberAttendedMixed = totalRegistered % VOLS_PER_PAGE;
+        const event = await EventSchema.findById(eventId).populate({
+            path: "attendedVolunteers",
+            select: "_id name email phone",
+            options: {
+                sort: { name: 1 },
+                skip: numberAttendedMixed + page * VOLS_PER_PAGE - (numberAttendedMixed + totalRegistered),
+                limit: VOLS_PER_PAGE,
+            },
+        });
 
-    const volunteers = event?.registeredVolunteers as Volunteer[];
+        volunteers = event!.attendedVolunteers as Volunteer[];
+        numberRegistered = 0;
+    }
 
-    return volunteers;
+    // return vols array and registered count
+    const ret: PaginatedVolunteers = {
+        volunteers: volunteers,
+        registeredCount: numberRegistered,
+    };
+    return ret;
 };
