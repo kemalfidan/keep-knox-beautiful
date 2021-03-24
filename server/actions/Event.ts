@@ -88,14 +88,15 @@ export const getEventVolunteers = async function (eventId: string, page: number,
 
     // 2. determine what to fill the return array with:
     // if size >= (page+1) * VOLS_PER_PAGE
+    //   skip: page * VOLS_PER_PAGE
     //   all registered
     // else if size > page * VOLS_PER_PAGE
     //   // numberRegistered = VOLS_PER_PAGE * (page+1) - size
-    //   numberAttended = size % VOLS_PER_PAGE
-    //   numberRegistered = VOLS_PER_PAGE - numberAttended
+    //   numberAttendedMixed = size % VOLS_PER_PAGE
+    //   numberRegisteredMixed = VOLS_PER_PAGE - numberAttended
     //   mixed
     // else
-    //   skip: size % VOLS_PER_PAGE (mixed) + pages in for attended * VOLS_PER_PAGE
+    //   skip: numberAttendedMixed + (page * VOLS_PER_PAGE) - (numberAttendedMixed + size)
     //   all attended
 
     // 3. return vols array + registered count
