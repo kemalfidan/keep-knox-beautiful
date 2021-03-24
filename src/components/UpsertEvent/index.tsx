@@ -202,29 +202,17 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
     };
 
     const getImageDisplay = () => {
-        // console.log(values?.image?.name, existingEvent?.image?.url);
-        // show a link to the existing image if it exists and only if the user hasn't uploaded a new image
-
-        // only works if not specifying the image again for update doesnt update the image entry in mongodb
         if (values.image) {
+            // once user uploads a new image, that display should take precedence
             return <CoreTypography variant="body2">{values.image.name}</CoreTypography>;
         } else if (existingEvent && existingEvent.image && existingEvent.image.url) {
+            // show a link to the existing image if it exists and only if the user hasn't uploaded a new image
             return (
                 <a href={existingEvent.image.url} target="_blank" rel="noreferrer">
                     <CoreTypography variant="body2">Existing image</CoreTypography>
                 </a>
             );
         }
-
-        // if (existingEvent && existingEvent.image && existingEvent._id && values.image && values.image.name == existingEvent.image.url) {
-        //     return (
-        //         <a href={values.image.name} target="_blank" rel="noreferrer">
-        //             <CoreTypography variant="body2">Existing image</CoreTypography>
-        //         </a>
-        //     );
-        // } else {
-        //     return <CoreTypography variant="body2">{values.image && values.image.name}</CoreTypography>;
-        // }
     };
 
     return (
