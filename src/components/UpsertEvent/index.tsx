@@ -35,7 +35,7 @@ interface IFormValues {
     startRegistration?: MaterialUiPickersDate | undefined;
     endRegistration?: MaterialUiPickersDate | undefined;
     hours?: number;
-    volunteers?: number;
+    maxVolunteers?: number;
     location?: string;
     description?: string;
     caption?: string;
@@ -63,27 +63,14 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
         endDate: existingEvent?.endDate || initialDate,
         startRegistration: existingEvent?.startRegistration || initialDate,
         endRegistration: existingEvent?.endRegistration || initialDate,
-        name: existingEvent?.name || "",
+        name: existingEvent?.name,
         hours: existingEvent?.hours,
-        volunteers: existingEvent?.maxVolunteers,
+        maxVolunteers: existingEvent?.maxVolunteers,
         location: existingEvent?.location,
         description: existingEvent?.description,
         caption: existingEvent?.caption,
     });
     const router = useRouter();
-
-    // download the file as a blob and set the image state
-    const fetchImage = async (url: string) => {
-        const response = await fetch(url);
-        const data = await response.blob();
-        return new File([data], url);
-    };
-
-    if (existingEvent && existingEvent.image?.url) {
-        void fetchImage(existingEvent.image.url).then((image: File) => {
-            setValues(values => ({ ...values, ["image"]: image }));
-        });
-    }
 
     // quill formatted text options
     const modules = {
@@ -135,6 +122,8 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
         for (key in values) {
             if (typeof values[key] === "string") {
                 fd.append(key, values[key] as string);
+            } else if (typeof values[key] === "number") {
+                fd.append(key, values[key]?.toString() as string);
             } else if (values[key] instanceof Date) {
                 fd.append(key, new Date(values[key] as Date).toUTCString());
             } else if (values[key] instanceof File) {
@@ -213,15 +202,29 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
     };
 
     const getImageDisplay = () => {
-        if (existingEvent && existingEvent?._id && values.image) {
+        // console.log(values?.image?.name, existingEvent?.image?.url);
+        // show a link to the existing image if it exists and only if the user hasn't uploaded a new image
+
+        // only works if not specifying the image again for update doesnt update the image entry in mongodb
+        if (values.image) {
+            return <CoreTypography variant="body2">{values.image.name}</CoreTypography>;
+        } else if (existingEvent && existingEvent.image && existingEvent.image.url) {
             return (
-                <a href={values.image.name} target="_blank" rel="noreferrer">
+                <a href={existingEvent.image.url} target="_blank" rel="noreferrer">
                     <CoreTypography variant="body2">Existing image</CoreTypography>
                 </a>
             );
-        } else {
-            return <CoreTypography variant="body2">{values.image && values.image.name}</CoreTypography>;
         }
+
+        // if (existingEvent && existingEvent.image && existingEvent._id && values.image && values.image.name == existingEvent.image.url) {
+        //     return (
+        //         <a href={values.image.name} target="_blank" rel="noreferrer">
+        //             <CoreTypography variant="body2">Existing image</CoreTypography>
+        //         </a>
+        //     );
+        // } else {
+        //     return <CoreTypography variant="body2">{values.image && values.image.name}</CoreTypography>;
+        // }
     };
 
     return (
@@ -329,7 +332,7 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                                 id="maxVolunteers"
                                 label="Max Volunteers"
                                 type="number"
-                                value={values.volunteers}
+                                value={values.maxVolunteers}
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
@@ -414,7 +417,9 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                             className={styles.button}
                             style={{ marginTop: "40px", float: "right" }}
                         >
-                            <CoreTypography variant="button">Create Event</CoreTypography>
+                            <CoreTypography variant="button">
+                                {existingEvent && existingEvent._id ? "Update" : "Create"} Event
+                            </CoreTypography>
                         </Button>
                     </form>
                 </Container>

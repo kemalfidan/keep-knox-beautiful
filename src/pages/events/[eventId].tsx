@@ -120,7 +120,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
 // query data and pass it to component here. this is run server-side
 export async function getStaticProps(context: GetStaticPropsContext) {
     try {
-        console.log(context.params?.eventId);
         const event: Event = await getEvent(context.params?.eventId as string);
 
         return {
