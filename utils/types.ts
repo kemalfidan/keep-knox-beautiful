@@ -30,6 +30,11 @@ export interface Event {
     attendedVolunteers?: (string | Volunteer)[];
 }
 
+export interface PaginatedVolunteers {
+    volunteers: Volunteer[];
+    registeredCount: number;
+}
+
 export interface ContentfulImage {
     assetID: string;
     url: string;

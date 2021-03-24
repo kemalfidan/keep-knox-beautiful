@@ -1,6 +1,6 @@
 import mongoDB from "../index";
 import EventSchema from "../models/Event";
-import { Event, APIError } from "utils/types";
+import { Event, APIError, Volunteer } from "utils/types";
 
 /**
  * @param id EventId string to identify an event in our database.
@@ -75,4 +75,42 @@ export const deleteEvent = async function (id: string) {
     if (!model) {
         throw new APIError(404, "Event not found.");
     }
+};
+
+/**
+ * @param page
+ */
+export const getEventVolunteers = async function (eventId: string, page: number, search?: string) {
+    await mongoDB();
+    const VOLS_PER_PAGE = 6;
+
+    // 1. get size of registeredVolunteers
+
+    // 2. determine what to fill the return array with:
+    // if size >= (page+1) * VOLS_PER_PAGE
+    //   all registered
+    // else if size > page * VOLS_PER_PAGE
+    //   // numberRegistered = VOLS_PER_PAGE * (page+1) - size
+    //   numberAttended = size % VOLS_PER_PAGE
+    //   numberRegistered = VOLS_PER_PAGE - numberAttended
+    //   mixed
+    // else
+    //   skip: size % VOLS_PER_PAGE (mixed) + pages in for attended * VOLS_PER_PAGE
+    //   all attended
+
+    // 3. return vols array + registered count
+
+    const event = await EventSchema.findById(eventId).populate({
+        path: "registeredVolunteers",
+        select: "_id name email phone",
+        options: {
+            sort: { name: 1 },
+            skip: page * VOLS_PER_PAGE,
+            limit: VOLS_PER_PAGE,
+        },
+    });
+
+    const volunteers = event?.registeredVolunteers as Volunteer[];
+
+    return volunteers;
 };
