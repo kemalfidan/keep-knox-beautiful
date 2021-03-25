@@ -79,7 +79,12 @@ export const deleteEvent = async function (id: string) {
 };
 
 /**
- * @param page
+ * @param eventId The id of the event to get volunteers from.
+ * @param page Since this data is paginated, page is used to return a certain subset of the data.
+ * @param search Optional parameter used to search volunteers by name.
+ * @returns A limited number of volunteers in an array. The return type always includes registered
+ *   vols first (if any are needed for this page), then attended vols. Also specifies the number of
+ *   registered vols in the array (see PaginatedVolunteers type).
  */
 export const getEventVolunteers = async function (eventId: string, page: number, search?: string) {
     await mongoDB();

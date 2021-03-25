@@ -3,7 +3,9 @@ import { getEventVolunteers } from "server/actions/Event";
 import errors from "utils/errors";
 import { Event, APIError, PaginatedVolunteers } from "utils/types";
 
-// @route   GET /api/events/[eventId]/volunteers - Returns a paginated list of volunteers for event eventId. - Private
+// @route   GET /api/events/[eventId]/volunteers - Returns a paginated list of volunteers for event eventId.
+//   The return type always includes registered vols first (if any are needed for this page), then attended
+//   vols. Also specifies the number of registered vols in the array (see PaginatedVolunteers type). - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.eventId || !req.query.page) {
