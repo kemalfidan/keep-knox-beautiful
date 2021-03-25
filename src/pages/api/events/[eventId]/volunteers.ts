@@ -13,9 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         const eventId = req.query.eventId as string;
         const page = Number(req.query.page);
+        const search = (req.query?.search as string) || "";
 
         if (req.method == "GET") {
-            const paginatedVols: PaginatedVolunteers = await getEventVolunteers(eventId, page);
+            const paginatedVols: PaginatedVolunteers = await getEventVolunteers(eventId, page, search);
 
             res.status(200).json({
                 success: true,

@@ -1,7 +1,9 @@
 import mongoDB from "../index";
 import EventSchema from "../models/Event";
+import VolunteerSchema from "../models/Volunteer";
 import { Types } from "mongoose";
 import { Event, APIError, Volunteer, PaginatedVolunteers } from "utils/types";
+import { escapeRegExp } from "utils/util";
 
 /**
  * @param id EventId string to identify an event in our database.
@@ -86,12 +88,12 @@ export const deleteEvent = async function (id: string) {
  *   vols first (if any are needed for this page), then attended vols. Also specifies the number of
  *   registered vols in the array (see PaginatedVolunteers type).
  */
-export const getEventVolunteers = async function (eventId: string, page: number, search?: string) {
+export const getEventVolunteers = async function (eventId: string, page: number, search = "") {
     await mongoDB();
     const VOLS_PER_PAGE = 2;
     const VOL_FIELDS = "_id name email phone";
-    let volunteers: Volunteer[] = [];
-    let numberRegistered = 0;
+    const volunteers: Volunteer[] = [];
+    const numberRegistered = 0;
 
     // get size of registeredVolunteers
     interface aggregationRet {
@@ -106,6 +108,37 @@ export const getEventVolunteers = async function (eventId: string, page: number,
     }
     const totalRegistered = model[0]?.numberRegistered;
 
+    // lookup allows for actual joins rather than filling docs (like populate does).
+    // with this, we basically get populate with search
+    const event = await EventSchema.aggregate([
+        { $match: { _id: Types.ObjectId(eventId) } },
+        //get size
+        //limit even fields
+        {
+            $lookup: {
+                from: VolunteerSchema.collection.name,
+                localField: "registeredVolunteers",
+                foreignField: "_id",
+                as: "registeredVolunteers",
+            },
+        },
+        { $unwind: "$registeredVolunteers" },
+        { $match: { "registeredVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
+        // limit vol fields
+        // sort + skip + limit
+    ]);
+
+    // TODO paginate this as well
+
+    // console.log("printing registered vols");
+    // for (var i=0; i<event.length; i++) {
+    //     console.log(event[i].registeredVolunteers)
+    // }
+    // console.log("length:", event.length);
+    // console.log("event:", event);
+    // volunteers = event?.registeredVolunteers as Volunteer[];
+
+    /*
     // determine what to fill the return array with
     if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
         // return array will contain all registered vols
@@ -163,6 +196,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         volunteers = event!.attendedVolunteers as Volunteer[];
         numberRegistered = 0;
     }
+    */
 
     // return vols array and registered count
     const ret: PaginatedVolunteers = {
