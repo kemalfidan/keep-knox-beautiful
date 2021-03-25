@@ -100,11 +100,9 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         throw new APIError(404, "Event not found.");
     }
     const totalRegistered = model[0]?.numberRegistered;
-    console.log("totalRegistered:", totalRegistered);
 
     // determine what to fill the return array with
     if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
-        console.log("all registered vols");
         // return array will contain all registered vols
         const event = await EventSchema.findById(eventId).populate({
             path: "registeredVolunteers",
@@ -119,13 +117,9 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         volunteers = event?.registeredVolunteers as Volunteer[];
         numberRegistered = VOLS_PER_PAGE;
     } else if (totalRegistered > page * VOLS_PER_PAGE) {
-        console.log("mixed vols");
         // mixed w/ registered + attended
         const numberRegisteredMixed = totalRegistered % VOLS_PER_PAGE;
         const numberAttendedMixed = VOLS_PER_PAGE - numberRegisteredMixed;
-        console.log("attended count:", numberAttendedMixed);
-        console.log("registered count:", numberRegisteredMixed);
-
         const event = await EventSchema.findById(eventId)
             .populate({
                 path: "registeredVolunteers",
@@ -149,7 +143,6 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         volunteers = event?.registeredVolunteers?.concat(event?.attendedVolunteers as Volunteer[]) as Volunteer[];
         numberRegistered = numberRegisteredMixed;
     } else {
-        console.log("all attended vols");
         // all attended volunteers
         const numberAttendedMixed = totalRegistered % VOLS_PER_PAGE;
         const event = await EventSchema.findById(eventId).populate({
