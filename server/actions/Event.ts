@@ -83,7 +83,8 @@ export const deleteEvent = async function (id: string) {
  */
 export const getEventVolunteers = async function (eventId: string, page: number, search?: string) {
     await mongoDB();
-    const VOLS_PER_PAGE = 6;
+    const VOLS_PER_PAGE = 2;
+    const VOL_FIELDS = "_id name email phone";
     let volunteers: Volunteer[] = [];
     let numberRegistered = 0;
 
@@ -99,6 +100,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         throw new APIError(404, "Event not found.");
     }
     const totalRegistered = model[0]?.numberRegistered;
+    console.log("totalRegistered:", totalRegistered);
 
     // determine what to fill the return array with
     if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
@@ -106,7 +108,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         // return array will contain all registered vols
         const event = await EventSchema.findById(eventId).populate({
             path: "registeredVolunteers",
-            select: "_id name email phone",
+            select: VOL_FIELDS,
             options: {
                 sort: { name: 1 },
                 skip: page * VOLS_PER_PAGE,
@@ -119,12 +121,15 @@ export const getEventVolunteers = async function (eventId: string, page: number,
     } else if (totalRegistered > page * VOLS_PER_PAGE) {
         console.log("mixed vols");
         // mixed w/ registered + attended
-        const numberAttendedMixed = totalRegistered % VOLS_PER_PAGE;
-        const numberRegisteredMixed = VOLS_PER_PAGE - numberAttendedMixed;
+        const numberRegisteredMixed = totalRegistered % VOLS_PER_PAGE;
+        const numberAttendedMixed = VOLS_PER_PAGE - numberRegisteredMixed;
+        console.log("attended count:", numberAttendedMixed);
+        console.log("registered count:", numberRegisteredMixed);
+
         const event = await EventSchema.findById(eventId)
             .populate({
                 path: "registeredVolunteers",
-                select: "_id name email phone",
+                select: VOL_FIELDS,
                 options: {
                     sort: { name: 1 },
                     skip: page * VOLS_PER_PAGE,
@@ -133,7 +138,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             })
             .populate({
                 path: "attendedVolunteers",
-                select: "_id name email phone",
+                select: VOL_FIELDS,
                 options: {
                     sort: { name: 1 },
                     // start of attendedVols so no need to skip any
@@ -149,7 +154,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         const numberAttendedMixed = totalRegistered % VOLS_PER_PAGE;
         const event = await EventSchema.findById(eventId).populate({
             path: "attendedVolunteers",
-            select: "_id name email phone",
+            select: VOL_FIELDS,
             options: {
                 sort: { name: 1 },
                 skip: numberAttendedMixed + page * VOLS_PER_PAGE - (numberAttendedMixed + totalRegistered),
