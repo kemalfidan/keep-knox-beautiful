@@ -19,6 +19,7 @@ export default {
         eventVolunteers: (eventId: string) => `/api/events/${eventId}/volunteers`,
         signup: (eventId: string) => `/api/events/${eventId}/signup`,
         markPresent: (eventId: string, volId: string) => `/api/events/${eventId}/present/${volId}`,
+        markNotPresent: (eventId: string, volId: string) => `/api/events/${eventId}/notPresent/${volId}`,
         volunteers: "/api/volunteers",
         volunteer: (volId: string) => `/api/volunteers/${volId}`,
     },

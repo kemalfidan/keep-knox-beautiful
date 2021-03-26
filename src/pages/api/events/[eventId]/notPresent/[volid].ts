@@ -1,9 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { markVolunteerPresent } from "server/actions/Volunteer";
+import { markVolunteerNotPresent } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { APIError } from "utils/types";
 
-// POST /api/events/[eventId]/present/[volId] will mark volunteer volId as present for event eventId
+// POST /api/events/[eventId]/notPresent/[volId] will unmark volunteer volId as present for event eventId
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.eventId || !req.query.volId) {
@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const eventId = req.query.eventId as string;
             const volId = req.query.volId as string;
 
-            await markVolunteerPresent(volId, eventId);
+            await markVolunteerNotPresent(volId, eventId);
             res.status(200).json({
                 success: true,
                 payload: {},

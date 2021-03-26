@@ -62,11 +62,108 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
     }
 
     volunteer.registeredEvents?.push(eventId);
-    volunteer.totalHours! += event.hours!;
     event.registeredVolunteers?.push(volunteer._id);
     event.volunteerCount! += 1; // default to 0 so will never be undefined
     // these are not atomic updates
     const volPromise = VolunteerSchema.updateOne({ email: vol.email }, volunteer);
     const eventPromise = EventSchema.updateOne({ _id: eventId }, event);
+    await Promise.all([volPromise, eventPromise]);
+};
+
+/**
+ * Marks a volunteer present at an event. Also adds the event to a volunteer's attended events list.
+ * @param volId The volunteer id of the volunteer to mark present
+ * @param eventId the event id the volunteer attended
+ */
+export const markVolunteerPresent = async function (volId: string, eventId: string) {
+    await mongoDB();
+    if (!volId || !eventId) {
+        throw new APIError(400, "Invalid input. Need both volunteer and event information.");
+    }
+
+    const event = await EventSchema.findById(eventId);
+    if (!event) {
+        throw new APIError(404, "Event does not exist.");
+    }
+
+    const volunteer = await VolunteerSchema.findById(volId);
+    if (!volunteer) {
+        throw new APIError(404, "Volunteer does not exist.");
+    }
+
+    if (
+        volunteer.attendedEvents?.indexOf(event?._id) !== -1 ||
+        event.attendedVolunteers?.indexOf(volunteer?._id) !== -1
+    ) {
+        throw new APIError(500, "The volunteer has already been checked in to this event.");
+    }
+
+    if (
+        volunteer.registeredEvents?.indexOf(event?._id) === -1 ||
+        event.registeredVolunteers?.indexOf(volunteer?._id) === -1
+    ) {
+        throw new APIError(500, "The volunteer is not registered for this event.");
+    }
+
+    const volPromise = VolunteerSchema.findByIdAndUpdate(volId, {
+        $push: { attendedEvents: eventId },
+        $pull: { registeredEvents: eventId },
+        $inc: { totalHours: event.hours!, totalEvents: 1 },
+    });
+
+    const eventPromise = EventSchema.findByIdAndUpdate(eventId, {
+        $push: { attendedVolunteers: volId },
+        $pull: { registeredVolunteers: volId },
+    });
+
+    await Promise.all([volPromise, eventPromise]);
+};
+
+/**
+ * Un-marks volunteer as present at an event. Does the same to the volunteer's attended events list.
+ * @param volId The volunteer id of the volunteer to un-mark present
+ * @param eventId the event id the volunteer is registered for
+ */
+export const markVolunteerNotPresent = async function (volId: string, eventId: string) {
+    await mongoDB();
+    if (!volId || !eventId) {
+        throw new APIError(400, "Invalid input. Need both volunteer and event information.");
+    }
+
+    const event = await EventSchema.findById(eventId);
+    if (!event) {
+        throw new APIError(404, "Event does not exist.");
+    }
+
+    const volunteer = await VolunteerSchema.findById(volId);
+    if (!volunteer) {
+        throw new APIError(404, "Volunteer does not exist.");
+    }
+
+    if (
+        volunteer.attendedEvents?.indexOf(event?._id) === -1 ||
+        volunteer?.registeredEvents?.indexOf(event?._id) !== -1
+    ) {
+        throw new APIError(500, "The volunteer is not checked in to this event.");
+    }
+
+    if (
+        event.attendedVolunteers?.indexOf(volunteer?._id) === -1 ||
+        event?.registeredVolunteers?.indexOf(volunteer?._id) !== -1
+    ) {
+        throw new APIError(500, "The volunteer is not checked in to this event.");
+    }
+
+    const volPromise = VolunteerSchema.findByIdAndUpdate(volId, {
+        $push: { registeredEvents: eventId },
+        $pull: { attendedEvents: eventId },
+        $inc: { totalHours: -1 * event.hours!, totalEvents: -1 },
+    });
+
+    const eventPromise = EventSchema.findByIdAndUpdate(eventId, {
+        $push: { registeredVolunteers: volId },
+        $pull: { attendedVolunteers: volId },
+    });
+
     await Promise.all([volPromise, eventPromise]);
 };
