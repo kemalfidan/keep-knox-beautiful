@@ -53,27 +53,16 @@ export const EventSchema = new Schema({
         required: false,
     },
     registeredVolunteers: {
-        // type: [{ //denormalize name for search
-        //     volunteer: { type: Schema.Types.ObjectId, ref: "Volunteer" },
-        //     name: String,
-        // }],
         type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
         default: [],
     },
     attendedVolunteers: {
-        // type: [{ //denormalize name for search
-        //     volunteer: { type: Schema.Types.ObjectId, ref: "Volunteer" },
-        //     name: String,
-        // }],
         type: [{ type: Schema.Types.ObjectId, ref: "Volunteer" }],
         required: false,
         default: [],
     },
 });
-
-// middleware to add name on save?
-// middleware to remove name on find?
 
 export interface EventDocument extends Omit<Event, "_id">, Document {}
 

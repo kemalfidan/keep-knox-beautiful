@@ -5,6 +5,23 @@ import { Types } from "mongoose";
 import { Event, APIError, Volunteer, PaginatedVolunteers } from "utils/types";
 import { escapeRegExp } from "utils/util";
 
+interface Config {
+    VOLS_PER_PAGE: number;
+    EVENT_FIELDS_JSON: any;
+    VOL_FIELDS: string;
+    SORT_COND: any;
+}
+
+interface Query {
+    eventId: string;
+    page: number;
+    totalRegistered: number;
+    path: string;
+    skip: number;
+    limit: number;
+    search?: string;
+}
+
 /**
  * @param id EventId string to identify an event in our database.
  * @returns A single event.
@@ -91,11 +108,24 @@ export const deleteEvent = async function (id: string) {
 export const getEventVolunteers = async function (eventId: string, page: number, search = "") {
     await mongoDB();
     const VOLS_PER_PAGE = 2;
-    const EVENT_FIELDS_JSON = { _id: 1, name: 1, registeredVolunteers: 1, attendedVolunteers: 1, };
+    const EVENT_FIELDS_JSON = { _id: 1, name: 1, registeredVolunteers: 1, attendedVolunteers: 1 };
     const VOL_FIELDS = "_id name email phone";
-    const SORT_COND = { name: 1 }
-    var volunteers: Volunteer[] = [];
-    var numberRegistered = 0;
+    const SORT_COND = { name: 1 };
+    let volunteers: Volunteer[] = [];
+    let numberRegistered = 0;
+
+    const config: Config = {
+        VOLS_PER_PAGE: VOLS_PER_PAGE,
+        EVENT_FIELDS_JSON: EVENT_FIELDS_JSON,
+        VOL_FIELDS: VOL_FIELDS,
+        SORT_COND: SORT_COND,
+    };
+
+    // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
+    if (page < 1) {
+        throw new APIError(400, "Invalid page number");
+    }
+    page -= 1;
 
     if (search) {
         // lookup allows for actual joins rather than filling docs (like populate does).
@@ -107,17 +137,19 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             numberRegistered: number;
         }
         const model: aggregationRet[] = await EventSchema.aggregate([
-            { $match: { _id: Types.ObjectId(eventId) }},
+            { $match: { _id: Types.ObjectId(eventId) } },
             { $project: EVENT_FIELDS_JSON },
-            { $lookup: {
-                from: VolunteerSchema.collection.name,
-                localField: "registeredVolunteers",
-                foreignField: "_id",
-                as: "registeredVolunteers",
-            }},
+            {
+                $lookup: {
+                    from: VolunteerSchema.collection.name,
+                    localField: "registeredVolunteers",
+                    foreignField: "_id",
+                    as: "registeredVolunteers",
+                },
+            },
             { $unwind: "$registeredVolunteers" },
             { $match: { "registeredVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
-            { $group: { _id: "$_id", numberRegistered: { $sum: 1 }}},
+            { $group: { _id: "$_id", numberRegistered: { $sum: 1 } } },
         ]);
         const totalRegistered = model[0]?.numberRegistered;
         const numberRegisteredMixed = totalRegistered % VOLS_PER_PAGE;
@@ -126,85 +158,60 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         // determine what to fill the return array with
         if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
             // return array will contain all registered vols
-            volunteers = await EventSchema.aggregate([
-                { $match: { _id: Types.ObjectId(eventId) } },
-                { $project: EVENT_FIELDS_JSON },
-                { $lookup: {
-                    from: VolunteerSchema.collection.name,
-                    localField: "registeredVolunteers",
-                    foreignField: "_id",
-                    as: "registeredVolunteers",
-                }},
-                { $unwind: "$registeredVolunteers" },
-                { $match: { "registeredVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
-                { $project: { _id: "$registeredVolunteers._id", name: "$registeredVolunteers.name", phone: "$registeredVolunteers.phone" }},
-                { $sort: SORT_COND},
-                { $skip: page * VOLS_PER_PAGE },
-                { $limit: VOLS_PER_PAGE },
-            ]) as Volunteer[];
+            const query = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
+                path: "registeredVolunteers",
+                skip: page * VOLS_PER_PAGE,
+                limit: VOLS_PER_PAGE,
+                search: search,
+            };
+            volunteers = await getEventVolsQueryWithSearch(query, config);
 
             numberRegistered = VOLS_PER_PAGE;
         } else if (totalRegistered > page * VOLS_PER_PAGE) {
             // mixed w/ registered + attended
-            const registeredPromise = await EventSchema.aggregate([
-                { $match: { _id: Types.ObjectId(eventId) } },
-                { $project: EVENT_FIELDS_JSON },
-                { $lookup: {
-                    from: VolunteerSchema.collection.name,
-                    localField: "registeredVolunteers",
-                    foreignField: "_id",
-                    as: "registeredVolunteers",
-                }},
-                { $unwind: "$registeredVolunteers" },
-                { $match: { "registeredVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
-                { $project: { _id: "$registeredVolunteers._id", name: "$registeredVolunteers.name", phone: "$registeredVolunteers.phone" }},
-                { $sort: SORT_COND},
-                { $skip: page * VOLS_PER_PAGE },
-                { $limit: numberRegisteredMixed },
-            ]) as Volunteer[];
-            const attendedPromise = await EventSchema.aggregate([
-                { $project: EVENT_FIELDS_JSON },
-                { $lookup: {
-                    from: VolunteerSchema.collection.name,
-                    localField: "attendedVolunteers",
-                    foreignField: "_id",
-                    as: "attendedVolunteers",
-                }},
-                { $unwind: "$attendedVolunteers" },
-                { $match: { "attendedVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
-                { $project: { _id: "$attendedVolunteers._id", name: "$attendedVolunteers.name", phone: "$attendedVolunteers.phone" }},
-                { $sort: SORT_COND},
-                // start of attendedVols so no need to skip any
-                { $limit: numberAttendedMixed },
-            ]) as Volunteer[];
+            const registeredQuery = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
+                path: "registeredVolunteers",
+                skip: page * VOLS_PER_PAGE,
+                limit: numberRegisteredMixed,
+                search: search,
+            };
+            const attendedQuery = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
+                path: "attendedVolunteers",
+                skip: 0, // start of attendedVols so no need to skip any
+                limit: numberAttendedMixed,
+                search: search,
+            };
+            const registeredPromise = getEventVolsQueryWithSearch(registeredQuery, config);
+            const attendedPromise = getEventVolsQueryWithSearch(attendedQuery, config);
 
             const [registered, attended] = await Promise.all([registeredPromise, attendedPromise]);
             volunteers = registered.concat(attended);
             numberRegistered = numberRegisteredMixed;
         } else {
-            // all attended volunteers
-            volunteers = await EventSchema.aggregate([
-                { $match: { _id: Types.ObjectId(eventId) } },
-                { $project: EVENT_FIELDS_JSON },
-                { $lookup: {
-                    from: VolunteerSchema.collection.name,
-                    localField: "attendedVolunteers",
-                    foreignField: "_id",
-                    as: "attendedVolunteers",
-                }},
-                { $unwind: "$attendedVolunteers" },
-                { $match: { "attendedVolunteers.name": { $regex: `.*${escapeRegExp(search)}.*`, $options: "i" } } },
-                { $project: { _id: "$attendedVolunteers._id", name: "$attendedVolunteers.name", phone: "$attendedVolunteers.phone" }},
-                { $sort: SORT_COND},
-                // { $skip: numberAttendedMixed + page * VOLS_PER_PAGE - (numberAttendedMixed + totalRegistered)},
-                { $skip: page * VOLS_PER_PAGE - totalRegistered },
-                { $limit: VOLS_PER_PAGE },
-            ]) as Volunteer[];
+            const query = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
+                path: "attendedVolunteers",
+                skip: page * VOLS_PER_PAGE - totalRegistered,
+                limit: VOLS_PER_PAGE,
+                search: search,
+            };
+            volunteers = await getEventVolsQueryWithSearch(query, config);
 
             numberRegistered = 0;
         }
-    }
-    else { // normal populate - no search
+    } else {
+        // normal populate - no search
         // get size of registeredVolunteers
         interface aggregationRet {
             numberRegistered: number;
@@ -220,20 +227,22 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         // determine what to fill the return array with
         if (totalRegistered >= (page + 1) * VOLS_PER_PAGE) {
             // return array will contain all registered vols
-            const event = await EventSchema.findById(eventId).populate({
+            const query = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
                 path: "registeredVolunteers",
-                select: VOL_FIELDS,
-                options: {
-                    sort: SORT_COND,
-                    skip: page * VOLS_PER_PAGE,
-                    limit: VOLS_PER_PAGE,
-                },
-            });
+                skip: page * VOLS_PER_PAGE,
+                limit: VOLS_PER_PAGE,
+            };
+            console.log(query);
+            const event = await getEventVolsQuery(query, config);
 
             volunteers = event?.registeredVolunteers as Volunteer[];
             numberRegistered = VOLS_PER_PAGE;
         } else if (totalRegistered > page * VOLS_PER_PAGE) {
             // mixed w/ registered + attended
+            // both registered + attended needed, can fetch both in 1 query rather than 2
             const event = await EventSchema.findById(eventId)
                 .populate({
                     path: "registeredVolunteers",
@@ -258,17 +267,17 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             numberRegistered = numberRegisteredMixed;
         } else {
             // all attended volunteers
-            const event = await EventSchema.findById(eventId).populate({
+            const query = {
+                eventId: eventId,
+                page: page,
+                totalRegistered: totalRegistered,
                 path: "attendedVolunteers",
-                select: VOL_FIELDS,
-                options: {
-                    sort: SORT_COND,
-                    skip: page * VOLS_PER_PAGE - totalRegistered,
-                    limit: VOLS_PER_PAGE,
-                },
-            });
+                skip: page * VOLS_PER_PAGE - totalRegistered,
+                limit: VOLS_PER_PAGE,
+            };
+            const event = await getEventVolsQuery(query, config);
 
-            volunteers = event!.attendedVolunteers as Volunteer[];
+            volunteers = event?.attendedVolunteers as Volunteer[];
             numberRegistered = 0;
         }
     }
@@ -279,4 +288,42 @@ export const getEventVolunteers = async function (eventId: string, page: number,
         registeredCount: numberRegistered,
     };
     return ret;
+};
+
+const getEventVolsQueryWithSearch = async function (query: Query, config: Config): Promise<Volunteer[]> {
+    if (!query.search) {
+        return [];
+    }
+
+    /* eslint @typescript-eslint/no-unsafe-assignment: "off" */
+    return await EventSchema.aggregate([
+        { $match: { _id: Types.ObjectId(query.eventId) } },
+        { $project: config.EVENT_FIELDS_JSON },
+        {
+            $lookup: {
+                from: VolunteerSchema.collection.name,
+                localField: query.path,
+                foreignField: "_id",
+                as: query.path,
+            },
+        },
+        { $unwind: `$${query.path}` },
+        { $match: { [`${query.path}.name`]: { $regex: `.*${escapeRegExp(query.search)}.*`, $options: "i" } } },
+        { $project: { _id: `$${query.path}._id`, name: `$${query.path}.name`, phone: `$${query.path}.phone` } },
+        { $sort: config.SORT_COND },
+        { $skip: query.skip },
+        { $limit: query.limit },
+    ]);
+};
+
+const getEventVolsQuery = async function (query: Query, config: Config) {
+    return await EventSchema.findById(query.eventId).populate({
+        path: query.path,
+        select: config.VOL_FIELDS,
+        options: {
+            sort: config.SORT_COND,
+            skip: query.skip,
+            limit: query.limit,
+        },
+    });
 };
