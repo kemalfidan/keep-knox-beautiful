@@ -1,15 +1,14 @@
 import {
     addVolunteer,
     getVolunteer,
+    getVolunteers,
     markVolunteerNotPresent,
     markVolunteerPresent,
     registerVolunteerToEvent,
 } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
-import { Query } from "mongoose";
 import EventSchema from "server/models/Event";
 import { Volunteer, Event } from "utils/types";
-import { Search } from "@material-ui/icons";
 
 jest.mock("server");
 
