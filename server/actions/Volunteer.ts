@@ -68,7 +68,7 @@ export const addVolunteer = async function (vol: Volunteer) {
 
 /**
  * @param ids An array of volunteer objectIds whose hours need to be updated.
- * @param ids The change that needs to be applied to each volunteer's hours. Can be negative.
+ * @param change The change that needs to be applied to each volunteer's hours. Can be negative.
  */
 export const updateVolunteerHours = async function (ids: string[], change: number) {
     await mongoDB();

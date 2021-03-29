@@ -48,7 +48,7 @@ export const addEvent = async function (event: Event) {
 
 /**
  * @param id The _id of the event we want to update.
- * @param event The nwe event object to insert into our database.
+ * @param event The new event object to insert into our database.
  */
 export const updateEvent = async function (id: string, event: Event) {
     await mongoDB();
