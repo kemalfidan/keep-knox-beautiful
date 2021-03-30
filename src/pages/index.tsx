@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         jumbotron: {
             width: "100%",
-            height: "65vh",
+            height: "55vh",
             backgroundColor: theme.palette.primary.main,
             position: "relative",
             top: 0,
@@ -51,6 +51,7 @@ const Home: NextPage<Props> = ({ events, width }) => {
                             flexDirection: "column",
                             justifyContent: "center",
                             paddingLeft: "10%",
+                            marginTop: "20px",
                         }}
                     >
                         <CoreTypography variant="h1" style={{ color: "white" }}>
@@ -70,7 +71,7 @@ const Home: NextPage<Props> = ({ events, width }) => {
                             <img
                                 src={`/${constants.org.images.logo}`}
                                 alt={`${constants.org.name.short} logo`}
-                                style={{ width: 250 }}
+                                style={{ height: "200px" }}
                             />
                         </Grid>
                     )}

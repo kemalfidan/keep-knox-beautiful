@@ -133,7 +133,9 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
 
                         <Container className={styles.waiverLinkWrapper}>
                             <DescriptionIcon htmlColor={colors.grays["60"]} style={{ marginRight: "10px" }} />
-                            <Link className={styles.waiverLink}>{constants.org.name.short} Volunteer Waiver</Link>
+                            <a href="/waiver" className={styles.waiverLink} target="_blank" rel="noreferrer">
+                                <CoreTypography variant="body2">{constants.org.name.short} Volunteer Waiver</CoreTypography>
+                            </a>
                         </Container>
                         <Container className={styles.waiverCheckboxWrapper}>
                             <Checkbox required name="waiverCheckbox" id="waiverCheckbox" color="secondary" />
@@ -162,7 +164,6 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
     );
 };
 
-// styles
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {

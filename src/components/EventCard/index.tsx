@@ -104,6 +104,9 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
     const eventEndTime = `${new Date(event.endDate as Date).getHours() % 12 || 12}:${`0${new Date(
         event.endDate as Date
     ).getMinutes()}`.slice(-2)} ${new Date(event.endDate as Date).getHours() > 11 ? "PM" : "AM"}`;
+    
+    const eventCaptionLength = 40;
+    const eventCaption = event!.caption!.length <= eventCaptionLength ? event.caption : event!.caption!.slice(0, eventCaptionLength-3) + "...";
 
     // state
     const [hover, setHover] = useState(false);
@@ -208,7 +211,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
                             }}
                             id="eventDesc"
                         >
-                            {event.description}
+                            {eventCaption}
                         </CoreTypography>
                     </div>
                     {/* location and time info */}
