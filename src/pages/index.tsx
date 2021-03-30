@@ -1,32 +1,17 @@
 import React from "react";
 import { GetStaticPropsContext, NextPage } from "next";
 import withWidth from "@material-ui/core/withWidth";
-
 import { Button, Container, createStyles, Grid, makeStyles, Theme } from "@material-ui/core";
 import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
-
 import { getEvents } from "server/actions/Event";
 import constants from "utils/constants";
-
 import { Event } from "utils/types";
 
 interface Props {
     events: Event[];
     width: string;
 }
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        jumbotron: {
-            width: "100%",
-            height: "55vh",
-            backgroundColor: theme.palette.primary.main,
-            position: "relative",
-            top: 0,
-        },
-    })
-);
 
 const Home: NextPage<Props> = ({ events, width }) => {
     const classes = useStyles();
@@ -104,5 +89,17 @@ export async function getStaticProps(context: GetStaticPropsContext) {
         };
     }
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        jumbotron: {
+            width: "100%",
+            height: "55vh",
+            backgroundColor: theme.palette.primary.main,
+            position: "relative",
+            top: 0,
+        },
+    })
+);
 
 export default withWidth()(Home);

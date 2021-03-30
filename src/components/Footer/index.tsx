@@ -5,28 +5,6 @@ import constants from "utils/constants";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            backgroundColor: theme.palette.primary.main,
-        },
-        wrapper: {
-            display: "flex",
-            alignItems: "center",
-            paddingTop: "10px",
-            paddingBottom: "10px",
-            paddingLeft: "0px",
-        },
-        textWrapper: {
-            textAlign: "center",
-            color: colors.white,
-        },
-        lastText: {
-            paddingTop: "5px",
-        },
-    })
-);
-
 export default function Footer() {
     const styles = useStyles();
 
@@ -53,3 +31,25 @@ export default function Footer() {
         </React.Fragment>
     );
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        container: {
+            backgroundColor: theme.palette.primary.main,
+        },
+        wrapper: {
+            display: "flex",
+            alignItems: "center",
+            paddingTop: "10px",
+            paddingBottom: "10px",
+            paddingLeft: "0px",
+        },
+        textWrapper: {
+            textAlign: "center",
+            color: colors.white,
+        },
+        lastText: {
+            paddingTop: "5px",
+        },
+    })
+);

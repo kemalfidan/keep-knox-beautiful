@@ -1,20 +1,9 @@
 import React from "react";
-
 import Container from "@material-ui/core/Container";
 import EventCard from "../EventCard";
 import Grid from "@material-ui/core/Grid";
-
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
-
 import { Event } from "utils/types";
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        container: {
-            padding: "40px",
-        },
-    })
-);
 
 interface Props {
     events: Event[];
@@ -34,32 +23,16 @@ export default function EventsContainer(props: Props) {
                             </Grid>
                         );
                     })}
-                    {/* 
-                    
-                    TODO: remove placeholder
-
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid>
-                    <Grid item>
-                        <Paper style={{ height: 250, width: 220 }} />
-                    </Grid> 
-                    
-                    */}
                 </Grid>
             </Container>
         </React.Fragment>
     );
 }
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        container: {
+            padding: "40px",
+        },
+    })
+);

@@ -25,58 +25,6 @@ import { Event } from "utils/types";
 import constants from "utils/constants";
 import colors from "src/components/core/colors";
 
-// create styles for material-ui
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        eventCard: {
-            height: 360,
-            borderRadius: 25,
-            // boxShadow: "0 3px 5px -1px rgba(0,0,0,.2),0 5px 8px 0 rgba(0,0,0,.14),0 1px 14px 0 rgba(0,0,0,.12)",
-            transition: ".3s ease-out",
-            position: "relative",
-            cursor: "pointer",
-            minWidth: 300,
-        },
-        thumbnailPlaceholder: {
-            background: `${theme.palette.secondary.main} url("/${constants.org.images.defaultCard}") no-repeat center`,
-            backgroundSize: "100px",
-            height: 200,
-            transition: ".3s",
-            width: "100%",
-        },
-        hidden: {
-            opacity: 0,
-        },
-        shown: {
-            opacity: 1,
-        },
-        thumbnailOverlay: {
-            backgroundColor: "rgba(0,0,0,.5)",
-            width: "100%",
-            height: "100%",
-            position: "relative",
-            transition: ".5s",
-        },
-        eventDate: {
-            width: 65,
-            height: 65,
-            backgroundColor: colors.green,
-            position: "absolute",
-            right: "5%",
-            top: "5%",
-            boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.15)",
-            borderRadius: "10px",
-            color: "white",
-            textAlign: "center",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-        },
-        title: {
-            fontSize: 22,
-        },
-    })
-);
 
 interface Props {
     event: Event;
@@ -266,5 +214,57 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false }) => {
         </div>
     );
 };
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        eventCard: {
+            height: 360,
+            borderRadius: 25,
+            // boxShadow: "0 3px 5px -1px rgba(0,0,0,.2),0 5px 8px 0 rgba(0,0,0,.14),0 1px 14px 0 rgba(0,0,0,.12)",
+            transition: ".3s ease-out",
+            position: "relative",
+            cursor: "pointer",
+            minWidth: 300,
+        },
+        thumbnailPlaceholder: {
+            background: `${theme.palette.secondary.main} url("/${constants.org.images.defaultCard}") no-repeat center`,
+            backgroundSize: "100px",
+            height: 200,
+            transition: ".3s",
+            width: "100%",
+        },
+        hidden: {
+            opacity: 0,
+        },
+        shown: {
+            opacity: 1,
+        },
+        thumbnailOverlay: {
+            backgroundColor: "rgba(0,0,0,.5)",
+            width: "100%",
+            height: "100%",
+            position: "relative",
+            transition: ".5s",
+        },
+        eventDate: {
+            width: 65,
+            height: 65,
+            backgroundColor: colors.green,
+            position: "absolute",
+            right: "5%",
+            top: "5%",
+            boxShadow: "0px 0px 10px 2px rgba(0, 0, 0, 0.15)",
+            borderRadius: "10px",
+            color: "white",
+            textAlign: "center",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+        },
+        title: {
+            fontSize: 22,
+        },
+    })
+);
 
 export default EventCard;
