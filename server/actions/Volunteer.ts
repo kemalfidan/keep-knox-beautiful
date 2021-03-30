@@ -2,6 +2,7 @@ import mongoDB from "../index";
 import VolunteerSchema from "../models/Volunteer";
 import EventSchema from "../models/Event";
 import { Volunteer, APIError } from "utils/types";
+import { escapeRegExp } from "utils/util";
 
 // only return these fields from mongodb
 const VOL_FIELDS = {
@@ -210,8 +211,3 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
 
     await Promise.all([volPromise, eventPromise]);
 };
-
-//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping
-function escapeRegExp(string: string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
