@@ -122,7 +122,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
     };
 
     // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
-    if (page < 1) {
+    if (isNaN(page) || page < 1) {
         throw new APIError(400, "Invalid page number");
     }
     page -= 1;

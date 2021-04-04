@@ -1,7 +1,7 @@
 import mongoDB from "../index";
 import VolunteerSchema from "../models/Volunteer";
 import EventSchema from "../models/Event";
-import { Volunteer, APIError } from "utils/types";
+import { Event, Volunteer, APIError } from "utils/types";
 import { escapeRegExp } from "utils/util";
 
 // only return these fields from mongodb
@@ -36,10 +36,13 @@ export const getVolunteer = async function (id: string) {
  */
 export const getVolunteers = async function (page: number, search = "") {
     await mongoDB();
-    if (isNaN(page) || page < 0) {
+    const VOLS_PER_PAGE = 6;
+
+    // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
+    if (isNaN(page) || page < 1) {
         throw new APIError(400, "Invalid page number.");
     }
-    const VOLS_PER_PAGE = 6;
+    page -= 1;
 
     // optional search, ignores case
     const vols = await VolunteerSchema.find(
@@ -210,4 +213,40 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
     });
 
     await Promise.all([volPromise, eventPromise]);
+};
+
+/**
+ * This function returns a subset of a single volunteer's events. 
+ * @param volId The id of the volunteer whose events will be fetched.
+ * @param page Since this data is paginated, page is used to return a certain subset of the data.
+ */
+ export const getVolunteerEvents = async function (volId: string, page: number) {
+    await mongoDB();
+    const EVENTS_PER_PAGE = 2;
+    const EVENT_FIELDS = { _id: 1, name: 1, date: 1, hours: 1 };
+    
+    if (!volId || !page) {
+        throw new APIError(400, "Invalid input. Need both volunteer id and page.");
+    }
+
+    // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
+    if (isNaN(page) || page < 1) {
+        throw new APIError(400, "Invalid page number.");
+    }
+    page -= 1
+
+    const volunteer = await EventSchema.findById(volId).populate({
+        path: "attendedEvents",
+        select: EVENT_FIELDS,
+        options: {
+            sort: { startDate: -1, name: 1 },
+            skip: page * EVENTS_PER_PAGE,
+            limit: EVENTS_PER_PAGE,
+        },
+    }) as Volunteer;
+    
+    if (!volunteer) {
+        throw new APIError(404, "Volunteer not found.")
+    }
+    return volunteer.attendedEvents as unknown as Event[];
 };
