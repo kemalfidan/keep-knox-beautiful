@@ -132,6 +132,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 padding: "0px 10px 0px 10px",
             },
         },
+        adminContent: {
+            position: "absolute",
+            right: "20px",
+        },
     })
 );
 
