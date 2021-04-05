@@ -7,6 +7,7 @@ export default {
     lightGray: "#D2D2D2",
     pink: "#F298AE",
     red: "#D32F2F",
+    orange: "#F58647",
     grays: {
         40: "#999999",
         60: "#666666",

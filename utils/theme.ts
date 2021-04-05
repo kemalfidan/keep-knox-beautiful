@@ -12,7 +12,7 @@ const theme = createMuiTheme({
             main: colors.blue,
         },
         accent: {
-            main: colors.pink,
+            main: colors.orange,
         },
         error: {
             main: colors.red,
