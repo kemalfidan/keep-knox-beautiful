@@ -222,8 +222,8 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
  */
  export const getVolunteerEvents = async function (volId: string, page: number) {
     await mongoDB();
-    const EVENTS_PER_PAGE = 2;
-    const EVENT_FIELDS = { _id: 1, name: 1, date: 1, hours: 1 };
+    const EVENTS_PER_PAGE = 3;
+    const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
     
     if (!volId || !page) {
         throw new APIError(400, "Invalid input. Need both volunteer id and page.");
@@ -235,7 +235,7 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
     }
     page -= 1
 
-    const volunteer = await EventSchema.findById(volId).populate({
+    const volunteer = await VolunteerSchema.findById(volId).populate({
         path: "attendedEvents",
         select: EVENT_FIELDS,
         options: {
