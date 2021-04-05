@@ -323,6 +323,7 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                                 label="Max Volunteers"
                                 type="number"
                                 value={values.maxVolunteers}
+                                helperText="Value of 0 will hide signup form."
                                 rowsMax={4}
                                 color="secondary"
                                 onChange={handleTextChange}
