@@ -3,6 +3,8 @@ import VolunteerSchema from "../models/Volunteer";
 import EventSchema from "../models/Event";
 import { Event, Volunteer, APIError } from "utils/types";
 import { escapeRegExp } from "utils/util";
+import { createTransport } from "nodemailer";
+import constants from "utils/constants";
 
 // only return these fields from mongodb
 const VOL_FIELDS = {
@@ -249,4 +251,48 @@ export const getVolunteerEvents = async function (volId: string, page: number) {
         throw new APIError(404, "Volunteer not found.");
     }
     return (volunteer.attendedEvents as unknown) as Event[];
+}
+
+/*
+ * Sends an email to the volunteer. The email contains
+ * 1. how many total hours the volunteer volunteered for
+ * 2. which events the volunteer attended
+ * 3. how many hours each event was that the volunteer attended
+ * @param volId The volunteer id of the volunteer that the email should be sent to
+ */
+export const sendVerificationHours = async function (volId: string) {
+    if (!volId) {
+        throw new APIError(400, "Invalid id.");
+    }
+
+    const EVENT_FIELDS = { name: 1, hours: 1 };
+    const volunteer = (VolunteerSchema.findById(volId)
+        .populate({
+            path: "attendedEvents",
+            select: EVENT_FIELDS,
+            options: {
+                sort: { startDate: 1, name: 1 },
+            },
+        })
+        .lean() as unknown) as Volunteer;
+
+    const body = await createEmailBody(volunteer);
+    const transporter = createTransport({
+        service: "gmail",
+        auth: {
+            user: process.env.EMAIL_ADDRESS,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+    const mailOptions = {
+        from: process.env.EMAIL_ADDRESS,
+        to: volunteer.email,
+        subject: `${constants.org.name.full} Volunteer Verification`,
+        text: body,
+    };
+    void transporter.sendMail(mailOptions);
+};
+
+export const createEmailBody = async function (volunteer: Volunteer) {
+    return "This is an email";
 };
