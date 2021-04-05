@@ -214,9 +214,19 @@ const useStyles = makeStyles((theme: Theme) =>
         cardText: {
             marginTop: "15px",
         },
+        // fix quilljs formatting
         "@global": {
             "p, ol, ul": {
                 margin: "0px",
+            },
+            ".ql-size-huge": {
+                fontSize: "1.75em",
+            },
+            ".ql-size-large": {
+                fontSize: "1.25em",
+            },
+            ".ql-size-small": {
+                fontSize: "0.75em",
             },
         },
         signUpForm: {

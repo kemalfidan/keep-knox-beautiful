@@ -19,6 +19,7 @@ import Container from "@material-ui/core/Container";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Button from "@material-ui/core/Button";
+import Tooltip from "@material-ui/core/Tooltip";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import { DateTimePicker } from "@material-ui/pickers";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
@@ -27,6 +28,7 @@ import PublishIcon from "@material-ui/icons/Publish";
 import DescriptionIcon from "@material-ui/icons/Description";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
 import SubjectIcon from "@material-ui/icons/Subject";
+import InfoIcon from "@material-ui/icons/Info";
 
 interface IFormValues {
     name?: string;
@@ -340,6 +342,14 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                                 color="secondary"
                                 onChange={handleTextChange}
                             />
+                        </div>
+                        <div style={{ margin: "10px 0px -10px 10px" }}>
+                            <Tooltip
+                                title="Be careful when pasting formatted text. It's recommended to 
+                            clean the formatting (on the very right) and reformat it in the editor."
+                            >
+                                <InfoIcon />
+                            </Tooltip>
                         </div>
                         <div className={styles.align}>
                             <DescriptionIcon style={{ fontSize: "40px", marginTop: "15px" }} />
