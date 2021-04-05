@@ -301,11 +301,18 @@ export const sendVerificationEmail = async function (volId: string) {
     await transporter.sendMail(mailOptions);
 };
 
+/**
+ * Internally used function that returns the email body that contains a volunteer's 
+ * attended event information.
+ * @param volunteer The populated volunteer object whose data will be used to
+ * constuct the email.
+ */
 export const createEmailBody = async function (volunteer: Volunteer) {
     if (!volunteer.attendedEvents) {
         return "";
     }
 
+    // create the section that contains which events the volunteer attended
     const eventArray: string[] = [];
     for (let i = 0; i < volunteer.attendedEvents.length; i++) {
         const event = volunteer.attendedEvents[i] as Event;
@@ -315,20 +322,19 @@ export const createEmailBody = async function (volunteer: Volunteer) {
     }
     const eventsText = eventArray.join("\n");
 
+    // return the entire email body
     return `${volunteer.name},
 
-        Thank you for helping Keep Knoxville Beautiful for a total of ${volunteer.totalHours || 0} \
-         hours across ${
-             volunteer.totalEvents || 0
-         } events! We seriously thank you for your excellent service to the community.
+        Thank you for helping Keep Knoxville Beautiful for a total of ${volunteer.totalHours || 0} hours \
+        across ${volunteer.totalEvents || 0} events! We seriously thank you for your excellent service to the community.
 
         The following is a list of events you volunteered at:
         ${eventsText}
 
         Keep Knoxville Beautiful is a 501(c)(3) nonprofit organization with a mission to inspire and empower Knox County \
-         communities to improve their quality of life through beautification and environmental stewardship. For more \
-         information on our organization, please visit keepknoxvillebeautiful.org. If you have any questions or concerns, \
-         please contact me at alanna@keepknoxvillebeautiful.org or 865-521-6957. Thank you.
+        communities to improve their quality of life through beautification and environmental stewardship. For more \
+        information on our organization, please visit keepknoxvillebeautiful.org. If you have any questions or concerns, \
+        please contact me at alanna@keepknoxvillebeautiful.org or 865-521-6957. Thank you.
         
         Sincerely,
 
