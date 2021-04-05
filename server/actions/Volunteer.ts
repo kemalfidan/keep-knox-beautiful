@@ -259,7 +259,8 @@ export const getVolunteerEvents = async function (volId: string, page: number) {
  * 1. how many total hours the volunteer volunteered for
  * 2. how many events the volunteer volunteered at
  * 3. which events the volunteer attended
- * 4. how many hours each event was that the volunteer attended
+ * 4. the start date of the event
+ * 5. how many hours each event was that the volunteer attended
  * @param volId The volunteer id of the volunteer that the email should be sent to
  */
 export const sendVerificationEmail = async function (volId: string) {
