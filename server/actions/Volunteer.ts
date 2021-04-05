@@ -5,7 +5,7 @@ import { Event, Volunteer, APIError } from "utils/types";
 import { escapeRegExp } from "utils/util";
 import { createTransport } from "nodemailer";
 import constants from "utils/constants";
-import { ContactsOutlined } from "@material-ui/icons";
+import { format } from "date-fns";
 
 // only return these fields from mongodb
 const VOL_FIELDS = {
@@ -267,7 +267,7 @@ export const sendVerificationEmail = async function (volId: string) {
         throw new APIError(400, "Invalid id.");
     }
 
-    const EVENT_FIELDS = { name: 1, hours: 1 };
+    const EVENT_FIELDS = { name: 1, hours: 1, startDate: 1 };
     const volunteer = await VolunteerSchema.findById(volId)
         .populate({
             path: "attendedEvents",
@@ -281,7 +281,6 @@ export const sendVerificationEmail = async function (volId: string) {
     if (!volunteer) {
         throw new APIError(404, "Volunteer not found.");
     }
-    console.log("volunteer: ", volunteer);
 
     const body = await createEmailBody(volunteer);
     const transporter = createTransport({
@@ -302,22 +301,37 @@ export const sendVerificationEmail = async function (volId: string) {
 };
 
 export const createEmailBody = async function (volunteer: Volunteer) {
-    return `
-        To Whom It May Concern,
+    if (!volunteer.attendedEvents) {
+        return "";
+    }
 
-        ${volunteer.name} has helped ${constants.org.name.full} for a total of ${
-        volunteer.totalHours || 0
-    } hours across ${volunteer.totalEvents || 0} events. We thank them for 
-        their excellent service to their community.
+    const eventArray: string[] = [];
+    for (let i = 0; i < volunteer.attendedEvents.length; i++) {
+        const event = volunteer.attendedEvents[i] as Event;
+        const formattedDate = event.startDate ? format(event.startDate, "MMMM dd, yyyy") : "Unknown date";
 
-        Keep Knoxville Beautiful is a 501(c)(3) nonprofit organization with a mission to inspire and empower Knox County 
-        communities to improve their quality of life through beautification and environmental stewardship. For more 
-        information on our organization, please visit keepknoxvillebeautiful.org. If you have any questions or concerns, 
-        please contact me at alanna@keepknoxvillebeautiful.org or 865-521-6957. Thank you.
+        eventArray.push(`       ${event.name} - ${formattedDate} - ${event.hours || 0} hours`);
+    }
+    const eventsText = eventArray.join("\n");
+
+    return `${volunteer.name},
+
+        Thank you for helping Keep Knoxville Beautiful for a total of ${volunteer.totalHours || 0} \
+         hours across ${
+             volunteer.totalEvents || 0
+         } events! We seriously thank you for your excellent service to the community.
+
+        The following is a list of events you volunteered at:
+        ${eventsText}
+
+        Keep Knoxville Beautiful is a 501(c)(3) nonprofit organization with a mission to inspire and empower Knox County \
+         communities to improve their quality of life through beautification and environmental stewardship. For more \
+         information on our organization, please visit keepknoxvillebeautiful.org. If you have any questions or concerns, \
+         please contact me at alanna@keepknoxvillebeautiful.org or 865-521-6957. Thank you.
         
         Sincerely,
 
         Alanna McKissack
         Executive Director
-    `;
+    `.replace(/ {8}/g, "");
 };

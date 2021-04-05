@@ -32,4 +32,5 @@ export default {
         - waiver page at /src/pages/waiver.tsx needs to be changed for different orgs
         - update email verification address in env file
         - allow less secure apps: https://myaccount.google.com/lesssecureapps
+        - update email template in server/actions/Volunteer.ts in createEmailBody()
 */
