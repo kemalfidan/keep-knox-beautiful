@@ -5,6 +5,7 @@ import { Event, Volunteer, APIError } from "utils/types";
 import { escapeRegExp } from "utils/util";
 import { createTransport } from "nodemailer";
 import constants from "utils/constants";
+import { ContactsOutlined } from "@material-ui/icons";
 
 // only return these fields from mongodb
 const VOL_FIELDS = {
@@ -256,17 +257,18 @@ export const getVolunteerEvents = async function (volId: string, page: number) {
 /*
  * Sends an email to the volunteer. The email contains
  * 1. how many total hours the volunteer volunteered for
- * 2. which events the volunteer attended
- * 3. how many hours each event was that the volunteer attended
+ * 2. how many events the volunteer volunteered at
+ * 3. which events the volunteer attended
+ * 4. how many hours each event was that the volunteer attended
  * @param volId The volunteer id of the volunteer that the email should be sent to
  */
-export const sendVerificationHours = async function (volId: string) {
+export const sendVerificationEmail = async function (volId: string) {
     if (!volId) {
         throw new APIError(400, "Invalid id.");
     }
 
     const EVENT_FIELDS = { name: 1, hours: 1 };
-    const volunteer = (VolunteerSchema.findById(volId)
+    const volunteer = await VolunteerSchema.findById(volId)
         .populate({
             path: "attendedEvents",
             select: EVENT_FIELDS,
@@ -274,7 +276,12 @@ export const sendVerificationHours = async function (volId: string) {
                 sort: { startDate: 1, name: 1 },
             },
         })
-        .lean() as unknown) as Volunteer;
+        .lean();
+
+    if (!volunteer) {
+        throw new APIError(404, "Volunteer not found.");
+    }
+    console.log("volunteer: ", volunteer);
 
     const body = await createEmailBody(volunteer);
     const transporter = createTransport({
@@ -290,9 +297,27 @@ export const sendVerificationHours = async function (volId: string) {
         subject: `${constants.org.name.full} Volunteer Verification`,
         text: body,
     };
-    void transporter.sendMail(mailOptions);
+
+    await transporter.sendMail(mailOptions);
 };
 
 export const createEmailBody = async function (volunteer: Volunteer) {
-    return "This is an email";
+    return `
+        To Whom It May Concern,
+
+        ${volunteer.name} has helped ${constants.org.name.full} for a total of ${
+        volunteer.totalHours || 0
+    } hours across ${volunteer.totalEvents || 0} events. We thank them for 
+        their excellent service to their community.
+
+        Keep Knoxville Beautiful is a 501(c)(3) nonprofit organization with a mission to inspire and empower Knox County 
+        communities to improve their quality of life through beautification and environmental stewardship. For more 
+        information on our organization, please visit keepknoxvillebeautiful.org. If you have any questions or concerns, 
+        please contact me at alanna@keepknoxvillebeautiful.org or 865-521-6957. Thank you.
+        
+        Sincerely,
+
+        Alanna McKissack
+        Executive Director
+    `;
 };

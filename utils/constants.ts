@@ -15,8 +15,7 @@ export default {
             phone: "(865) 521-6957",
             email: "info@Keepknoxvillebeautiful.org",
         },
-        // waiver page at /src/pages/waiver.tsx needs to be changed for different orgs
-        // update email verification address in env file
+        email: {},
     },
     revalidate: {
         upcomingEvents: 20,
@@ -27,3 +26,10 @@ export default {
     },
     contentfulImageLimit: 20 * 1000 * 1000, // 20 MB
 };
+
+/* 
+    Some notes:
+        - waiver page at /src/pages/waiver.tsx needs to be changed for different orgs
+        - update email verification address in env file
+        - allow less secure apps: https://myaccount.google.com/lesssecureapps
+*/
