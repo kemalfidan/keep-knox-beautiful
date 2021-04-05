@@ -5,6 +5,7 @@ import {
     markVolunteerNotPresent,
     markVolunteerPresent,
     registerVolunteerToEvent,
+    getVolunteerEvents,
 } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
 import EventSchema from "server/models/Event";
@@ -12,7 +13,6 @@ import { Volunteer, Event } from "utils/types";
 
 jest.mock("server");
 
-// Begin getVolunteer test cases
 describe("getVolunteer() tests", () => {
     test("valid volunteer", async () => {
         const mockVol = {
@@ -68,7 +68,7 @@ describe("getVolunteers() tests", () => {
 
         await VolsMock.getVolunteers(page, search);
         expect(VolunteerSchema.find).toHaveBeenLastCalledWith(expectedFilter, expectedProjection);
-        expect(VolsMock.skip).toHaveBeenLastCalledWith(page * VOLS_PER_PAGE);
+        expect(VolsMock.skip).toHaveBeenLastCalledWith((page-1) * VOLS_PER_PAGE);
         expect(VolsMock.limit).toHaveBeenLastCalledWith(VOLS_PER_PAGE);
         /* eslint-enable */
     });
@@ -582,5 +582,85 @@ describe("markVolunteerNotPresent() tests", () => {
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
         expect(VolunteerSchema.findById).lastCalledWith(mockVolunteer._id);
         expect(VolunteerSchema.findById).toHaveBeenCalledTimes(1);
+    });
+});
+
+describe("getVolunteerEvents() tests", () => {
+    const volId = "602734007d7de15fae321153";
+
+    test("successful return", async () => {
+        const mockEvents = [
+            {
+                _id: "604d6730ca1c1d7fcd4fbdc9",
+                name: "0",
+                description: "We are sprucing in February. Come spruce with us :)",
+                caption: "It's spruce season",
+            },
+            {
+                _id: "604d6730ca1c1d7fcd4fbdc9",
+                name: "1",
+                description: "We are sprucing in February. Come spruce with us :)",
+                caption: "It's spruce season",
+            },
+            {
+                _id: "604d6730ca1c1d7fcd4fbdc9",
+                name: "2",
+                description: "We are sprucing in February. Come spruce with us :)",
+                caption: "It's spruce season",
+            },
+        ];
+
+        /* eslint-disable */
+        const VolsMock: any = {
+            getVolunteerEvents, // to be tested,
+            // findById: jest.fn(() => VolsMock),
+            populate: jest.fn(() => []),
+        };
+        VolunteerSchema.findById = jest.fn(() => VolsMock);
+        VolsMock.populate.mockImplementation(() => mockEvents); // mock final return val
+
+        const EVENTS_PER_PAGE = 3;
+        const page = 2;
+        const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
+
+        await VolsMock.getVolunteerEvents(volId, page);
+        expect(VolunteerSchema.findById).toHaveBeenLastCalledWith(volId);
+        expect(VolsMock.populate).toHaveBeenLastCalledWith({
+            path: "attendedEvents",
+            select: EVENT_FIELDS,
+            options: {
+                sort: { startDate: -1, name: 1 },
+                skip: (page-1) * EVENTS_PER_PAGE,
+                limit: EVENTS_PER_PAGE,
+            },
+        });
+        /* eslint-enable */
+    });
+
+    test("invalid page number", async () => {
+        expect.assertions(2);
+        await expect(getVolunteerEvents(volId, 0)).rejects.toThrowError("Invalid page number.");
+        await expect(getVolunteerEvents(volId, -10)).rejects.toThrowError("Invalid page number.");
+    });
+
+    test("no volunteer with that id", async () => {
+        expect.assertions(1);
+        const mockEvents = undefined;
+
+        /* eslint-disable */
+        const VolsMock: any = {
+            getVolunteerEvents, // to be tested,
+            // findById: jest.fn(() => VolsMock),
+            populate: jest.fn(() => []),
+        };
+        VolunteerSchema.findById = jest.fn(() => VolsMock);
+        VolsMock.populate.mockImplementation(() => mockEvents); // mock final return val
+
+        const EVENTS_PER_PAGE = 3;
+        const page = 2;
+        const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
+
+        await expect(VolsMock.getVolunteerEvents(volId, page)).rejects.toThrowError("Volunteer not found.");
+        /* eslint-enable */
     });
 });

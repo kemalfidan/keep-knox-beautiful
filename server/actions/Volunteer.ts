@@ -216,26 +216,26 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
 };
 
 /**
- * This function returns a subset of a single volunteer's events. 
+ * This function returns a subset of a single volunteer's events.
  * @param volId The id of the volunteer whose events will be fetched.
  * @param page Since this data is paginated, page is used to return a certain subset of the data.
  */
- export const getVolunteerEvents = async function (volId: string, page: number) {
+export const getVolunteerEvents = async function (volId: string, page: number) {
     await mongoDB();
     const EVENTS_PER_PAGE = 3;
     const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
-    
-    if (!volId || !page) {
-        throw new APIError(400, "Invalid input. Need both volunteer id and page.");
+
+    if (!volId) {
+        throw new APIError(400, "Invalid volunteer id.");
     }
 
     // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
     if (isNaN(page) || page < 1) {
         throw new APIError(400, "Invalid page number.");
     }
-    page -= 1
+    page -= 1;
 
-    const volunteer = await VolunteerSchema.findById(volId).populate({
+    const volunteer = (await VolunteerSchema.findById(volId).populate({
         path: "attendedEvents",
         select: EVENT_FIELDS,
         options: {
@@ -243,10 +243,10 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
             skip: page * EVENTS_PER_PAGE,
             limit: EVENTS_PER_PAGE,
         },
-    }) as Volunteer;
-    
+    })) as Volunteer;
+
     if (!volunteer) {
-        throw new APIError(404, "Volunteer not found.")
+        throw new APIError(404, "Volunteer not found.");
     }
-    return volunteer.attendedEvents as unknown as Event[];
+    return (volunteer.attendedEvents as unknown) as Event[];
 };
