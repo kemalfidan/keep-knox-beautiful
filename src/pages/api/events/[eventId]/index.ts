@@ -43,9 +43,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     const newEvent: Event = (fields as unknown) as Event;
                     const file: File = files?.image as File;
 
-                    // fields are strings so convert the numbers
+                    // fields are strings so convert the numbers and booleans
                     newEvent.hours = Number(newEvent?.hours);
-                    newEvent.maxVolunteers = Number(newEvent?.maxVolunteers);
+                    newEvent.maxVolunteers = newEvent?.maxVolunteers ? Number(newEvent?.maxVolunteers) : undefined;
+                    newEvent.groupSignUp = fields["groupSignUp"] === "true";
 
                     const existingEvent = await getEvent(id);
 

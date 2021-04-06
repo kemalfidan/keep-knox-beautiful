@@ -24,6 +24,11 @@ export const EventSchema = new Schema({
         required: true,
         default: 0,
     },
+    groupSignUp: {
+        type: Boolean,
+        required: false,
+        default: false,
+    },
     startDate: {
         type: Date,
         required: true,

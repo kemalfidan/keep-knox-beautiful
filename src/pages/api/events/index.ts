@@ -53,7 +53,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
                     // fields are strings so convert the numbers
                     event.hours = Number(event?.hours);
-                    event.maxVolunteers = Number(event?.maxVolunteers);
+                    event.maxVolunteers = event?.maxVolunteers ? Number(event?.maxVolunteers) : undefined;
+                    event.groupSignUp = fields["groupSignUp"] === "true";
 
                     if (file) {
                         if (file?.size > constants.contentfulImageLimit) {
