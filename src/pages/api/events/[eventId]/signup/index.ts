@@ -3,8 +3,9 @@ import errors from "utils/errors";
 import { Event, Volunteer, APIError } from "utils/types";
 import { registerVolunteerToEvent } from "server/actions/Volunteer";
 
-// POST /api/events/[eventId]/signup will take form data and sign up volunteer for event eventId
-//   ... will need to create new volunteer or find existing
+// POST /api/events/[eventId]/signup will take form data and sign up a new or existing
+//   volunteer for event eventId. Also takes optional query param for `count` only
+//   for group events
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {
@@ -12,7 +13,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const eventId = req.query.eventId as string;
             const vol: Volunteer = JSON.parse(req.body);
 
-            await registerVolunteerToEvent(vol, eventId);
+            // default count to 1
+            const count = req.query.count ? Number(req.query.count) : 1;
+
+            await registerVolunteerToEvent(vol, eventId, count);
             res.status(200).json({
                 success: true,
                 payload: {},
