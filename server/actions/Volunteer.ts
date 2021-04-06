@@ -124,6 +124,8 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
         throw new APIError(404, "Count is greater than the number of volunteer spots remaining.");
     } else if (isAfter(Date.now(), event.endRegistration as Date)) {
         throw new APIError(404, "Registration for this event has closed.");
+    } else if (!event.groupSignUp && registerCount > 1) {
+        throw new APIError(404, "Group registration is not allowed for this event.");
     }
 
     // if !exists, create volunteer. Note that this might update the
