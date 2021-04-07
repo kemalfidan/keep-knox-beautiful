@@ -60,7 +60,8 @@ export const getCurrentEvents = async function () {
             },
         },
         EVENT_FIELDS
-    )) as Event[];
+    ).sort({ startDate: -1 })) as Event[];
+
     if (!events) {
         throw new APIError(404, "No events.");
     }
@@ -100,7 +101,7 @@ export const getCurrentEventsAdmin = async function () {
 
     const EVENT_FIELDS = { name: 1, caption: 1, location: 1, startDate: 1, endDate: 1, image: 1 };
     const now = new Date(Date.now());
-    const events = (await EventSchema.find({ endDate: { $gt: now } }, EVENT_FIELDS)) as Event[];
+    const events = (await EventSchema.find({ endDate: { $gt: now } }, EVENT_FIELDS).sort({ startDate: -1 })) as Event[];
     if (!events) {
         throw new APIError(404, "No events.");
     }

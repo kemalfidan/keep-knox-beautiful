@@ -7,6 +7,7 @@ import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
 import constants from "utils/constants";
 import { Event } from "utils/types";
+import urls from "utils/urls";
 import colors from "src/components/core/colors";
 
 interface Props {
@@ -17,17 +18,20 @@ interface Props {
 
 const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
-    const [page, setPage] = useState<number>(1);
+    const [nextPage, setNextPage] = useState<number>(2);
     const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents);
 
     const loadMoreHandler = async () => {
-        setPage(page + 1);
-        const response = await fetch("/api/events?type=past&page=" + page.toString(), { method: "GET" });
-        const moreEvents = (await response.json()) as Event[];
-        console.log("existing past events state:", pastEventsState);
-        console.log("more events:", moreEvents);
+        const response = await fetch(`${urls.api.events}?type=past&page=${nextPage.toString()}`, { method: "GET" });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const moreEvents = (await response.json()).payload.events as Event[];
+
+        if (moreEvents.length == 0) {
+            console.log("no more events");
+            return;
+        }
         setPastEvents(pastEventsState.concat(moreEvents));
-        console.log("pastEventsState:", pastEventsState);
+        setNextPage(nextPage + 1);
     };
 
     return (

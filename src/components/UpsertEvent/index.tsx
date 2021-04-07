@@ -345,7 +345,9 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                             />
                         </div>
                         <div style={{ margin: "10px 0px -10px 10px" }}>
-                            <Tooltip enterTouchDelay={0} leaveTouchDelay={5000}
+                            <Tooltip
+                                enterTouchDelay={0}
+                                leaveTouchDelay={5000}
                                 title="Be careful when pasting formatted text. It's recommended to 
                             clean the formatting (on the very right) and reformat it in the editor."
                             >

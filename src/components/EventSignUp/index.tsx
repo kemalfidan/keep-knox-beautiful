@@ -134,7 +134,9 @@ const EventSignUp: React.FC<Props> = ({ id }) => {
                         <Container className={styles.waiverLinkWrapper}>
                             <DescriptionIcon htmlColor={colors.grays["60"]} style={{ marginRight: "10px" }} />
                             <a href="/waiver" className={styles.waiverLink} target="_blank" rel="noreferrer">
-                                <CoreTypography variant="body2">{constants.org.name.short} Volunteer Waiver</CoreTypography>
+                                <CoreTypography variant="body2">
+                                    {constants.org.name.short} Volunteer Waiver
+                                </CoreTypography>
                             </a>
                         </Container>
                         <Container className={styles.waiverCheckboxWrapper}>
