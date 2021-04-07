@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { GetStaticPropsContext, NextPage } from "next";
 import withWidth from "@material-ui/core/withWidth";
 import { Button, Container, createStyles, Grid, makeStyles, Theme, Divider } from "@material-ui/core";
 import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
-import { getCurrentEvents, getPastEvents } from "server/actions/Event";
+import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
 import constants from "utils/constants";
 import { Event } from "utils/types";
 import colors from "src/components/core/colors";
@@ -17,6 +17,18 @@ interface Props {
 
 const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
+    const [page, setPage] = useState<number>(1);
+    const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents);
+
+    const loadMoreHandler = async () => {
+        setPage(page + 1);
+        const response = await fetch("/api/events?type=past&page=" + page.toString(), { method: "GET" });
+        const moreEvents = (await response.json()) as Event[];
+        console.log("existing past events state:", pastEventsState);
+        console.log("more events:", moreEvents);
+        setPastEvents(pastEventsState.concat(moreEvents));
+        console.log("pastEventsState:", pastEventsState);
+    };
 
     return (
         <div style={{ width: "100%" }}>
@@ -71,12 +83,13 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             <Container disableGutters maxWidth="lg">
                 <Divider variant="middle" />
                 <CoreTypography variant="h2" style={{ textAlign: "center" }}>
-                    Recent Events
+                    Past Events
                 </CoreTypography>
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
-                <EventsContainer events={pastEvents} />
+                <EventsContainer events={pastEventsState} />
+                <Button onClick={loadMoreHandler}>Load More</Button>
             </Container>
         </div>
     );
@@ -84,8 +97,8 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
 
 export async function getStaticProps(context: GetStaticPropsContext) {
     try {
-        const currentEvents: Event[] = await getCurrentEvents();
-        const pastEvents: Event[] = await getPastEvents();
+        const currentEvents: Event[] = await getCurrentEventsAdmin();
+        const pastEvents: Event[] = await getPastEventsAdmin(1);
 
         return {
             props: {

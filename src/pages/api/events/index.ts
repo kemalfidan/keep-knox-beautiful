@@ -3,7 +3,7 @@ import errors from "utils/errors";
 import formidable, { File } from "formidable";
 import { Event, APIError } from "utils/types";
 import constants from "utils/constants";
-import { addEvent, getEvents } from "server/actions/Event";
+import { addEvent, getCurrentEvents, getPastEventsAdmin } from "server/actions/Event";
 import { uploadImage } from "server/actions/Contentful";
 
 // formidable config
@@ -13,12 +13,27 @@ export const config = {
     },
 };
 
-// @route   GET /api/events - Return a list of paginated events. - Public
+// @route   GET /api/events - Return a list of events events. Use `type` param to declare
+//   what type of events to return. - Public
 // @route   POST /api/events - Create an event from form data. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
-            const events: Event[] = await getEvents();
+            const type = req.query.type;
+            const page = req.query.page ? Number(req.query.page) : 1;
+            const search = new Date(req.query.search as string);
+            let events: Event[] = [];
+
+            if (type == "current") {
+                // shouldn't use this API route in prod since the events are pre-fetched
+                //   with getServerSideProps and displayed statically on page
+                events = await getCurrentEvents();
+            } else if (type == "past") {
+                // will be used since we paginate admin's page events
+                events = await getPastEventsAdmin(page, search);
+            } else {
+                throw new APIError(400, "Invalid query parameter `type`.");
+            }
 
             res.status(200).json({
                 success: true,
