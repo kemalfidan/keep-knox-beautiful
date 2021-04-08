@@ -21,8 +21,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === "GET") {
             const type = req.query.type;
             const page = req.query.page ? Number(req.query.page) : 1;
-            const search = new Date(req.query.search as string);
+            const search = req.query.search ? new Date(req.query.search as string) : undefined;
             let events: Event[] = [];
+
+            console.log("req.query.search:", req.query.search);
+            console.log("search:", search);
 
             if (type == "current") {
                 // shouldn't use this API route in prod since the events are pre-fetched

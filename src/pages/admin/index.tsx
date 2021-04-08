@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { GetStaticPropsContext, NextPage } from "next";
-import withWidth from "@material-ui/core/withWidth";
-import { Button, Container, createStyles, Grid, makeStyles, Theme, Divider } from "@material-ui/core";
 import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
@@ -9,6 +7,14 @@ import constants from "utils/constants";
 import { Event } from "utils/types";
 import urls from "utils/urls";
 import colors from "src/components/core/colors";
+
+// mui
+import { Button, Container, createStyles, Grid, makeStyles, Theme, Divider } from "@material-ui/core";
+import withWidth from "@material-ui/core/withWidth";
+import { DatePicker } from "@material-ui/pickers";
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import TodayIcon from "@material-ui/icons/Today";
 
 interface Props {
     currentEvents: Event[];
@@ -20,9 +26,13 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
     const [nextPage, setNextPage] = useState<number>(2);
     const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents);
+    const [searchDate, setSearchDate] = useState<MaterialUiPickersDate>(null);
 
     const loadMoreHandler = async () => {
-        const response = await fetch(`${urls.api.events}?type=past&page=${nextPage.toString()}`, { method: "GET" });
+        const response = await fetch(
+            `${urls.api.events}?type=past&page=${nextPage.toString()}&search=${searchDate?.toUTCString() || ""}`,
+            { method: "GET" }
+        );
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const moreEvents = (await response.json()).payload.events as Event[];
 
@@ -32,6 +42,18 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
         }
         setPastEvents(pastEventsState.concat(moreEvents));
         setNextPage(nextPage + 1);
+    };
+
+    const handleSearchDateChange = async (date: MaterialUiPickersDate) => {
+        setSearchDate(date);
+        const response = await fetch(`${urls.api.events}?type=past&page=1&search=${searchDate?.toUTCString() || ""}`, {
+            method: "GET",
+        });
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        const initialEvents = (await response.json()).payload.events as Event[];
+
+        setPastEvents(initialEvents);
+        setNextPage(2);
     };
 
     return (
@@ -86,14 +108,41 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
 
             <Container disableGutters maxWidth="lg">
                 <Divider variant="middle" />
-                <CoreTypography variant="h2" style={{ textAlign: "center" }}>
-                    Past Events
-                </CoreTypography>
+                <div className={classes.pastEventsHeader}>
+                    <CoreTypography variant="h2" className={classes.pastEventsTitle}>
+                        Past Events
+                    </CoreTypography>
+                    <div className={classes.pastEventsSearch}>
+                        <DatePicker
+                            disableFuture
+                            openTo="year"
+                            format="MMM yyyy"
+                            views={["year", "month"]}
+                            value={searchDate}
+                            variant="inline"
+                            onChange={handleSearchDateChange}
+                            label="Search"
+                            color="secondary"
+                            className={classes.pastEventsSearch}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <TodayIcon />
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </div>
+                </div>
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
                 <EventsContainer events={pastEventsState} />
-                <Button onClick={loadMoreHandler}>Load More</Button>
+                <div className={classes.center}>
+                    <Button onClick={loadMoreHandler} className={classes.loadMoreButton}>
+                        Load More
+                    </Button>
+                </div>
             </Container>
         </div>
     );
@@ -135,6 +184,47 @@ const useStyles = makeStyles((theme: Theme) =>
             ".MuiDivider-middle": {
                 borderTop: `2px solid ${colors.gray}`,
                 margin: "100px 50px 0px 50px",
+            },
+        },
+        center: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+        },
+        loadMoreButton: {
+            backgroundColor: theme.palette.accent.main,
+            color: colors.white,
+            "&:hover": {
+                backgroundColor: theme.palette.accent.main,
+            },
+        },
+        pastEventsHeader: {
+            display: "flex",
+            position: "relative",
+            justifyContent: "center",
+            [theme.breakpoints.down("sm")]: {
+                position: "static",
+                flexDirection: "column",
+            },
+        },
+        pastEventsTitle: {
+            display: "flex",
+            // backgroundColor: "pink",
+            [theme.breakpoints.down("sm")]: {
+                justifyContent: "center",
+                // backgroundColor: "orange",
+            },
+        },
+        pastEventsSearch: {
+            width: "150px",
+            right: "100px",
+            position: "absolute",
+            // backgroundColor: "pink",
+            [theme.breakpoints.down("sm")]: {
+                position: "static",
+                right: "0px",
+                flexDirection: "column",
+                alignSelf: "center",
             },
         },
     })
