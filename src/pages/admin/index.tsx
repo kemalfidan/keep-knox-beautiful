@@ -41,18 +41,21 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             return;
         }
         setPastEvents(pastEventsState.concat(moreEvents));
-        setNextPage(nextPage + 1);
+        setNextPage(nextPage => {
+            return nextPage + 1;
+        });
     };
 
     const handleSearchDateChange = async (date: MaterialUiPickersDate) => {
-        setSearchDate(date);
-        const response = await fetch(`${urls.api.events}?type=past&page=1&search=${searchDate?.toUTCString() || ""}`, {
+        const response = await fetch(`${urls.api.events}?type=past&page=1&search=${date?.toUTCString() || ""}`, {
             method: "GET",
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const initialEvents = (await response.json()).payload.events as Event[];
+        const newPastEvents = (await response.json()).payload.events as Event[];
 
-        setPastEvents(initialEvents);
+        // no longer appending since this is a search
+        setPastEvents(newPastEvents);
+        setSearchDate(date);
         setNextPage(2);
     };
 
@@ -115,6 +118,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                     <div className={classes.pastEventsSearch}>
                         <DatePicker
                             disableFuture
+                            minDate={new Date("2020-01-02")}
                             openTo="year"
                             format="MMM yyyy"
                             views={["year", "month"]}

@@ -4,6 +4,7 @@ import VolunteerSchema from "../models/Volunteer";
 import { Types } from "mongoose";
 import { Event, APIError, Volunteer, PaginatedVolunteers } from "utils/types";
 import { escapeRegExp } from "utils/util";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 interface Config {
     VOLS_PER_PAGE: number;
@@ -122,24 +123,33 @@ export const getPastEventsAdmin = async function (page: number, search?: Date) {
     }
     page -= 1;
 
-    // search from the start of whatever year and month is given
-    if (search) {
-        search.setDate(1);
-        search.setHours(0);
-        console.log("modified search:", search);
-    }
-    const endSearchDate = Date.now();
-
     const EVENTS_PER_PAGE = 2;
     const EVENT_FIELDS = { name: 1, caption: 1, location: 1, startDate: 1, endDate: 1, image: 1 };
     const now = new Date(Date.now());
-    const events = (await EventSchema.find({ endDate: { $lt: now } }, EVENT_FIELDS)
-        .sort({ startDate: -1 })
-        .skip(page * EVENTS_PER_PAGE)
-        .limit(EVENTS_PER_PAGE)) as Event[];
+    let events: Event[];
 
-    if (!events) {
-        throw new APIError(404, "No events.");
+    if (search) {
+        // search from the start of whatever year+month is given to the
+        //   end of the same year+month
+        const startSearchDate = startOfMonth(search);
+        const endSearchDate = endOfMonth(search);
+
+        events = await EventSchema.find({
+            endDate: { $lt: now },
+            startDate: { $gte: startSearchDate, $lte: endSearchDate },
+        })
+            .sort({ startDate: -1 })
+            .skip(page * EVENTS_PER_PAGE)
+            .limit(EVENTS_PER_PAGE);
+    } else {
+        events = await EventSchema.find({ endDate: { $lt: now } }, EVENT_FIELDS)
+            .sort({ startDate: -1 })
+            .skip(page * EVENTS_PER_PAGE)
+            .limit(EVENTS_PER_PAGE);
+
+        if (!events) {
+            throw new APIError(404, "No events.");
+        }
     }
 
     return events;
