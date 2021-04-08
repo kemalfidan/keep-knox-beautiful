@@ -4,7 +4,7 @@ import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
 import constants from "utils/constants";
-import { Event } from "utils/types";
+import { Event, LoadMorePaginatedData } from "utils/types";
 import urls from "utils/urls";
 import colors from "src/components/core/colors";
 
@@ -18,15 +18,16 @@ import TodayIcon from "@material-ui/icons/Today";
 
 interface Props {
     currentEvents: Event[];
-    pastEvents: Event[];
+    pastEvents: LoadMorePaginatedData;
     width: string;
 }
 
 const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
     const [nextPage, setNextPage] = useState<number>(2);
-    const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents);
+    const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents.data);
     const [searchDate, setSearchDate] = useState<MaterialUiPickersDate>(null);
+    const [loadMore, setLoadMore] = useState<boolean>(!pastEvents.isLastPage);
 
     const loadMoreHandler = async () => {
         const response = await fetch(
@@ -34,13 +35,12 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             { method: "GET" }
         );
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const moreEvents = (await response.json()).payload.events as Event[];
+        const moreEvents = (await response.json()).payload as LoadMorePaginatedData;
 
-        if (moreEvents.length == 0) {
-            console.log("no more events");
-            return;
+        if (moreEvents.isLastPage) {
+            setLoadMore(false);
         }
-        setPastEvents(pastEventsState.concat(moreEvents));
+        setPastEvents(pastEventsState.concat(moreEvents.data));
         setNextPage(nextPage => {
             return nextPage + 1;
         });
@@ -51,10 +51,15 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             method: "GET",
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const newPastEvents = (await response.json()).payload.events as Event[];
+        const newPastEvents: LoadMorePaginatedData = (await response.json()).payload as LoadMorePaginatedData;
 
-        // no longer appending since this is a search
-        setPastEvents(newPastEvents);
+        if (pastEvents.isLastPage) {
+            setLoadMore(false);
+        }
+
+        // no longer appending - this is back to an initial view
+        // load more handler will take of loading next pages for search
+        setPastEvents(newPastEvents.data);
         setSearchDate(date);
         setNextPage(2);
     };
@@ -143,9 +148,11 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
                 <EventsContainer events={pastEventsState} />
                 <div className={classes.center}>
-                    <Button onClick={loadMoreHandler} className={classes.loadMoreButton}>
-                        Load More
-                    </Button>
+                    {loadMore && (
+                        <Button onClick={loadMoreHandler} className={classes.loadMoreButton}>
+                            Load More
+                        </Button>
+                    )}
                 </div>
             </Container>
         </div>
@@ -155,7 +162,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
 export async function getStaticProps(context: GetStaticPropsContext) {
     try {
         const currentEvents: Event[] = await getCurrentEventsAdmin();
-        const pastEvents: Event[] = await getPastEventsAdmin(1);
+        const pastEvents: LoadMorePaginatedData = await getPastEventsAdmin(1);
 
         return {
             props: {
@@ -213,17 +220,14 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         pastEventsTitle: {
             display: "flex",
-            // backgroundColor: "pink",
             [theme.breakpoints.down("sm")]: {
                 justifyContent: "center",
-                // backgroundColor: "orange",
             },
         },
         pastEventsSearch: {
             width: "150px",
             right: "100px",
             position: "absolute",
-            // backgroundColor: "pink",
             [theme.breakpoints.down("sm")]: {
                 position: "static",
                 right: "0px",

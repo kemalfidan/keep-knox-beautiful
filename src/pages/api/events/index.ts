@@ -13,7 +13,9 @@ export const config = {
     },
 };
 
-// @route   GET /api/events - Return a list of events events. Use `type` param to declare
+// @route   GET /api/events - For pagianted queries, return a LoadMorePagination
+//   type that contains a list of events and whether its the last page. Returns an
+//   array of events for all unpaginated queries. Use `type` param to declare
 //   what type of events to return. - Public
 // @route   POST /api/events - Create an event from form data. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -22,26 +24,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const type = req.query.type;
             const page = req.query.page ? Number(req.query.page) : 1;
             const search = req.query.search ? new Date(req.query.search as string) : undefined;
-            let events: Event[] = [];
-
-            console.log("req.query.search:", req.query.search);
-            console.log("search:", search);
 
             if (type == "current") {
                 // shouldn't use this API route in prod since the events are pre-fetched
                 //   with getServerSideProps and displayed statically on page
-                events = await getCurrentEvents();
+                const events = await getCurrentEvents();
+                res.status(200).json({
+                    success: true,
+                    payload: events,
+                });
             } else if (type == "past") {
                 // will be used since we paginate admin's page events
-                events = await getPastEventsAdmin(page, search);
+                const loadMorePaginatedEvents = await getPastEventsAdmin(page, search);
+                res.status(200).json({
+                    success: true,
+                    payload: loadMorePaginatedEvents,
+                });
             } else {
                 throw new APIError(400, "Invalid query parameter `type`.");
             }
-
-            res.status(200).json({
-                success: true,
-                payload: { events },
-            });
         } else if (req.method === "POST") {
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {

@@ -2,7 +2,7 @@ import mongoDB from "../index";
 import EventSchema from "../models/Event";
 import VolunteerSchema from "../models/Volunteer";
 import { Types } from "mongoose";
-import { Event, APIError, Volunteer, PaginatedVolunteers } from "utils/types";
+import { Event, APIError, Volunteer, PaginatedVolunteers, LoadMorePaginatedData } from "utils/types";
 import { escapeRegExp } from "utils/util";
 import { startOfMonth, endOfMonth } from "date-fns";
 
@@ -140,19 +140,27 @@ export const getPastEventsAdmin = async function (page: number, search?: Date) {
         })
             .sort({ startDate: -1 })
             .skip(page * EVENTS_PER_PAGE)
-            .limit(EVENTS_PER_PAGE);
+            .limit(EVENTS_PER_PAGE + 1);
+
+        if (!events) {
+            throw new APIError(500, "Error fetching events.");
+        }
     } else {
         events = await EventSchema.find({ endDate: { $lt: now } }, EVENT_FIELDS)
             .sort({ startDate: -1 })
             .skip(page * EVENTS_PER_PAGE)
-            .limit(EVENTS_PER_PAGE);
+            .limit(EVENTS_PER_PAGE + 1);
 
         if (!events) {
-            throw new APIError(404, "No events.");
+            throw new APIError(500, "Error fetching events.");
         }
     }
+    // +1 in limit() to see if this is the last page
 
-    return events;
+    return {
+        data: events.slice(0, EVENTS_PER_PAGE),
+        isLastPage: events.length < EVENTS_PER_PAGE + 1,
+    } as LoadMorePaginatedData;
 };
 
 /**
@@ -340,7 +348,6 @@ export const getEventVolunteers = async function (eventId: string, page: number,
                 skip: page * VOLS_PER_PAGE,
                 limit: VOLS_PER_PAGE,
             };
-            console.log(query);
             const event = await getEventVolsQuery(query, config);
 
             volunteers = event?.registeredVolunteers as Volunteer[];

@@ -34,6 +34,10 @@ export interface PaginatedVolunteers {
     volunteers: Volunteer[];
     registeredCount: number;
 }
+export interface LoadMorePaginatedData {
+    data: (Event | Volunteer)[];
+    isLastPage: boolean;
+}
 
 export interface ContentfulImage {
     assetID: string;
