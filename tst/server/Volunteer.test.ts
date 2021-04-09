@@ -5,6 +5,7 @@ import {
     markVolunteerNotPresent,
     markVolunteerPresent,
     registerVolunteerToEvent,
+    updateVolunteer,
     getVolunteerEvents,
 } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
@@ -101,6 +102,37 @@ describe("addVolunteer() tests", () => {
         await addVolunteer(mockVol);
         expect(VolunteerSchema.create).lastCalledWith(mockVol);
         expect(VolunteerSchema.create).toHaveBeenCalledTimes(1);
+    });
+});
+
+// Begin updateVolunteer test cases
+describe("updateVolunteer() tests", () => {
+    test("invalid parameters", async () => {
+        expect.assertions(1);
+        await expect(updateVolunteer("", { name: "volunteer name" })).rejects.toThrowError(
+            "Invalid previous volunteer or invalid new volunteer."
+        );
+    });
+
+    test("existing volunteer not found", async () => {
+        const mockVol = {
+            name: "volunteer name",
+        };
+        const mockId = "6061e27251c1c60dffeac829";
+        expect.assertions(1);
+        VolunteerSchema.findByIdAndUpdate = jest.fn().mockImplementation(async (vol: Volunteer) => undefined);
+        await expect(updateVolunteer(mockId, mockVol)).rejects.toThrowError("Volunteer not found.");
+    });
+
+    test("volunteer successfully updated", async () => {
+        const mockVol = {
+            name: "volunteer name",
+        };
+        const mockId = "6061e27251c1c60dffeac829";
+        VolunteerSchema.findByIdAndUpdate = jest.fn().mockImplementation(async (vol: Volunteer) => vol);
+        await updateVolunteer(mockId, mockVol);
+        expect(VolunteerSchema.findByIdAndUpdate).lastCalledWith(mockId, mockVol);
+        expect(VolunteerSchema.findByIdAndUpdate).toHaveBeenCalledTimes(1);
     });
 });
 

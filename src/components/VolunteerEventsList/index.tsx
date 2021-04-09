@@ -24,7 +24,7 @@ export default function VolunteerEventsList(props: Volunteer) {
     };
 
     // Uncomment to use actual volunteer data for volId from server
-    //const rows: Array<Event> = props.attendedEvents ? props.attendedEvents : [];
+    // const rows: Array<Event> = props.attendedEvents ? props.attendedEvents : [];
 
     const numPages = rows.length > 0 ? Math.ceil(rows.length / eventsPerPage) : 0;
     const emptyRows = numPages > 0 ? numPages * eventsPerPage - rows.length : eventsPerPage;
@@ -143,7 +143,7 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-// create dummy data for design purposes -- comment out to use volId data
+//create dummy data for design purposes -- comment out to use volId data
 function createData(name: string, endDate: Date, hours: number) {
     return { name, endDate, hours };
 }

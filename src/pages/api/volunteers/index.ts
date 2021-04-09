@@ -28,13 +28,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } else if (req.method === "POST") {
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
-                const vol: Volunteer = (fields as unknown) as Volunteer;
-
-                await addVolunteer(vol);
-                res.status(200).json({
-                    success: true,
-                    payload: {},
-                });
+                try {
+                    const vol: Volunteer = (fields as unknown) as Volunteer;
+                    console.log("volunteerInfo: ", vol);
+                    await addVolunteer(vol);
+                    res.status(200).json({
+                        success: true,
+                        payload: {},
+                    });
+                } catch (error) {
+                    if (error instanceof APIError) {
+                        res.status(error.statusCode).json({
+                            success: false,
+                            message: error.message,
+                        });
+                    } else {
+                        console.error(error instanceof Error && error);
+                        res.status(500).json({
+                            success: false,
+                            message: (error instanceof Error && error.message) || errors.GENERIC_ERROR,
+                        });
+                    }
+                }
             });
         }
     } catch (error) {

@@ -13,6 +13,7 @@ export default {
         manageEvent: (eventId: string) => `/admin/events/${eventId}`,
         volunteers: "/admin/volunteers",
         volunteer: (volId: string) => `/admin/volunteers/${volId}`,
+        updateVolunteer: (volId: string) => `/admin/volunteers/${volId}/update`,
     },
     api: {
         events: "/api/events",

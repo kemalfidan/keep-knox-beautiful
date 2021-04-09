@@ -74,6 +74,23 @@ export const addVolunteer = async function (vol: Volunteer) {
 };
 
 /**
+ * Updates a volunteer that already exists in database.
+ * @param id The _id of the volunteer we want to update.
+ * @param vol The new volunteer object to insert into database.
+ */
+export const updateVolunteer = async function (id: string, vol: Volunteer) {
+    await mongoDB();
+    if (!id || !vol) {
+        throw new APIError(400, "Invalid previous volunteer or invalid new volunteer.");
+    }
+
+    const model = await VolunteerSchema.findByIdAndUpdate(id, vol);
+    if (!model) {
+        throw new APIError(404, "Volunteer not found.");
+    }
+};
+
+/**
  * @param ids An array of volunteer objectIds whose hours need to be updated.
  * @param change The change that needs to be applied to each volunteer's hours. Can be negative.
  */
