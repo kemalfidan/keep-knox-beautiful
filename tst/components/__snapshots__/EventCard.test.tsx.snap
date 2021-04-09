@@ -69,7 +69,7 @@ exports[`EventCard.tsx matches snapshot 1`] = `
           }
           variant="body2"
         >
-          This is an event with a test description an no image
+          This is an event with a test caption ...
         </CoreTypography>
       </div>
       <WithStyles(ForwardRef(Grid))

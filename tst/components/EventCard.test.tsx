@@ -7,7 +7,8 @@ import { Event } from "utils/types";
 
 const evNoImg: Event = {
     name: "Test Event",
-    description: "This is an event with a test description an no image",
+    description: "This is an event description.",
+    caption: "This is an event with a test caption an no image.",
     location: "1200 Baker St Knoxville, TN",
     startDate: new Date("3/1/21 12:00 pm"),
     endDate: new Date("3/1/21 2:00 pm"),
@@ -24,7 +25,7 @@ describe("EventCard.tsx", () => {
         const evTime = component.find("#eventTime");
 
         expect(evName.children().text()).toBe(evNoImg.name);
-        expect(evDesc.children().text()).toBe(evNoImg.description);
+        expect(evDesc.children().text()).toBe("This is an event with a test caption ...");
         expect(evLoc.children().text()).toBe(evNoImg.location?.split(",")[0]);
         expect(evTime.children().reduce((acc, cur) => (acc += cur.text()), "")).toBe("12:00 PM - 2:00 PM");
     });

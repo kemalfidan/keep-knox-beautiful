@@ -134,28 +134,27 @@ export const getPastEventsAdmin = async function (page: number, search?: Date) {
         const startSearchDate = startOfMonth(search);
         const endSearchDate = endOfMonth(search);
 
-        events = await EventSchema.find({
-            endDate: { $lt: now },
-            startDate: { $gte: startSearchDate, $lte: endSearchDate },
-        })
+        events = await EventSchema.find(
+            {
+                endDate: { $lt: now },
+                startDate: { $gte: startSearchDate, $lte: endSearchDate },
+            },
+            EVENT_FIELDS
+        )
             .sort({ startDate: -1 })
             .skip(page * EVENTS_PER_PAGE)
             .limit(EVENTS_PER_PAGE + 1);
-
-        if (!events) {
-            throw new APIError(500, "Error fetching events.");
-        }
     } else {
         events = await EventSchema.find({ endDate: { $lt: now } }, EVENT_FIELDS)
             .sort({ startDate: -1 })
             .skip(page * EVENTS_PER_PAGE)
             .limit(EVENTS_PER_PAGE + 1);
-
-        if (!events) {
-            throw new APIError(500, "Error fetching events.");
-        }
     }
     // +1 in limit() to see if this is the last page
+
+    if (!events) {
+        throw new APIError(500, "Error fetching events.");
+    }
 
     return {
         data: events.slice(0, EVENTS_PER_PAGE),

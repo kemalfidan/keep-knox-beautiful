@@ -1,9 +1,21 @@
-import { ObjectId } from "mongodb";
-import { getEvent, getEvents, addEvent, deleteEvent, updateEvent } from "server/actions/Event";
+import {
+    getEvent,
+    getCurrentEvents,
+    getPastEvents,
+    getCurrentEventsAdmin,
+    getPastEventsAdmin,
+    addEvent,
+    deleteEvent,
+    updateEvent,
+} from "server/actions/Event";
 import EventSchema from "server/models/Event";
-import { Event } from "utils/types";
+import { Event, LoadMorePaginatedData } from "utils/types";
+import { startOfMonth, endOfMonth } from "date-fns";
 
 jest.mock("server");
+
+// linter complains about any mock object type
+/* eslint-disable */
 
 describe("getEvent() tests", () => {
     test("valid event", async () => {
@@ -33,21 +45,220 @@ describe("getEvent() tests", () => {
     });
 });
 
-describe("getEvents() tests", () => {
-    test("events exist", async () => {
-        const mockEvents = [{ name: "test1" }, { name: "test2" }];
+describe("get events tests", () => {
+    const mockEvents = [{ name: "test1" }, { name: "test2" }, { name: "test1" }, { name: "test2" }, 
+    { name: "test1" }, { name: "test2" }, { name: "test1" }, { name: "test2" }, { name: "test1" }];
+    const undefinedEvents = undefined;
+    const EVENT_FIELDS = { name: 1, caption: 1, location: 1, startDate: 1, endDate: 1, image: 1 };
+    const EVENTS_PER_PAGE = 2;
+    const PAST_EVENTS_LIMIT = 3;
+    const page = 1;
 
-        EventSchema.find = jest.fn().mockResolvedValue(mockEvents);
-        await expect(getEvents()).resolves.toEqual(mockEvents);
+    // mock the current date 
+    const now = new Date(Date.UTC(2021, 4, 15));
+    Date.now = jest.fn().mockImplementation(() => now);
+
+    describe("getCurrentEvents tests", () => {
+        test("getCurrentEvents success", async () => {
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getCurrentEvents()).resolves.toEqual(mockEvents);
+            expect(EventSchema.find).toHaveBeenLastCalledWith({
+                startRegistration: {
+                    $lte: now,
+                },
+                endRegistration: {
+                    $gt: now,
+                },
+            },
+            EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });
+        });
+    
+        test("getCurrentEvents failure", async () => {
+            expect.assertions(3);
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => undefinedEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getCurrentEvents()).rejects.toThrowError("No events.");
+            expect(EventSchema.find).toHaveBeenLastCalledWith({
+                startRegistration: {
+                    $lte: now,
+                },
+                endRegistration: {
+                    $gt: now,
+                },
+            },
+            EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });
+        });    
     });
 
-    test("no events exist", async () => {
-        expect.assertions(1);
+    describe("getPastEvents tests", () => {
+        test("success", async () => {
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                limit: jest.fn(() => mockEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEvents()).resolves.toEqual(mockEvents);
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endRegistration: { $lt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(PAST_EVENTS_LIMIT);    
+        });
+    
+        test("failure", async () => {
+            expect.assertions(4);
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                limit: jest.fn(() => undefinedEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEvents()).rejects.toThrowError("No events.");
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endRegistration: { $lt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(PAST_EVENTS_LIMIT);    
+        });    
+    });
 
-        const mockEvents = undefined;
+    describe("getCurrentEventsAdmin tests", () => {
+        test("success", async () => {
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getCurrentEventsAdmin()).resolves.toEqual(mockEvents);
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endDate: { $gt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+        });
+    
+        test("failure", async () => {
+            expect.assertions(3);
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => undefinedEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getCurrentEventsAdmin()).rejects.toThrowError("No events.");
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endDate: { $gt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+        });    
+    });
 
-        EventSchema.find = jest.fn().mockResolvedValue(mockEvents);
-        await expect(getEvents()).rejects.toThrowError("No events");
+    describe("getPastEventsAdmin tests", () => {
+        test("success", async () => {
+            const expectedReturn: LoadMorePaginatedData = {
+                data: mockEvents.slice(0, EVENTS_PER_PAGE),
+                isLastPage: mockEvents.length < EVENTS_PER_PAGE + 1,
+            }
+        
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                skip: jest.fn(() => mockObj),
+                limit: jest.fn(() => mockEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEventsAdmin(page)).resolves.toEqual(expectedReturn);
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endDate: { $lt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.skip).toHaveBeenLastCalledWith((page-1) * EVENTS_PER_PAGE);    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(EVENTS_PER_PAGE + 1);    
+        });
+
+        test("success with search", async () => {
+            const searchDate = new Date(Date.UTC(2020, 2, 20));
+            const expectedStartSearchDate = startOfMonth(searchDate);
+            const expectedEndSearchDate = endOfMonth(searchDate);
+            const expectedReturn: LoadMorePaginatedData = {
+                data: mockEvents.slice(0, EVENTS_PER_PAGE),
+                isLastPage: mockEvents.length < EVENTS_PER_PAGE + 1,
+            }
+        
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                skip: jest.fn(() => mockObj),
+                limit: jest.fn(() => mockEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEventsAdmin(page, searchDate)).resolves.toEqual(expectedReturn);
+            expect(EventSchema.find).toHaveBeenLastCalledWith({
+                endDate: { $lt: now },
+                startDate: { $gte: expectedStartSearchDate, $lte: expectedEndSearchDate },
+            }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.skip).toHaveBeenLastCalledWith((page-1) * EVENTS_PER_PAGE);    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(EVENTS_PER_PAGE + 1);    
+        });
+
+        test("failure", async () => {
+            expect.assertions(5);
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                skip: jest.fn(() => mockObj),
+                limit: jest.fn(() => undefinedEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEventsAdmin(page)).rejects.toThrowError("Error fetching events.");
+            expect(EventSchema.find).toHaveBeenLastCalledWith({ endDate: { $lt: now } }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.skip).toHaveBeenLastCalledWith((page-1) * EVENTS_PER_PAGE);    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(EVENTS_PER_PAGE + 1);    
+        });
+
+        test("failure with search", async () => {
+            expect.assertions(5);
+            const searchDate = new Date(Date.UTC(2020, 2, 20));
+            const expectedStartSearchDate = startOfMonth(searchDate);
+            const expectedEndSearchDate = endOfMonth(searchDate);
+            const expectedReturn: LoadMorePaginatedData = {
+                data: mockEvents.slice(0, EVENTS_PER_PAGE),
+                isLastPage: mockEvents.length < EVENTS_PER_PAGE + 1,
+            }
+        
+            const mockObj: any = {
+                EventSchema, // to be tested,
+                sort: jest.fn(() => mockObj),
+                skip: jest.fn(() => mockObj),
+                limit: jest.fn(() => undefinedEvents),
+            };
+            EventSchema.find = jest.fn(() => mockObj);
+    
+            await expect(getPastEventsAdmin(page, searchDate)).rejects.toThrowError("Error fetching events.");
+            expect(EventSchema.find).toHaveBeenLastCalledWith({
+                endDate: { $lt: now },
+                startDate: { $gte: expectedStartSearchDate, $lte: expectedEndSearchDate },
+            }, EVENT_FIELDS);
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });    
+            expect(mockObj.skip).toHaveBeenLastCalledWith((page-1) * EVENTS_PER_PAGE);    
+            expect(mockObj.limit).toHaveBeenLastCalledWith(EVENTS_PER_PAGE + 1);    
+        });
+        
+        test("invalid page", async () => {
+            expect.assertions(1);
+        
+            EventSchema.find = jest.fn().mockResolvedValue(undefinedEvents);
+            await expect(getPastEventsAdmin(0)).rejects.toThrowError("Invalid page number.");
+        });    
     });
 });
 

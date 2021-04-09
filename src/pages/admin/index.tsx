@@ -52,7 +52,6 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
         });
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const newPastEvents: LoadMorePaginatedData = (await response.json()).payload as LoadMorePaginatedData;
-        console.log("newPastEvents:", newPastEvents);
 
         // no longer appending - this is back to an initial view
         // load more handler will take of loading next pages for search
