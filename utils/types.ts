@@ -30,6 +30,12 @@ export interface Event {
     attendedVolunteers?: (string | Volunteer)[];
 }
 
+export interface Admin {
+    _id: string;
+    email: string;
+    password?: string;
+}
+
 export interface PaginatedVolunteers {
     volunteers: Volunteer[];
     registeredCount: number;

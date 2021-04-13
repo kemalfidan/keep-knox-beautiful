@@ -1,8 +1,7 @@
 import { createClient } from "contentful-management";
 import fs from "fs";
 import { File } from "formidable";
-import { ContentfulImage } from "utils/types";
-import format from "date-fns/format";
+
 const client = createClient({
     accessToken: process.env.CONTENTFUL_PERSONAL_TOKEN as string,
 });
