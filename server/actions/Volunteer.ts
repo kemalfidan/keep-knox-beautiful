@@ -5,7 +5,7 @@ import { Event, Volunteer, APIError } from "utils/types";
 import { escapeRegExp } from "utils/util";
 import { createTransport } from "nodemailer";
 import constants from "utils/constants";
-import { format, isAfter } from "date-fns";
+import { format, isAfter, isBefore } from "date-fns";
 
 // only return these fields from mongodb
 const VOL_FIELDS = {
@@ -118,12 +118,14 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
     const event = await EventSchema.findById(eventId);
     if (!event) {
         throw new APIError(404, "Event does not exist.");
+    } else if (isBefore(Date.now(), event.startRegistration as Date)) {
+        throw new APIError(404, "Registration for this event hasn't opened yet.");
+    } else if (isAfter(Date.now(), event.endRegistration as Date)) {
+        throw new APIError(404, "Registration for this event has closed.");
     } else if (event.maxVolunteers && event.volunteerCount! >= event.maxVolunteers) {
         throw new APIError(404, "Event is at max volunteers.");
     } else if (event.maxVolunteers && event.volunteerCount! + registerCount > event.maxVolunteers) {
         throw new APIError(404, "Count is greater than the number of volunteer spots remaining.");
-    } else if (isAfter(Date.now(), event.endRegistration as Date)) {
-        throw new APIError(404, "Registration for this event has closed.");
     } else if (!event.groupSignUp && registerCount > 1) {
         throw new APIError(404, "Group registration is not allowed for this event.");
     }
