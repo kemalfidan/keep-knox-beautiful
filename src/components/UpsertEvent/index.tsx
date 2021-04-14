@@ -166,8 +166,7 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
         // error check response
         if (response) {
             if (response.success) {
-                // TODO redirect to admin home page
-                await router.push("/");
+                await router.push(urls.pages.adminHome);
             } else {
                 setErrors(errors => ({ ...errors, ["submissionError"]: true }));
             }
