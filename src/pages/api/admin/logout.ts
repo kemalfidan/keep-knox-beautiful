@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import { APIError } from "utils/types";
 
-// @route   POST /api/admin/logout - Logout a user by overriding cookie. - Private
+// @route   POST /api/admin/logout - Logout a user by overriding cookie. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {
