@@ -11,7 +11,7 @@ import { Secret, sign } from "jsonwebtoken";
 export async function login(admin: Admin) {
     await mongoDB();
     if (!admin || !admin.email || !admin.password) {
-        throw new APIError(400, "Missing admin information.");
+        throw new APIError(400, "Missing login information.");
     }
 
     const apparentAdmin = await AdminSchema.findOne({ email: admin.email });
@@ -62,5 +62,5 @@ export async function createAdmin(admin: Admin) {
 
 export async function doesAdminExist(email: string) {
     await mongoDB();
-    return AdminSchema.findOne({ email: email }) !== null;
+    return (await AdminSchema.findOne({ email: email })) !== null;
 }
