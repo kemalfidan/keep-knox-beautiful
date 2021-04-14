@@ -5,7 +5,7 @@ import cookie from "cookie";
 import errors from "utils/errors";
 
 // @route   POST /api/admin/login - Log user in by returning
-//   a cookie with jwt string in the header. - Private
+//   a cookie with jwt string in the header. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {

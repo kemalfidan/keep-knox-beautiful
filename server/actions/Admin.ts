@@ -23,18 +23,16 @@ export async function login(admin: Admin) {
     if (!same) {
         throw new APIError(404, "Invalid email or password.");
     }
-    const secret: Secret = process.env.JWTSECRET as string;
 
-    return sign(
-        {
-            _id: apparentAdmin._id as string,
-            email: apparentAdmin.email,
-        },
-        secret,
-        {
-            expiresIn: "7d",
-        }
-    );
+    const secret: Secret = process.env.JWTSECRET as string;
+    const payload = {
+        _id: apparentAdmin._id as string,
+        email: apparentAdmin.email,
+    };
+    const options = {
+        expiresIn: "7d",
+    };
+    return sign(payload, secret, options);
 }
 
 /**
