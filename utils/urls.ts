@@ -6,7 +6,7 @@ export default {
     pages: {
         index: "/",
         event: (eventId: string) => `/events/${eventId}`,
-        login: "/login",
+        login: "/admin/login",
         adminHome: "/admin",
         events: "/admin/events",
         addEvent: "/admin/events/new",
@@ -26,5 +26,9 @@ export default {
         volunteers: "/api/volunteers",
         volunteer: (volId: string) => `/api/volunteers/${volId}`,
         sendVerificationEmail: (volId: string) => `/api/volunteers/${volId}/email`,
+        login: "/api/admin/login",
+        logout: "/api/admin/logout",
+        createAdminAccount: "/api/admin/signup",
+        validateLogin: "/api/admin/validateLogin",
     },
 };

@@ -9,7 +9,7 @@ import errors from "utils/errors";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {
-            const admin = req.body as Admin;
+            const admin = JSON.parse(req.body) as Admin;
             const jwt = await login(admin);
 
             // cookie lives for 1 week

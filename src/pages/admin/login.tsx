@@ -9,6 +9,7 @@ import LockIcon from "@material-ui/icons/Lock";
 import PersonIcon from "@material-ui/icons/Person";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
+import urls from "utils/urls";
 
 function Login() {
     const styles = useStyles();
@@ -22,15 +23,20 @@ function Login() {
         e.preventDefault();
         setLoading(true);
 
-        // logic for successful/unsuccessful login. Currently only checks if email is "success@gmail.com" and password is 123
-        // TODO integrate the correct checks here
+        const response = await fetch(`${urls.baseUrl}${urls.api.login}`, {
+            method: "POST",
+            body: JSON.stringify({
+                email: email.current!.value,
+                password: password.current!.value,
+            }),
+        });
+        const responseJSON = (await response.json()) as { success: boolean; payload: unknown };
 
-        if (email.current!.value == "success@gmail.com" && password.current!.value == "123") {
+        setLoading(false);
+        if (responseJSON.success) {
             setValidLogin(true);
-            await router.push("/admin");
-            setLoading(false);
+            await router.push(urls.pages.adminHome);
         } else {
-            setLoading(false);
             setValidLogin(false);
         }
     };
@@ -76,11 +82,8 @@ function Login() {
                         />
                     )}
                     {!validLogin && (
-                        <CoreTypography
-                            variant="body1"
-                            style={{ color: colors.red, position: "relative", bottom: "10px" }}
-                        >
-                            Incorrect email or password
+                        <CoreTypography variant="body1" className={styles.errorText}>
+                            Incorrect email or password.
                         </CoreTypography>
                     )}
                     <Button variant="contained" type="submit" className={styles.button}>
@@ -146,6 +149,11 @@ const useStyles = makeStyles((theme: Theme) =>
             position: "relative",
             bottom: "10px",
             marginTop: "0",
+        },
+        errorText: {
+            color: theme.palette.error.main,
+            position: "relative",
+            bottom: "10px",
         },
         button: {
             borderRadius: "56px",

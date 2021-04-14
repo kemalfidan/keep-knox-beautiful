@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { GetStaticPropsContext, NextPage } from "next";
+import { NextPage, NextPageContext } from "next";
 import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
 import constants from "utils/constants";
-import { Event, LoadMorePaginatedData } from "utils/types";
+import { Event, Admin, LoadMorePaginatedData } from "utils/types";
 import urls from "utils/urls";
 import colors from "src/components/core/colors";
+import Router from "next/router";
 
 // mui
 import { Button, Container, createStyles, Grid, makeStyles, Theme, Divider } from "@material-ui/core";
@@ -156,8 +157,25 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     );
 };
 
-export async function getStaticProps(context: GetStaticPropsContext) {
+export async function getServerSideProps(context: NextPageContext) {
     try {
+        const cookie = context.req?.headers.cookie;
+        const response = await fetch(`${urls.baseUrl}${urls.api.validateLogin}`, {
+            method: "POST",
+            headers: {
+                cookie: cookie || "",
+            },
+        });
+
+        // redirect
+        if (response.status !== 200) {
+            context.res?.writeHead(302, {
+                Location: urls.pages.login,
+            });
+            context.res?.end();
+            return { props: {} };
+        }
+
         const currentEvents: Event[] = await getCurrentEventsAdmin();
         const pastEvents: LoadMorePaginatedData = await getPastEventsAdmin(1);
 
@@ -166,7 +184,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
                 currentEvents: JSON.parse(JSON.stringify(currentEvents)) as Event[],
                 pastEvents: JSON.parse(JSON.stringify(pastEvents)) as Event[],
             },
-            revalidate: constants.revalidate.upcomingEvents,
         };
     } catch (error) {
         console.log(error);
@@ -174,7 +191,6 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             props: {
                 events: [],
             },
-            revalidate: constants.revalidate.upcomingEvents,
         };
     }
 }
