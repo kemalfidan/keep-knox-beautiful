@@ -4,7 +4,7 @@ import errors from "utils/errors";
 import { Event, APIError } from "utils/types";
 
 // @route   /api/volunteers/[volId]/events - Returns a list of paginated
-// events that a single volunteer attended
+//   events that a single volunteer attended. - Private.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method == "GET") {

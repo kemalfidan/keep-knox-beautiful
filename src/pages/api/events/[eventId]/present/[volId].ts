@@ -3,7 +3,7 @@ import { markVolunteerPresent } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { APIError } from "utils/types";
 
-// POST /api/events/[eventId]/present/[volId] will mark volunteer volId as present for event eventId
+// POST /api/events/[eventId]/present/[volId] will mark volunteer volId as present for event eventId. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.eventId || !req.query.volId) {

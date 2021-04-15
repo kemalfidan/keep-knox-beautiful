@@ -11,9 +11,8 @@ export const config = {
     },
 };
 
-// POST /api/volunteers will create a single volunteer in the system
-//    ...(may not be needed since we'll auto-create one when they sign up for an event)
-// GET /api/volunteers will return a paginated list of all volunteers
+// GET /api/volunteers will return a paginated list of all volunteers - Private
+// POST /api/volunteers will create a single volunteer in the system - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {

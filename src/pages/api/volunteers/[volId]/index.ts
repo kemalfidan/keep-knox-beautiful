@@ -12,8 +12,8 @@ export const config = {
     },
 };
 
-// @route   GET /api/volunteers/[volId] - Returns a single Volunteer object for volunteer volId.
-// @route   POST /api/volunteers/[volId] - Updates existing Volunteer object with _id of volId.
+// @route   GET /api/volunteers/[volId] - Returns a single Volunteer object for volunteer volId. - Private
+// @route   POST /api/volunteers/[volId] - Updates existing Volunteer object with _id of volId. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.volId) {

@@ -3,7 +3,8 @@ import { sendVerificationEmail } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { Volunteer, APIError } from "utils/types";
 
-// @route   PUT /api/volunteers/[volId]/email - Emails a single volunteer their attendance information.
+// @route   PUT /api/volunteers/[volId]/email - Emails a single volunteer
+//   their attendance information. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {

@@ -5,7 +5,7 @@ import { registerVolunteerToEvent } from "server/actions/Volunteer";
 
 // POST /api/events/[eventId]/signup will take form data and sign up a new or existing
 //   volunteer for event eventId. Also takes optional query param for `count` only
-//   for group events
+//   for group events. - Public
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {
