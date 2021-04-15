@@ -72,31 +72,11 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                     justify="center"
                     style={{ width: "100%", paddingTop: width == "xs" ? "10%" : "" }}
                 >
-                    <Grid
-                        item
-                        xs={12}
-                        sm={7}
-                        lg={6}
-                        style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            paddingLeft: "10%",
-                            marginTop: "20px",
-                        }}
-                    >
-                        <CoreTypography variant="h1" style={{ color: "white" }}>
-                            Upcoming events
-                        </CoreTypography>
-                        <CoreTypography variant="h3" style={{ fontWeight: "normal", color: "white", marginBottom: 30 }}>
-                            Join us for a workday!
-                        </CoreTypography>
-                    </Grid>
                     {width == "xs" ? null : (
                         <Grid
                             item
                             xs={5}
-                            lg={6}
+                            lg={2}
                             style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                         >
                             <img
@@ -106,6 +86,13 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                             />
                         </Grid>
                     )}
+
+                    <Grid item xs={12} sm={7} lg={6} className={classes.pageTitle}>
+                        <CoreTypography variant="h1" style={{ color: "white" }}>
+                            Upcoming events
+                        </CoreTypography>
+                        {/* TODO button that goes to add event page here */}
+                    </Grid>
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
@@ -203,6 +190,15 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.primary.main,
             position: "relative",
             top: 0,
+        },
+        pageTitle: {
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            marginTop: "20px",
+            [theme.breakpoints.down("xs")]: {
+                alignItems: "center",
+            },
         },
         "@global": {
             ".MuiDivider-middle": {

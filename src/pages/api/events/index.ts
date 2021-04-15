@@ -5,6 +5,7 @@ import { Event, APIError } from "utils/types";
 import constants from "utils/constants";
 import { addEvent, getCurrentEvents, getPastEventsAdmin } from "server/actions/Event";
 import { uploadImage } from "server/actions/Contentful";
+import authenticate from "server/actions/Authenticate";
 
 // formidable config
 export const config = {
@@ -44,6 +45,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 throw new APIError(400, "Invalid query parameter `type`.");
             }
         } else if (req.method === "POST") {
+            authenticate(req, res);
+
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 try {
