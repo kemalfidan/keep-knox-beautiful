@@ -2,6 +2,8 @@ import React from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import constants from "utils/constants";
+import AdminContent from "./admin_content";
+import { Toolbar } from "@material-ui/core";
 
 const Header: React.FC = () => {
     const styles = useStyles();
@@ -34,6 +36,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         headerBanner: {
             height: "60px",
+        },
+        adminContent: {
+            position: "absolute",
+            right: "20px",
         },
     })
 );
