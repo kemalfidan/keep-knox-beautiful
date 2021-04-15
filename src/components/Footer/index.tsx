@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             backgroundColor: theme.palette.primary.main,
+            // flexShrink: 0,
         },
         wrapper: {
             display: "flex",

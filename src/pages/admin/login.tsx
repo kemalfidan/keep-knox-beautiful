@@ -98,7 +98,6 @@ function Login() {
     );
 }
 
-// styles
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
@@ -107,8 +106,6 @@ const useStyles = makeStyles((theme: Theme) =>
             textAlign: "center",
             alignItems: "center",
             justifyContent: "center",
-            marginLeft: "50px",
-            marginRight: "50px",
             height: "100%",
         },
         banner: {

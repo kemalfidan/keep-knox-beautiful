@@ -27,17 +27,26 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             </Head>
             <ThemeProvider theme={theme}>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
                     <CssBaseline />
-                    <Header />
                     <div className="container">
-                        <Component {...pageProps} />
+                        <Header />
+                        <div className="body">
+                            <Component {...pageProps} />
+                        </div>
+                        <Footer />
+
                         <style jsx>{`
                             .container {
+                                min-height: 100vh;
                                 display: flex;
                                 flex-direction: column;
                                 justify-content: center;
                                 align-items: center;
+                            }
+                            // sticky footer
+                            .body {
+                                width: 100%;
+                                flex-grow: 1;
                             }
                         `}</style>
 
@@ -53,7 +62,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                                 box-sizing: border-box;
                             }
                         `}</style>
-                        <Footer />
                     </div>
                 </MuiPickersUtilsProvider>
             </ThemeProvider>
