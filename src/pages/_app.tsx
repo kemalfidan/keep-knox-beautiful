@@ -10,9 +10,12 @@ import theme from "utils/theme";
 import Header from "src/components/Header";
 import Footer from "src/components/Footer";
 import constants from "utils/constants";
-import urls from "utils/urls";
+import "../../public/App.css";
 
-export default function MyApp({ Component, pageProps }: AppProps) {
+export default function MyApp({ Component, pageProps, router }: AppProps) {
+    let admin = false;
+    if (router.pathname.includes("admin")) admin = true;
+
     React.useEffect(() => {
         // Remove the server-side injected CSS.
         const jssStyles = document.querySelector("#jss-server-side");
@@ -32,39 +35,11 @@ export default function MyApp({ Component, pageProps }: AppProps) {
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
                     <CssBaseline />
                     <div className="container">
-                        <Header />
+                        <Header isAdmin={admin} />
                         <div className="body">
                             <Component {...pageProps} />
                         </div>
                         <Footer />
-
-                        <style jsx>{`
-                            .container {
-                                min-height: 100vh;
-                                display: flex;
-                                flex-direction: column;
-                                justify-content: center;
-                                align-items: center;
-                            }
-                            // sticky footer
-                            .body {
-                                width: 100%;
-                                flex-grow: 1;
-                            }
-                        `}</style>
-
-                        <style jsx global>{`
-                            html,
-                            body {
-                                padding: 0;
-                                margin: 0;
-                                font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
-                                    Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-                            }
-                            * {
-                                box-sizing: border-box;
-                            }
-                        `}</style>
                     </div>
                 </MuiPickersUtilsProvider>
             </ThemeProvider>
@@ -75,4 +50,5 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 MyApp.propTypes = {
     Component: PropTypes.elementType.isRequired,
     pageProps: PropTypes.object.isRequired,
+    router: PropTypes.object.isRequired,
 };
