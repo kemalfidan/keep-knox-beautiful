@@ -9,6 +9,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "utils/theme";
 import Header from "src/components/Header";
 import Footer from "src/components/Footer";
+import constants from "utils/constants";
+import urls from "utils/urls";
 
 export default function MyApp({ Component, pageProps }: AppProps) {
     React.useEffect(() => {
@@ -22,8 +24,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     return (
         <React.Fragment>
             <Head>
-                <title>Keep Knoxville Beautiful</title>
+                <title>{constants.org.name.full}</title>
                 <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+                <link rel="icon" href="/favicon.ico" />
             </Head>
             <ThemeProvider theme={theme}>
                 <MuiPickersUtilsProvider utils={DateFnsUtils}>
