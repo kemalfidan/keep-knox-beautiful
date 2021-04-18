@@ -157,6 +157,48 @@ export const registerVolunteerToEvent = async function (vol: Volunteer, eventId:
 };
 
 /**
+ * Registers a volunteer to an event, without many of the validity checks.
+ * Also adds the event to a volunteer's registered events list. If the
+ * volunteer does not exist, it will create one first. There is currently
+ * no backend security, so ensure the function is only called from admin
+ * locations.
+ * @param vol The volunteer data to register.
+ * @param eventId The event id to register the volunter for.
+ * @param registerCount The number of people registering for event eventId. Only allowed for group events.
+ */
+export const sudoRegisterVolunteerToEvent = async function (vol: Volunteer, eventId: string, registerCount = 1) {
+    await mongoDB();
+    if (!vol || !eventId) {
+        throw new APIError(400, "Invalid input. Need both volunteer and event information.");
+    } else if (isNaN(registerCount) || registerCount < 1) {
+        throw new APIError(400, "Invalid registration count.");
+    }
+
+    const event = await EventSchema.findById(eventId);
+
+    // should only fail when event doesnt exist
+    if (!event) {
+        throw new APIError(404, "Event does not exist.");
+    }
+
+    // if !exists, create volunteer. Note that this might update the
+    // info on a volunteer if other data other than email is different
+    // VolunteerSchema.
+    const volunteer = await VolunteerSchema.findOneAndUpdate({ email: vol.email }, vol, { new: true, upsert: true });
+    if (event.registeredVolunteers?.indexOf(volunteer._id) !== -1) {
+        throw new APIError(404, "You have already been registered to this event.");
+    }
+
+    volunteer.registeredEvents?.push(eventId);
+    event.registeredVolunteers?.push(volunteer._id);
+    event.volunteerCount! += registerCount; // default to 0 so will never be undefined
+    // these are not atomic updates
+    const volPromise = VolunteerSchema.updateOne({ email: vol.email }, volunteer);
+    const eventPromise = EventSchema.updateOne({ _id: eventId }, event);
+    await Promise.all([volPromise, eventPromise]);
+};
+
+/**
  * Marks a volunteer present at an event. Also adds the event to a volunteer's attended events list.
  * @param volId The volunteer id of the volunteer to mark present
  * @param eventId the event id the volunteer attended

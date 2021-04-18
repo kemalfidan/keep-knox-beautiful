@@ -7,6 +7,7 @@ import {
     registerVolunteerToEvent,
     updateVolunteer,
     getVolunteerEvents,
+    sudoRegisterVolunteerToEvent,
 } from "server/actions/Volunteer";
 import VolunteerSchema from "server/models/Volunteer";
 import EventSchema from "server/models/Event";
@@ -216,7 +217,7 @@ describe("registerVolunteerToEvent() tests", () => {
         EventSchema.updateOne = jest.fn().mockResolvedValue(mockVolunteer);
         VolunteerSchema.updateOne = jest.fn().mockResolvedValue(mockVolunteer);
 
-        await registerVolunteerToEvent(newVolunteer, eventId);
+        await sudoRegisterVolunteerToEvent(newVolunteer, eventId);
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
         expect(VolunteerSchema.findOneAndUpdate).lastCalledWith({ email: newVolunteer.email }, newVolunteer, options);
@@ -233,7 +234,7 @@ describe("registerVolunteerToEvent() tests", () => {
         const eventId = "604d6730ca1c1d7fcd4fbdc4";
 
         EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
-        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError("Event does not exist.");
+        await expect(sudoRegisterVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError("Event does not exist.");
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
     });
@@ -278,7 +279,7 @@ describe("registerVolunteerToEvent() tests", () => {
         EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
         VolunteerSchema.findOneAndUpdate = jest.fn().mockResolvedValue(mockVolunteer);
         await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError(
-            "The volunteer has already been registered to this event."
+            "You have already been registered to this event."
         );
         expect(EventSchema.findById).lastCalledWith(eventId);
         expect(EventSchema.findById).toHaveBeenCalledTimes(1);
@@ -331,6 +332,109 @@ describe("registerVolunteerToEvent() tests", () => {
         expect(VolunteerSchema.findOneAndUpdate).toHaveBeenCalledTimes(0);
     });
 });
+
+describe("sudoRegisterVolunteerToEvent() tests", () => {
+    const newVolunteer: Volunteer = {
+        name: "John Smith",
+        email: "jsmith@gmail.com",
+        phone: "(931) 931-9319",
+    };
+
+    test("successful registration", async () => {
+        const eventId = "604d6730ca1c1d7fcd4fbdc9";
+        const mockEvent: Event = {
+            _id: "604d6730ca1c1d7fcd4fbdc9",
+            name: "February Spruce Up",
+            description: "We are sprucing in February. Come spruce with us :)",
+            caption: "It's spruce season",
+            maxVolunteers: 10,
+            volunteerCount: 4,
+            location: "1234 Neyland Dr\nKnoxville, TN 37916",
+            startDate: new Date(Date.now()),
+            endDate: new Date(Date.now()),
+            startRegistration: new Date(Date.now()),
+            endRegistration: new Date(Date.now()),
+            hours: 3,
+            image: {
+                assetID: "aASDuiHWIDUOHWEff",
+                url: "https://i.imgur.com/MrGY5EL.jpeg",
+            },
+            registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3"],
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
+        };
+        const mockVolunteer: Volunteer = {
+            _id: "604d6730ca1c1d7fcd4fbde0",
+            name: "John Smith",
+            email: "jsmith@gmail.com",
+            phone: "(931) 931-9319",
+            totalEvents: 2,
+            totalHours: 5,
+            registeredEvents: ["604d6730ca1c1d7fcd4fbdc2"],
+            attendedEvents: ["604d6730ca1c1d7fcd4fbdc3", "604d6730ca1c1d7fcd4fbdc4"],
+        };
+        const options = { new: true, upsert: true };
+
+        // insert vol into this event and update vol's fields
+        const updatedEvent: Event = {
+            _id: "604d6730ca1c1d7fcd4fbdc9",
+            name: "February Spruce Up",
+            description: "We are sprucing in February. Come spruce with us :)",
+            caption: "It's spruce season",
+            maxVolunteers: 10,
+            volunteerCount: 5,
+            location: "1234 Neyland Dr\nKnoxville, TN 37916",
+            startDate: new Date(Date.now()),
+            endDate: new Date(Date.now()),
+            startRegistration: new Date(Date.now()),
+            endRegistration: new Date(Date.now()),
+            hours: 3,
+            image: {
+                assetID: "aASDuiHWIDUOHWEff",
+                url: "https://i.imgur.com/MrGY5EL.jpeg",
+            },
+            registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3", "604d6730ca1c1d7fcd4fbde0"],
+            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
+        };
+        const updatedVolunteer: Volunteer = {
+            _id: "604d6730ca1c1d7fcd4fbde0",
+            name: "John Smith",
+            email: "jsmith@gmail.com",
+            phone: "(931) 931-9319",
+            totalEvents: 2,
+            totalHours: 5,
+            registeredEvents: ["604d6730ca1c1d7fcd4fbdc2", "604d6730ca1c1d7fcd4fbdc9"],
+            attendedEvents: ["604d6730ca1c1d7fcd4fbdc3", "604d6730ca1c1d7fcd4fbdc4"],
+        };
+
+        EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
+        VolunteerSchema.findOneAndUpdate = jest.fn().mockResolvedValue(mockVolunteer);
+        // the return vals here don't matter, just doing so updateOne's dont get called
+        EventSchema.updateOne = jest.fn().mockResolvedValue(mockVolunteer);
+        VolunteerSchema.updateOne = jest.fn().mockResolvedValue(mockVolunteer);
+
+        await registerVolunteerToEvent(newVolunteer, eventId);
+        expect(EventSchema.findById).lastCalledWith(eventId);
+        expect(EventSchema.findById).toHaveBeenCalledTimes(1);
+        expect(VolunteerSchema.findOneAndUpdate).lastCalledWith({ email: newVolunteer.email }, newVolunteer, options);
+        expect(VolunteerSchema.findOneAndUpdate).toHaveBeenCalledTimes(1);
+        expect(EventSchema.updateOne).lastCalledWith({ _id: eventId }, updatedEvent);
+        expect(EventSchema.updateOne).toHaveBeenCalledTimes(1);
+        expect(VolunteerSchema.updateOne).lastCalledWith({ email: newVolunteer.email }, updatedVolunteer);
+        expect(VolunteerSchema.updateOne).toHaveBeenCalledTimes(1);
+    });
+
+    test("fail bc event doesnt exist", async () => {
+        expect.assertions(3);
+        const mockEvent = undefined;
+        const eventId = "604d6730ca1c1d7fcd4fbdc4";
+
+        EventSchema.findById = jest.fn().mockResolvedValue(mockEvent);
+        await expect(registerVolunteerToEvent(newVolunteer, eventId)).rejects.toThrowError("Event does not exist.");
+        expect(EventSchema.findById).lastCalledWith(eventId);
+        expect(EventSchema.findById).toHaveBeenCalledTimes(1);
+    });
+});
+
 
 describe("markVolunteerPresent() tests", () => {
     test("successfully checked in", async () => {
