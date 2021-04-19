@@ -8,6 +8,7 @@ export default {
     pink: "#F298AE",
     red: "#D32F2F",
     orange: "#F58647",
+    lightBlue: "#33A3C8",
     grays: {
         40: "#999999",
         60: "#666666",
