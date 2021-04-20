@@ -108,7 +108,6 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
 // get volunteer data
 export async function getStaticProps(context: GetStaticPropsContext) {
     try {
-        console.log(context.params?.volId);
         const vol: Volunteer = await getVolunteer(context.params?.volId as string);
 
         return {
