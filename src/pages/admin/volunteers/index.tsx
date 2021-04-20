@@ -17,49 +17,63 @@ import {
 import { Search } from "@material-ui/icons";
 import { GetStaticPropsContext, NextPage } from "next";
 import Link from "next/link";
-import { useRef, useState } from "react";
-import { getVolunteersForAdmin } from "server/actions/Volunteer";
+import React, { useState } from "react";
+import { getVolunteers } from "server/actions/Volunteer";
 import colors from "src/components/core/colors";
 import constants from "utils/constants";
-import { Volunteer } from "utils/types";
+import { Volunteer, LoadMorePaginatedData } from "utils/types";
 import urls from "utils/urls";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 interface Props {
-    vols: Volunteer[];
+    volsProps: Volunteer[];
+    isLastPageProps: boolean;
 }
 
-export async function getStaticProps(context: GetStaticPropsContext) {
-    try {
-        const vols: Volunteer[] = await getVolunteersForAdmin();
-
-        return {
-            props: {
-                vols: JSON.parse(JSON.stringify(vols)) as Volunteer[],
-            },
-            revalidate: constants.revalidate.allVolunteers,
-        };
-    } catch (error) {
-        return {
-            props: {},
-            revalidate: constants.revalidate.allVolunteers,
-        };
-    }
-}
-
-const VolunteersPage: NextPage<Props> = ({ vols }) => {
-    // helper func to get the vols by search query
-    function getVolsFromSearch(query: string): Volunteer[] {
-        if (query == "") return vols;
-        // this search is pretty basic, but i think it works
-        return vols.filter(
-            vol =>
-                vol.name.toLowerCase().indexOf(query.toLowerCase()) !== -1 ||
-                vol.email?.toLowerCase().indexOf(query.toLowerCase()) !== -1
-        );
-    }
-
+const VolunteersPage: NextPage<Props> = ({ volsProps, isLastPageProps }) => {
     const styles = useStyles();
     const [search, setSearch] = useState("");
+    const [vols, setVols] = useState<Volunteer[]>(volsProps);
+    const [page, setPage] = useState<number>(1);
+    const [isLastPage, setIsLastPage] = useState<boolean>(isLastPageProps);
+
+    // helper func to get the vols by search query
+    async function getVolsFromSearch(query: string) {
+        const r = await fetch(`${urls.api.volunteers}?page=1&search=${query}`, {
+            method: "GET",
+        });
+        /* eslint-disable */
+        const response = await r.json();
+        const newVolsData: LoadMorePaginatedData = response.payload;
+        /* eslint-enable */
+        setVols(newVolsData.data);
+        setIsLastPage(newVolsData.isLastPage);
+    }
+
+    // helper func to get the vols for a certain page
+    async function getVolsForPage(newPage: number) {
+        const r = await fetch(`${urls.api.volunteers}?page=${newPage}&search=${search}`, {
+            method: "GET",
+        });
+        /* eslint-disable */
+        const response = await r.json();
+        const newVolsData: LoadMorePaginatedData = response.payload;
+        /* eslint-enable */
+
+        setVols(vols.concat(newVolsData.data));
+        setIsLastPage(newVolsData.isLastPage);
+    }
+
+    const handleSearchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+        setPage(1);
+        await getVolsFromSearch(event.target.value);
+    };
+    const handleLoadMore = async () => {
+        await getVolsForPage(page + 1);
+        setPage(page + 1);
+    };
+
     return (
         <Container maxWidth="xl" className={styles.container}>
             <Grid container direction="row" justify="center">
@@ -71,9 +85,8 @@ const VolunteersPage: NextPage<Props> = ({ vols }) => {
                             margin="dense"
                             size="small"
                             style={{ margin: 30 }}
-                            onChange={e => {
-                                setSearch(e.target.value);
-                            }}
+                            color="secondary"
+                            onChange={handleSearchChange}
                             InputProps={{
                                 startAdornment: (
                                     <InputAdornment position="start">
@@ -87,33 +100,59 @@ const VolunteersPage: NextPage<Props> = ({ vols }) => {
             </Grid>
             <Grid container direction="row" spacing={6} justify="center">
                 <Grid item xs={10} md={8} lg={6}>
-                    <TableContainer component={Paper}>
-                        <Table className={styles.table} aria-label="volunteer table">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell style={{ fontWeight: "bold" }}>Volunteer name</TableCell>
-                                    <TableCell style={{ fontWeight: "bold" }} align="right">
-                                        Email
-                                    </TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {getVolsFromSearch(search).map(vol => (
-                                    <Link href={urls.pages.volunteer(vol._id!)} passHref key={vol._id}>
-                                        <TableRow className={styles.tr} hover>
-                                            <TableCell>{vol.name}</TableCell>
-                                            <TableCell align="right">{vol.email}</TableCell>
-                                        </TableRow>
-                                    </Link>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+                    <InfiniteScroll
+                        dataLength={vols.length}
+                        next={handleLoadMore}
+                        hasMore={!isLastPage}
+                        loader={<h4>Loading...</h4>}
+                    >
+                        <TableContainer component={Paper}>
+                            <Table className={styles.table} aria-label="volunteer table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell style={{ fontWeight: "bold" }}>Volunteer Name</TableCell>
+                                        <TableCell style={{ fontWeight: "bold" }} align="right">
+                                            Email
+                                        </TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {vols.map(vol => (
+                                        <Link href={urls.pages.volunteer(vol._id!)} passHref key={vol._id}>
+                                            <TableRow className={styles.tr} hover>
+                                                <TableCell>{vol.name}</TableCell>
+                                                <TableCell align="right">{vol.email}</TableCell>
+                                            </TableRow>
+                                        </Link>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </InfiniteScroll>
                 </Grid>
             </Grid>
         </Container>
     );
 };
+
+export async function getStaticProps(context: GetStaticPropsContext) {
+    try {
+        const volsData: LoadMorePaginatedData = await getVolunteers(1);
+
+        return {
+            props: {
+                volsProps: JSON.parse(JSON.stringify(volsData.data)) as Volunteer[],
+                isLastPageProps: volsData.isLastPage,
+            },
+            revalidate: constants.revalidate.allVolunteers,
+        };
+    } catch (error) {
+        return {
+            props: {},
+            revalidate: constants.revalidate.allVolunteers,
+        };
+    }
+}
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -121,7 +160,8 @@ const useStyles = makeStyles((theme: Theme) => {
             minWidth: 500,
         },
         container: {
-            margin: 30,
+            marginTop: 30,
+            marginBottom: 70,
         },
         tr: {
             cursor: "pointer",

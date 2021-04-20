@@ -1,7 +1,7 @@
 import mongoDB from "../index";
 import VolunteerSchema from "../models/Volunteer";
 import EventSchema from "../models/Event";
-import { Event, Volunteer, APIError } from "utils/types";
+import { Event, Volunteer, APIError, LoadMorePaginatedData } from "utils/types";
 import { escapeRegExp } from "utils/util";
 import { createTransport } from "nodemailer";
 import constants from "utils/constants";
@@ -32,23 +32,14 @@ export const getVolunteer = async function (id: string) {
     return vol;
 };
 
-export const getVolunteersForAdmin = async function () {
-    await mongoDB();
-
-    // TODO: add admin guard
-    const vols = (await VolunteerSchema.find()) as Volunteer[];
-
-    return vols;
-};
-
 /**
  * @param page Since this data is paginated, page is used to return a certain subset of the data.
  * @param search Optional parameter used to search volunteers by name.
- * @returns A limited number of volunteers in an array.
+ * @returns A limited number of volunteers in a LoadMorePaginatedData type.
  */
 export const getVolunteers = async function (page: number, search = "") {
     await mongoDB();
-    const VOLS_PER_PAGE = 6;
+    const VOLS_PER_PAGE = 10;
 
     // error check page and set it to be offset from 0 (1st page will return the 0th offset of data)
     if (isNaN(page) || page < 1) {
@@ -63,11 +54,13 @@ export const getVolunteers = async function (page: number, search = "") {
     )
         .sort({ name: 1 })
         .skip(page * VOLS_PER_PAGE)
-        .limit(VOLS_PER_PAGE);
+        .limit(VOLS_PER_PAGE + 1);
+    // +1 in limit() to see if this is the last page
 
-    // 0 vols found is a valid state and not an error
-    // since search might return none
-    return vols;
+    return {
+        data: vols.slice(0, VOLS_PER_PAGE),
+        isLastPage: vols.length < VOLS_PER_PAGE + 1,
+    } as LoadMorePaginatedData;
 };
 
 /**
