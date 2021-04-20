@@ -1,12 +1,12 @@
 const prod = process.env.NODE_ENV === "production";
 
 export default {
-    baseUrl: prod ? "http://prod_domain_here!" : "http://localhost:3000",
+    baseUrl: prod ? "http://localhost:3000" : "http://localhost:3000",
     dbUrl: process.env.MONGO_DB ?? "mongodb://localhost:27017",
     pages: {
         index: "/",
         event: (eventId: string) => `/events/${eventId}`,
-        login: "/admin/login",
+        login: "/login",
         adminHome: "/admin",
         events: "/admin/events",
         addEvent: "/admin/events/new",

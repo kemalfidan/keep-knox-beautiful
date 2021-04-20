@@ -24,15 +24,12 @@ const Header: React.FC<Props> = ({ isAdmin }) => {
     const handleLogout = async (event: React.SyntheticEvent) => {
         event.preventDefault();
 
-        {
-            /* TODO uncomment the code below once the login api gets merged in */
+        const response = await fetch(`${urls.baseUrl}${urls.api.logout}`, { method: "PUT" });
+        // by forwarding admin to admin home, we actually route them to the login
+        //   page since they're not logged in anymore
+        if (response.status == 200) {
+            await router.push(urls.pages.adminHome);
         }
-        // const response = await fetch(`${urls.baseUrl}${urls.api.logout}`, { method: "PUT" });
-        // // by forwarding admin to admin home, we actually route them to the login
-        // //   page since they're not logged in anymore
-        // if (response.status == 200) {
-        //     await router.push(urls.pages.adminHome);
-        // }
     };
 
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -61,8 +58,7 @@ const Header: React.FC<Props> = ({ isAdmin }) => {
                                 </CoreTypography>
                             </Button>
                         </Link>
-                        {/* TODO route to volunteers page */}
-                        <Link href={urls.pages.addEvent}>
+                        <Link href={urls.pages.volunteers}>
                             <Button className={styles.navButton}>
                                 <CoreTypography variant="h3" style={{ fontWeight: "normal" }}>
                                     Volunteers

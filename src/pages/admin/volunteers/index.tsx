@@ -46,6 +46,7 @@ const VolunteersPage: NextPage<Props> = ({ volsProps, isLastPageProps }) => {
         const response = await r.json();
         const newVolsData: LoadMorePaginatedData = response.payload;
         /* eslint-enable */
+
         setVols(newVolsData.data);
         setIsLastPage(newVolsData.isLastPage);
     }
