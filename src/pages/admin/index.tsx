@@ -74,23 +74,21 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                     justify="center"
                     style={{ width: "100%", paddingTop: width == "xs" ? "10%" : "" }}
                 >
-                    {width == "xs" ? null : (
-                        <Grid
-                            item
-                            xs={5}
-                            md={3}
-                            lg={3}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                        >
-                            <img
-                                src={`/${constants.org.images.logo}`}
-                                alt={`${constants.org.name.short} logo`}
-                                style={{ height: "260px" }}
-                            />
-                        </Grid>
-                    )}
+                    <Grid
+                        item
+                        xs={4}
+                        md={3}
+                        lg={3}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                        <img
+                            src={`/${constants.org.images.logo}`}
+                            alt={`${constants.org.name.short} logo`}
+                            className={classes.headerImage}
+                        />
+                    </Grid>
 
-                    <Grid item xs={12} sm={7} lg={6} className={classes.pageTitle}>
+                    <Grid item xs={6} sm={7} lg={6} className={classes.pageTitle}>
                         <CoreTypography variant="h1" style={{ color: "white" }}>
                             Upcoming events
                         </CoreTypography>
@@ -99,7 +97,6 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                                 Add<AddIcon></AddIcon>
                             </Button>
                         </Link>
-                        {/* TODO button that goes to add event page here */}
                     </Grid>
                 </Grid>
             </div>
@@ -196,6 +193,12 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "100%",
             height: "55vh",
             backgroundColor: theme.palette.primary.main,
+        },
+        headerImage: {
+            height: "260px",
+            [theme.breakpoints.down("xs")]: {
+                height: "120px",
+            },
         },
         pageTitle: {
             display: "flex",
