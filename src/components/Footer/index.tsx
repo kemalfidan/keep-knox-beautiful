@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme: Theme) =>
             color: colors.white,
         },
         lastText: {
-            paddingTop: "5px",
+            paddingTop: "20px",
         },
     })
 );

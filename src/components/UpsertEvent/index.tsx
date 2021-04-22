@@ -374,7 +374,7 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                                 enterTouchDelay={0}
                                 leaveTouchDelay={5000}
                                 title="Be careful when pasting formatted text. It's recommended to 
-                            clean the formatting (on the very right) and reformat it in the editor."
+                            clear the formatting (on the very right) and then format it in the editor."
                             >
                                 <InfoIcon />
                             </Tooltip>
