@@ -220,15 +220,19 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             position: "relative",
             justifyContent: "center",
+            paddingTop: "30px",
+            paddingBottom: "10px",
             [theme.breakpoints.down("sm")]: {
                 position: "static",
                 flexDirection: "column",
+                marginBottom: "40px",
             },
         },
         pastEventsTitle: {
             display: "flex",
             [theme.breakpoints.down("sm")]: {
-                justifyContent: "center",
+                flexDirection: "column",
+                alignSelf: "center",
             },
         },
         pastEventsSearch: {
@@ -236,10 +240,11 @@ const useStyles = makeStyles((theme: Theme) =>
             right: "100px",
             position: "absolute",
             [theme.breakpoints.down("sm")]: {
-                position: "static",
-                right: "0px",
-                flexDirection: "column",
-                alignSelf: "center",
+                marginTop: "10px",
+                marginLeft: "auto",
+                marginRight: "auto",
+                left: "0",
+                right: "0",
             },
         },
     })
