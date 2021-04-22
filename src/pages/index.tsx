@@ -36,15 +36,14 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                 >
                     <Grid
                         item
-                        xs={12}
+                        xs={7}
                         sm={7}
-                        lg={6}
+                        lg={5}
                         style={{
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
-                            paddingLeft: "10%",
-                            marginTop: "20px",
+                            // backgroundColor: "pink",
                         }}
                     >
                         <CoreTypography variant="h1" style={{ color: "white" }}>
@@ -54,20 +53,19 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                             Join us for a workday!
                         </CoreTypography>
                     </Grid>
-                    {width == "xs" ? null : (
-                        <Grid
-                            item
-                            xs={5}
-                            lg={6}
-                            style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
-                        >
-                            <img
-                                src={`/${constants.org.images.logo}`}
-                                alt={`${constants.org.name.short} logo`}
-                                style={{ height: "200px" }}
-                            />
-                        </Grid>
-                    )}
+                    <Grid
+                        item
+                        xs={3}
+                        md={3}
+                        lg={3}
+                        style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
+                    >
+                        <img
+                            src={`/${constants.org.images.logo}`}
+                            alt={`${constants.org.name.short} logo`}
+                            className={classes.headerImage}
+                        />
+                    </Grid>
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
@@ -81,7 +79,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
 
             <Container disableGutters maxWidth="lg">
                 <Divider variant="middle" />
-                <CoreTypography variant="h2" style={{ textAlign: "center" }}>
+                <CoreTypography variant="h2" style={{ textAlign: "center", paddingTop: "30px", paddingBottom: "10px" }}>
                     Recent Events
                 </CoreTypography>
             </Container>
@@ -124,6 +122,12 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.primary.main,
             position: "relative",
             top: 0,
+        },
+        headerImage: {
+            height: "260px",
+            [theme.breakpoints.down("xs")]: {
+                height: "120px",
+            },
         },
         "@global": {
             ".MuiDivider-middle": {
