@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { NextPage, NextPageContext } from "next";
+import Link from "next/link";
 import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
@@ -16,6 +17,7 @@ import { DatePicker } from "@material-ui/pickers";
 import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import TodayIcon from "@material-ui/icons/Today";
+import AddIcon from "@material-ui/icons/Add";
 
 interface Props {
     currentEvents: Event[];
@@ -76,13 +78,14 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                         <Grid
                             item
                             xs={5}
-                            lg={2}
+                            md={3}
+                            lg={3}
                             style={{ display: "flex", alignItems: "center", justifyContent: "center" }}
                         >
                             <img
                                 src={`/${constants.org.images.logo}`}
                                 alt={`${constants.org.name.short} logo`}
-                                style={{ height: "200px" }}
+                                style={{ height: "260px" }}
                             />
                         </Grid>
                     )}
@@ -91,6 +94,11 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                         <CoreTypography variant="h1" style={{ color: "white" }}>
                             Upcoming events
                         </CoreTypography>
+                        <Link href={urls.pages.addEvent}>
+                            <Button className={classes.addEventButton}>
+                                Add<AddIcon></AddIcon>
+                            </Button>
+                        </Link>
                         {/* TODO button that goes to add event page here */}
                     </Grid>
                 </Grid>
@@ -193,9 +201,18 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            marginTop: "20px",
             [theme.breakpoints.down("xs")]: {
                 alignItems: "center",
+            },
+        },
+        addEventButton: {
+            backgroundColor: theme.palette.accent.main,
+            color: colors.white,
+            marginTop: "10px",
+            width: "100px",
+            height: "35px",
+            "&:hover": {
+                backgroundColor: theme.palette.accent.main,
             },
         },
         "@global": {
