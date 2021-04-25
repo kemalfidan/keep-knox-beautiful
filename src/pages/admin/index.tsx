@@ -90,7 +90,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
 
                     <Grid item xs={6} sm={7} lg={6} className={classes.pageTitle}>
                         <CoreTypography variant="h1" style={{ color: "white" }}>
-                            Upcoming events
+                            Upcoming Events
                         </CoreTypography>
                         <Link href={urls.pages.addEvent}>
                             <Button className={classes.addEventButton}>

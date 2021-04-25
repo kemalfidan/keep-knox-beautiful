@@ -43,11 +43,10 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                             display: "flex",
                             flexDirection: "column",
                             justifyContent: "center",
-                            // backgroundColor: "pink",
                         }}
                     >
                         <CoreTypography variant="h1" style={{ color: "white" }}>
-                            Upcoming events
+                            Upcoming Events
                         </CoreTypography>
                         <CoreTypography variant="h3" style={{ fontWeight: "normal", color: "white", marginBottom: 30 }}>
                             Join us for a workday!
