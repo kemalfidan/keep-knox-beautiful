@@ -205,6 +205,23 @@ export const deleteEvent = async function (id: string) {
     }
 };
 
+// helper
+export const getEventWithVolFields = async function (eventId: string) {
+    await mongoDB();
+    if (!eventId || eventId == "") {
+        throw new APIError(400, "Invalid id");
+    }
+
+    const event = await EventSchema.findById(eventId)
+        .populate({ path: "registeredVolunteers" })
+        .populate({ path: "attendedVolunteers" });
+    if (!event) {
+        throw new APIError(404, "Event does not exist");
+    }
+
+    return event;
+};
+
 /**
  * @param eventId The id of the event to get volunteers from.
  * @param page Since this data is paginated, page is used to return a certain subset of the data.
