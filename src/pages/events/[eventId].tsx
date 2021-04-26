@@ -261,7 +261,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "row",
         },
         card: {
-            width: "160px",
+            width: "180px",
             height: "120px",
             margin: "20px",
             marginRight: "30px",
