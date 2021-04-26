@@ -128,9 +128,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                 <Container className={styles.leftWrapper}>
                     {noImage()}
                     <Container maxWidth="xl" className={styles.caption}>
-                        <Container maxWidth="sm">
-                            <CoreTypography variant="h4"> {event.caption} </CoreTypography>
-                        </Container>
+                        <CoreTypography variant="h4"> {event.caption} </CoreTypography>
                     </Container>
                     <div
                         className={styles.descContainer}
@@ -223,7 +221,6 @@ const useStyles = makeStyles((theme: Theme) =>
             marginRight: "20px",
         },
         eventName: {
-            //padding: "0",
             margin: "0",
             minHeight: "110px",
             display: "flex",
@@ -277,7 +274,7 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: "0",
         },
         descContainer: {
-            width: "500px",
+            //width: "100%",
             padding: "20px",
         },
         cardTitle: {
@@ -310,6 +307,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         signUpForm: {
             marginBottom: "100px",
+            padding: "0",
         },
     })
 );
