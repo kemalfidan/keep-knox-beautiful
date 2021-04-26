@@ -179,10 +179,10 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             display: "flex",
-            paddingLeft: "0",
-            paddingRight: "0",
+            padding: "0",
+            margin: "0",
             flexDirection: "column",
-            width: "375px",
+            width: "450px",
         },
         textWrapper: {
             paddingBottom: "20px",
@@ -281,6 +281,7 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: "10px",
             paddingLeft: "0px",
             paddingRight: "0px",
+            textAlign: "center",
         },
         donateButton: {
             marginTop: "15px",

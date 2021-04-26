@@ -223,11 +223,11 @@ const useStyles = makeStyles((theme: Theme) =>
             marginRight: "20px",
         },
         eventName: {
-            textAlign: "center",
+            //padding: "0",
+            margin: "0",
             minHeight: "110px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
             maxWidth: "500px",
             textAlignLast: "center",
         },
@@ -253,14 +253,13 @@ const useStyles = makeStyles((theme: Theme) =>
         rightWrapper: {
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            textAlign: "center",
             maxWidth: "700px",
             minWidth: "400px",
-            padding: "0px",
+            paddingLeft: "70px",
         },
         cardContainer: {
             padding: "0",
+            paddingBottom: "15px",
             display: "flex",
             flexDirection: "row",
         },
@@ -273,8 +272,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         signUpHeader: {
             marginTop: "20px",
-            maxWidth: "375px",
+            width: "450px",
             padding: "0",
+            margin: "0",
         },
         descContainer: {
             width: "500px",
