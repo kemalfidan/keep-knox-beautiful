@@ -273,7 +273,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         signUpHeader: {
             marginTop: "20px",
-            maxWidth: "450px",
+            maxWidth: "375px",
+            padding: "0",
         },
         descContainer: {
             width: "500px",
