@@ -61,7 +61,7 @@ export const getCurrentEvents = async function () {
             },
         },
         EVENT_FIELDS
-    ).sort({ startDate: -1 })) as Event[];
+    ).sort({ startDate: 1 })) as Event[];
 
     if (!events) {
         throw new APIError(404, "No events.");
