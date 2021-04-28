@@ -1,7 +1,11 @@
 const prod = process.env.NODE_ENV === "production";
 
 export default {
+<<<<<<< HEAD
     baseUrl: prod ? "https://kkbevents.org" : "http://localhost:3000",
+=======
+    baseUrl: prod ? "https://keep-knox-beautiful-git-develop-kfidan1.vercel.app" : "http://localhost:3000",
+>>>>>>> c13ff45 (lets git it)
     dbUrl: process.env.MONGO_DB ?? "mongodb://localhost:27017",
     pages: {
         index: "/",
