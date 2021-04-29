@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme: Theme) =>
             top: 0,
         },
         headerImage: {
-            height: "260px",
+            height: "230px",
             [theme.breakpoints.down("xs")]: {
                 height: "120px",
             },

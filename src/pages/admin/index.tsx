@@ -59,7 +59,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
         // no longer appending - this is back to an initial view
         // load more handler will take of loading next pages for search
         setPastEvents(newPastEvents.data);
-        setLoadMore(!pastEvents.isLastPage);
+        setLoadMore(!newPastEvents.isLastPage);
         setSearchDate(date);
         setNextPage(2);
     };
@@ -88,9 +88,10 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                         />
                     </Grid>
 
+                    {/* TODO align button to the left */}
                     <Grid item xs={6} sm={7} lg={6} className={classes.pageTitle}>
                         <CoreTypography variant="h1" style={{ color: "white" }}>
-                            Upcoming Events
+                            Upcoming events
                         </CoreTypography>
                         <Link href={urls.pages.addEvent}>
                             <Button className={classes.addEventButton}>
@@ -195,7 +196,7 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.primary.main,
         },
         headerImage: {
-            height: "260px",
+            height: "230px",
             [theme.breakpoints.down("xs")]: {
                 height: "120px",
             },
@@ -205,7 +206,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             justifyContent: "center",
             [theme.breakpoints.down("xs")]: {
-                alignItems: "center",
+                alignItems: "left",
             },
         },
         addEventButton: {
@@ -216,6 +217,9 @@ const useStyles = makeStyles((theme: Theme) =>
             height: "35px",
             "&:hover": {
                 backgroundColor: theme.palette.accent.main,
+            },
+            [theme.breakpoints.down("xs")]: {
+                marginLeft: "0px",
             },
         },
         "@global": {

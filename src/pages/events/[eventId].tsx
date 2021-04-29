@@ -85,7 +85,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
     const noSignUp = () => {
         if (event.maxVolunteers != 0) {
             return (
-                <Container>
+                <Container className={styles.center}>
                     <Container className={styles.signUpHeader}>
                         <CoreTypography variant="h4" style={{ float: "left" }}>
                             Sign Up to Volunteer
@@ -253,6 +253,12 @@ const useStyles = makeStyles((theme: Theme) =>
             maxWidth: "700px",
             minWidth: "400px",
             paddingLeft: "70px",
+            [theme.breakpoints.down("sm")]: {
+                padding: "0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            },
         },
         cardContainer: {
             padding: "0",
@@ -267,6 +273,14 @@ const useStyles = makeStyles((theme: Theme) =>
             marginRight: "30px",
             borderRadius: 8,
         },
+        center: {
+            [theme.breakpoints.down("sm")]: {
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+            },
+        },
         signUpHeader: {
             marginTop: "20px",
             width: "450px",
@@ -274,7 +288,6 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: "0",
         },
         descContainer: {
-            //width: "100%",
             padding: "20px",
         },
         cardTitle: {
@@ -308,6 +321,11 @@ const useStyles = makeStyles((theme: Theme) =>
         signUpForm: {
             marginBottom: "100px",
             padding: "0",
+            [theme.breakpoints.down("sm")]: {
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+            },
         },
     })
 );

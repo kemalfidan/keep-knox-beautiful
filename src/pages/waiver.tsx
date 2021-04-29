@@ -8,7 +8,7 @@ export default function Waiver() {
 
     return (
         <React.Fragment>
-            <Container className={styles.container}>
+            <Container maxWidth="md" className={styles.container}>
                 <Container className={styles.header}>
                     <CoreTypography variant="h1">KKB Volunteer Waiver</CoreTypography>
                     <CoreTypography variant="h2">Release and Waiver of Liability</CoreTypography>
@@ -101,6 +101,8 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "column",
             textAlign: "justify",
+            marginTop: "50px",
+            marginBottom: "50px",
         },
         header: {
             textAlign: "center",
