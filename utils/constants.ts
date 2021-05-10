@@ -15,6 +15,7 @@ export default {
             phone: "(865) 521-6957",
             email: "info@Keepknoxvillebeautiful.org",
         },
+        donateLink: "http://www.keepknoxvillebeautiful.org/donate",
     },
     revalidate: {
         upcomingEvents: 20,

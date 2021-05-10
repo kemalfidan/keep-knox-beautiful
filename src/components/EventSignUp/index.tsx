@@ -160,7 +160,7 @@ const EventSignUp: React.FC<Props> = ({ id, groupSignUp }) => {
                 <Container className={styles.donateWrapper}>
                     <CoreTypography variant="h4">Can&apos;t volunteer?</CoreTypography>
                     <a
-                        href="http://www.keepknoxvillebeautiful.org/donate"
+                        href={constants.org.donateLink}
                         target="_blank"
                         rel="noreferrer"
                         style={{ textDecoration: "none" }}

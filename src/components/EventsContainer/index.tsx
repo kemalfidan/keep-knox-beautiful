@@ -7,6 +7,7 @@ import { Event } from "utils/types";
 
 interface Props {
     events: Event[];
+    pastEvents: boolean;
 }
 
 export default function EventsContainer(props: Props) {
@@ -19,7 +20,7 @@ export default function EventsContainer(props: Props) {
                     {props.events.map((event: Event, i: number) => {
                         return (
                             <Grid item xs={12} sm={8} md={5} lg={4} key={i}>
-                                <EventCard event={event} />
+                                <EventCard event={event} pastEvent={props.pastEvents} />
                             </Grid>
                         );
                     })}

@@ -115,7 +115,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         form: {
             paddingTop: "20px",
-
             width: "350px",
             display: "inherit",
             flexDirection: "inherit",
@@ -130,6 +129,7 @@ const useStyles = makeStyles((theme: Theme) =>
             height: "40px",
             fontSize: "17px",
             borderStyle: "solid",
+            borderWidth: "1px",
             textIndent: "35px",
             marginBottom: "15px",
             "&:focus": {
