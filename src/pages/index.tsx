@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { GetStaticPropsContext, NextPage } from "next";
 import withWidth from "@material-ui/core/withWidth";
 import { Button, Container, createStyles, Grid, makeStyles, Theme, Divider } from "@material-ui/core";
@@ -18,8 +18,14 @@ interface Props {
 const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
 
+    const [loading, setLoading] = useState(false);
+
+    function handleLoading() {
+        setLoading(true);
+    }
+
     return (
-        <div style={{ width: "100%" }}>
+        <div style={{ width: "100%" }} className={`${loading ? classes.loading : ""}`}>
             <div className={classes.jumbotron}>
                 <Grid
                     container
@@ -65,7 +71,9 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
-                <EventsContainer events={currentEvents} pastEvents={false} />
+
+                <EventsContainer events={currentEvents} onLoading={handleLoading} loading={loading} pastEvents={false}/>
+
             </Container>
 
             <Container disableGutters maxWidth="lg">
@@ -76,7 +84,9 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
-                <EventsContainer events={pastEvents} pastEvents={true} />
+
+                <EventsContainer events={pastEvents} onLoading={handleLoading} loading={loading} />
+
             </Container>
         </div>
     );
@@ -119,6 +129,9 @@ const useStyles = makeStyles((theme: Theme) =>
                 borderTop: `2px solid ${colors.gray}`,
                 margin: "100px 50px 0px 50px",
             },
+        },
+        loading: {
+            cursor: "wait",
         },
     })
 );

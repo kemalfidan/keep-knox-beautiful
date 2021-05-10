@@ -7,11 +7,17 @@ import { Event } from "utils/types";
 
 interface Props {
     events: Event[];
+    onLoading: () => void;
+    loading: boolean;
     pastEvents: boolean;
 }
 
 export default function EventsContainer(props: Props) {
     const styles = useStyles();
+
+    function handleLoading() {
+        props.onLoading();
+    }
 
     return (
         <React.Fragment>
@@ -20,7 +26,7 @@ export default function EventsContainer(props: Props) {
                     {props.events.map((event: Event, i: number) => {
                         return (
                             <Grid item xs={12} sm={8} md={5} lg={4} key={i}>
-                                <EventCard event={event} pastEvent={props.pastEvents} />
+                                <EventCard event={event} onLoading={handleLoading} loading={props.loading} pastEvent={props.pastEvents}/>
                             </Grid>
                         );
                     })}
