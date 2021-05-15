@@ -14,14 +14,16 @@ import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import CoreTypography from "../core/typography/CoreTypography";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 // icons
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import RoomOutlinedIcon from "@material-ui/icons/RoomOutlined";
 import ScheduleOutlinedIcon from "@material-ui/icons/ScheduleOutlined";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 
 // misc
-import { Event } from "utils/types";
+import { Event, ApiResponse } from "utils/types";
 import constants from "utils/constants";
 import colors from "src/components/core/colors";
 import urls from "utils/urls";
@@ -43,6 +45,8 @@ interface ThumbProps {
 const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading, pastEvent }) => {
     const classes = useStyles();
     const router = useRouter();
+    const [loading, setLoading] = useState(false);
+    const [successfulDelete, setSuccessfulDelete] = useState(false);
 
     // display variables for event data
     const eventMonth = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][
@@ -110,7 +114,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
         );
     };
 
-    // the console yells at me, but this works
     const MoreButton: React.FC = () => {
         const anchorRef = useRef(null);
         const [menuOpen, setMenuOpen] = useState(false);
@@ -123,27 +126,78 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
         const handleClose = (event: React.MouseEvent<HTMLElement>) => {
             event.stopPropagation();
             setMenuOpen(false);
+            setHover(false);
+        };
+
+        const handleDelete = async (e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            setLoading(true);
+            const confirmed = confirm(`Are you sure you want to delete ${event.name}?`);
+
+            if (confirmed) {
+                // api req to delete event
+                const r = await fetch(urls.api.event(event._id!), {
+                    method: "DELETE",
+                });
+                const response = (await r.json()) as ApiResponse;
+
+                if (!response.success) {
+                    alert(`Delete failed: ${response.message || ""}`);
+                }
+            }
+
+            // show check for 3 seconds before returning back to normal card display
+            setLoading(false);
+            setSuccessfulDelete(true);
+            setTimeout(() => {
+                setSuccessfulDelete(false);
+                setMenuOpen(false);
+                setHover(false);
+            }, 3000);
+        };
+
+        const getIcon = () => {
+            if (loading) {
+                return <CircularProgress color="secondary" style={{ marginLeft: "5px", marginTop: "5px" }} />;
+            } else if (successfulDelete) {
+                return (
+                    <CheckCircleIcon
+                        color="secondary"
+                        style={{ width: "50px", height: "50px", marginLeft: "5px", marginTop: "5px" }}
+                    />
+                );
+            } else {
+                return (
+                    <IconButton
+                        aria-label="more options"
+                        aria-haspopup="true"
+                        aria-controls="simple-menu"
+                        onClick={e => handleClick(e)}
+                        style={{ position: "absolute", zIndex: 1000, top: "3%" }}
+                    >
+                        <MoreVertIcon htmlColor="white" ref={anchorRef} />
+                    </IconButton>
+                );
+            }
         };
 
         return (
             <React.Fragment>
-                <IconButton
-                    aria-label="more options"
-                    aria-haspopup="true"
-                    aria-controls="simple-menu"
-                    onClick={e => handleClick(e)}
-                    style={{ position: "absolute", zIndex: 1000, top: "3%" }}
+                {getIcon()}
+                <Menu
+                    id="simple-menu"
+                    anchorEl={anchorRef.current}
+                    open={menuOpen}
+                    onClose={handleClose}
+                    style={{ top: "50px" }}
                 >
-                    <MoreVertIcon htmlColor="white" ref={anchorRef} />
-                </IconButton>
-                <Menu id="simple-menu" anchorEl={anchorRef.current} open={menuOpen} style={{ top: 50 }}>
                     <Link href={urls.pages.updateEvent(event._id!)}>
                         <MenuItem onClick={handleClose}>Edit</MenuItem>
                     </Link>
                     <Link href={urls.pages.manageEvent(event._id!)}>
                         <MenuItem onClick={handleClose}>Manage</MenuItem>
                     </Link>
-                    <MenuItem onClick={handleClose}>Delete</MenuItem>
+                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
                 </Menu>
             </React.Fragment>
         );
