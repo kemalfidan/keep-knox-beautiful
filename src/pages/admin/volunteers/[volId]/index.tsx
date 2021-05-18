@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import VolunteerEventsList from "../../../../components/VolunteerEventsList";
 import { getVolunteer } from "server/actions/Volunteer";
 import { Volunteer } from "utils/types";
-import { GetStaticPropsContext, NextPage } from "next";
-import { useRouter } from "next/router";
+import { GetStaticPropsContext, NextPage, NextPageContext } from "next";
+import { Router, useRouter } from "next/router";
 import Error from "next/error";
 import constants from "utils/constants";
 import urls from "utils/urls";
@@ -115,7 +115,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
         </>
     );
 };
-
+/*
 // get volunteer data
 export async function getStaticProps(context: GetStaticPropsContext) {
     try {
@@ -133,8 +133,8 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             revalidate: constants.revalidate.volunteerProfile,
         };
     }
-}
-
+*/
+/*
 // required for dynamic pages: prerender volunteers at build time
 export async function getStaticPaths() {
     const volunteers: Volunteer[] = []; //await getVolunteers({});
@@ -144,6 +144,46 @@ export async function getStaticPaths() {
     }));
 
     return { paths, fallback: true };
+}
+*/
+// validate valid admin user
+export async function getServerSideProps(context: NextPageContext) {
+    try {
+        const cookie = context.req?.headers.cookie;
+        const response = await fetch(`${urls.baseUrl}${urls.api.validateLogin}`, {
+            method: "POST",
+            headers: {
+                cookie: cookie || "",
+            },
+        });
+
+        // redirect
+        if (response.status !== 200) {
+            context.res?.writeHead(302, {
+                Location: urls.pages.login,
+            });
+            context.res?.end();
+        }
+
+        const { volId } = context.query;
+        const vol: Volunteer = await getVolunteer(volId as string);
+
+        const volunteers: Volunteer[] = []; //await getVolunteers({});
+        const paths = volunteers.map(volunteer => ({
+            params: { name: volunteer._id },
+        }));
+
+        return {
+            props: {
+                vol: JSON.parse(JSON.stringify(vol)) as Volunteer,
+            },
+            //revalidate: constants.revalidate.volunteerProfile,
+            //paths,
+            //fallback: true,
+        };
+    } catch (error) {
+        console.log(error);
+    }
 }
 
 const useStyles = makeStyles((theme: Theme) =>

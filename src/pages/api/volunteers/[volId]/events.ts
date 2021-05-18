@@ -2,12 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getVolunteerEvents } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { Event, APIError } from "utils/types";
+import authenticate from "server/actions/Authenticate";
 
 // @route   /api/volunteers/[volId]/events - Returns a list of paginated
 //   events that a single volunteer attended. - Private.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method == "GET") {
+            authenticate(req, res);
             if (!req || !req.query || !req.query.volId || !req.query.page) {
                 throw new Error("Need a volunteer id and a page number for this route.");
             }

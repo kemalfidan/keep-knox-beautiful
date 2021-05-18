@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { getEventVolunteers } from "server/actions/Event";
 import errors from "utils/errors";
 import { Event, APIError, PaginatedVolunteers } from "utils/types";
+import authenticate from "server/actions/Authenticate";
 
 // @route   GET /api/events/[eventId]/volunteers - Returns a paginated list of volunteers for event eventId.
 //   The return type always includes registered vols first (if any are needed for this page), then attended
@@ -16,6 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const search = (req.query?.search as string) || "";
 
         if (req.method == "GET") {
+            authenticate(req, res);
             const paginatedVols: PaginatedVolunteers = await getEventVolunteers(eventId, page, search);
 
             res.status(200).json({

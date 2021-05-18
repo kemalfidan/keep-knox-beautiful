@@ -3,6 +3,7 @@ import errors from "utils/errors";
 import formidable from "formidable";
 import { Volunteer, APIError, LoadMorePaginatedData } from "utils/types";
 import { addVolunteer, getVolunteers } from "server/actions/Volunteer";
+import authenticate from "server/actions/Authenticate";
 
 // formidable config
 export const config = {
@@ -16,6 +17,7 @@ export const config = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "GET") {
+            authenticate(req, res);
             const page: number = parseInt(req.query?.page as string);
             const search = req.query?.search as string;
             const volunteerData: LoadMorePaginatedData = await getVolunteers(page, search);

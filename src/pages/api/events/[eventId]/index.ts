@@ -6,6 +6,7 @@ import { Event, APIError } from "utils/types";
 import constants from "utils/constants";
 import formidable, { File } from "formidable";
 import { deleteAssetByID, uploadImage } from "server/actions/Contentful";
+import authenticate from "server/actions/Authenticate";
 
 // formidable config
 export const config = {
@@ -31,11 +32,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 payload: event,
             });
         } else if (req.method === "DELETE") {
+            authenticate(req, res);
             await deleteEvent(id);
             res.status(200).json({
                 success: true,
             });
         } else if (req.method === "POST") {
+            authenticate(req, res);
             const form = new formidable.IncomingForm();
             form.parse(req, async (err: string, fields: formidable.Fields, files: formidable.Files) => {
                 try {

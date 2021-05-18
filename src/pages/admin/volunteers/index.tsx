@@ -15,7 +15,7 @@ import {
     InputAdornment,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
-import { GetStaticPropsContext, NextPage } from "next";
+import { GetStaticPropsContext, NextPage, NextPageContext } from "next";
 import Link from "next/link";
 import React, { useState } from "react";
 import { getVolunteers } from "server/actions/Volunteer";
@@ -136,8 +136,25 @@ const VolunteersPage: NextPage<Props> = ({ volsProps, isLastPageProps }) => {
     );
 };
 
-export async function getStaticProps(context: GetStaticPropsContext) {
+export async function getServerSideProps(context: NextPageContext) {
     try {
+        // validate admin user
+        const cookie = context.req?.headers.cookie;
+        const response = await fetch(`${urls.baseUrl}${urls.api.validateLogin}`, {
+            method: "POST",
+            headers: {
+                cookie: cookie || "",
+            },
+        });
+
+        // redirect
+        if (response.status !== 200) {
+            context.res?.writeHead(302, {
+                Location: urls.pages.login,
+            });
+            context.res?.end();
+        }
+
         const volsData: LoadMorePaginatedData = await getVolunteers(1);
 
         return {
@@ -145,12 +162,15 @@ export async function getStaticProps(context: GetStaticPropsContext) {
                 volsProps: JSON.parse(JSON.stringify(volsData.data)) as Volunteer[],
                 isLastPageProps: volsData.isLastPage,
             },
-            revalidate: constants.revalidate.allVolunteers,
+            //commented out for now, until I know if the change to getServerSide from getStatic is acceptable
+            //no way to redirect from getStatic: getServerSide seems to make validation much easier
+            //revalidate: constants.revalidate.allVolunteers,
         };
     } catch (error) {
+        console.log(error);
         return {
             props: {},
-            revalidate: constants.revalidate.allVolunteers,
+            //revalidate: constants.revalidate.allVolunteers,
         };
     }
 }

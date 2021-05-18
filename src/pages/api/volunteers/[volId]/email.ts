@@ -2,12 +2,14 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { sendVerificationEmail } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { Volunteer, APIError } from "utils/types";
+import authenticate from "server/actions/Authenticate";
 
 // @route   PUT /api/volunteers/[volId]/email - Emails a single volunteer
 //   their attendance information. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "PUT") {
+            authenticate(req, res);
             if (!req || !req.query || !req.query.volId) {
                 throw new Error("Need a volunteer id for this route.");
             }
