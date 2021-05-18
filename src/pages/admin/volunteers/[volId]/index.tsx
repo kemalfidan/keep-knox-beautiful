@@ -83,7 +83,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                     <div className={classes.volInfoRight}>
                         <Paper className={classes.rightCards} elevation={2}>
                             <div className={classes.rightCardsContent}>
-                                <CoreTypography variant="body1" style={{ fontSize: "130px" }}>
+                                <CoreTypography className={classes.rightCardFont} variant="body1">
                                     {vol.totalEvents == undefined ? 0 : vol.totalEvents}
                                 </CoreTypography>
                                 <CoreTypography variant="body1">Events Attended</CoreTypography>
@@ -91,7 +91,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                         </Paper>
                         <Paper className={classes.rightCards} elevation={2}>
                             <div className={classes.rightCardsContent}>
-                                <CoreTypography variant="body1" style={{ fontSize: "130px" }}>
+                                <CoreTypography className={classes.rightCardFont} variant="body1">
                                     {vol.totalHours == undefined ? 0 : vol.totalHours}
                                 </CoreTypography>
                                 <CoreTypography variant="body1">Total Hours</CoreTypography>
@@ -101,7 +101,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                 </div>
                 <Paper className={classes.nameHeader} elevation={0}>
                     <div className={classes.nameHeaderContent}>
-                        <CoreTypography variant="h2">{firstName}&apos;s Events</CoreTypography>
+                        <CoreTypography variant="h2">{/*firstName*/}HarryPotterLongName&apos;s Events</CoreTypography>
                         <button className={classes.hoursVerificationButton} onClick={handleSendVerificationEmail}>
                             <CoreTypography variant="body2">
                                 <EmailIcon fontSize="large" style={{ verticalAlign: "middle" }} />
@@ -237,12 +237,18 @@ const useStyles = makeStyles((theme: Theme) =>
                 "&>*": {
                     margin: theme.spacing(1),
                     width: "40vw",
-                    height: theme.spacing(30),
+                    height: theme.spacing(20),
                 },
             },
         },
         rightCardsContent: {
             textAlign: "center",
+        },
+        rightCardFont: {
+            fontSize: "130px",
+            [theme.breakpoints.between(0, "sm")]: {
+                fontSize: "75px",
+            },
         },
         nameHeader: {
             border: `1px solid ${theme.palette.primary.light}`,
@@ -256,10 +262,11 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             [theme.breakpoints.between(0, "sm")]: {
                 width: "90vw",
+                marginTop: "35px",
                 "&>*": {
                     width: "100%",
                     margin: theme.spacing(3),
-                    height: theme.spacing(10),
+                    height: theme.spacing(12),
                 },
             },
         },
@@ -273,6 +280,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingLeft: "0",
                 paddingRight: "35px",
                 flexDirection: "column",
+                justifyContent: "space-between",
             },
         },
         hoursVerificationButton: {
@@ -282,7 +290,7 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: "4px 10px",
             borderRadius: "10px",
             [theme.breakpoints.between(0, "sm")]: {
-                padding: "0 4px",
+                padding: "4px 10px",
             },
             "&:active": {
                 transform: "scale(0.75)",
