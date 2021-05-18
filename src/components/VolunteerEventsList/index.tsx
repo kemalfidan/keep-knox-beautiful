@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Event, Volunteer } from "utils/types";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
@@ -11,23 +11,66 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import SortIcon from "@material-ui/icons/Sort";
-import Pagination from "@material-ui/lab/Pagination";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import ChevronRightIcon from "@material-ui/icons/ChevronRight";
+import urls from "utils/urls";
 
-// create attended events table for current volunteer
-export default function VolunteerEventsList(props: Volunteer) {
+const VolunteerEventsList = (vol: Volunteer) => {
     const classes = useStyles();
-    const eventsPerPage = 5;
-    const [page, setPage] = useState(1);
+    const eventsPerPage = 3;
+    const [page, setPage] = useState<number>(1);
+    const [attendedEvents, setAttendedEvents] = useState<Event[]>([]);
+    const [prevAvailable, setPrevAvailable] = useState<boolean>(false);
+    const [nextAvailable, setNextAvailable] = useState<boolean>(false);
+    const volId = vol._id || "";
+    const totalEvents = vol.attendedEvents?.length || 0;
 
-    const handleChange = (event: React.ChangeEvent<unknown>, newPage: number) => {
-        setPage(newPage);
+    /* get the attended events for current page */
+    useEffect(() => {
+        const getPaginatedEvents = async () => {
+            try {
+                const response = await fetch(`${urls.api.volunteers}/${volId}/events/?page=${page}`, { method: "GET" });
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                const newAttendedEvents: Event[] = (await response.json()).payload as Event[];
+                setAttendedEvents(newAttendedEvents);
+
+                /* determine if next and prev buttons should be available to click, opacity to .4 if not */
+                if (prevAvailable && page === 1) {
+                    setPrevAvailable(false);
+                } else if (!prevAvailable && page > 1) {
+                    setPrevAvailable(true);
+                }
+                if (totalEvents >= eventsPerPage * page) {
+                    setNextAvailable(true);
+                } else {
+                    setNextAvailable(false);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        void getPaginatedEvents();
+    }, [volId, page, prevAvailable, nextAvailable, totalEvents]); //only rerun when page changes
+
+    /* logic to handle clicks and whether next or prev pages are available */
+    const handlePageChange = (direction: string) => {
+        switch (direction) {
+            case "next":
+                if (nextAvailable) {
+                    setPage(page + 1);
+                }
+                break;
+            case "prev":
+                if (prevAvailable) {
+                    setPage(page - 1);
+                }
+                break;
+            default:
+                break;
+        }
     };
 
-    // Uncomment to use actual volunteer data for volId from server
-    // const rows: Array<Event> = props.attendedEvents ? props.attendedEvents : [];
-
-    const numPages = rows.length > 0 ? Math.ceil(rows.length / eventsPerPage) : 0;
-    const emptyRows = numPages > 0 ? numPages * eventsPerPage - rows.length : eventsPerPage;
+    const emptyRows = attendedEvents ? eventsPerPage - attendedEvents.length : eventsPerPage;
 
     return (
         <TableContainer component={Paper} className={classes.tableContainer}>
@@ -52,18 +95,15 @@ export default function VolunteerEventsList(props: Volunteer) {
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows.length > 0 &&
-                        (numPages > 0
-                            ? rows.slice((page - 1) * eventsPerPage, (page - 1) * eventsPerPage + eventsPerPage)
-                            : rows
-                        ).map(row => (
+                    {attendedEvents.length > 0 &&
+                        attendedEvents.map(row => (
                             <TableRow key={row.name} className={classes.eventRow}>
                                 <TableCell component="th" scope="row">
                                     <CoreTypography variant="body2">{row.name}</CoreTypography>
                                 </TableCell>
                                 <TableCell align="center">
                                     <CoreTypography variant="body2">
-                                        {row.endDate?.toLocaleDateString("en-us", {
+                                        {new Date(row.startDate || "").toLocaleDateString("en-US", {
                                             month: "2-digit",
                                             day: "2-digit",
                                             year: "numeric",
@@ -75,12 +115,12 @@ export default function VolunteerEventsList(props: Volunteer) {
                                 </TableCell>
                             </TableRow>
                         ))}
-                    {page == numPages && emptyRows > 0 && (
+                    {emptyRows > 0 && emptyRows != eventsPerPage && (
                         <TableRow style={{ height: 58 * emptyRows }}>
                             <TableCell colSpan={3} style={{ border: "none" }} />
                         </TableRow>
                     )}
-                    {numPages === 0 && (
+                    {page == 1 && emptyRows == eventsPerPage && (
                         <TableRow style={{ height: 58 * emptyRows }}>
                             <TableCell
                                 colSpan={3}
@@ -97,13 +137,26 @@ export default function VolunteerEventsList(props: Volunteer) {
             <div className={classes.tableFooter}>
                 <div />
                 <div>
-                    <Pagination count={numPages} page={page} onChange={handleChange} />
+                    <button
+                        className={classes.iconButton}
+                        style={prevAvailable ? { opacity: "1" } : { opacity: ".4" }}
+                        onClick={() => handlePageChange("prev")}
+                    >
+                        <ChevronLeftIcon />
+                    </button>
+                    <button
+                        className={classes.iconButton}
+                        style={nextAvailable ? { opacity: "1" } : { opacity: ".4" }}
+                        onClick={() => handlePageChange("next")}
+                    >
+                        <ChevronRightIcon />
+                    </button>
                 </div>
                 <div />
             </div>
         </TableContainer>
     );
-}
+};
 
 // style attended event table header row cells
 const StyledTableCell = withStyles((theme: Theme) =>
@@ -125,7 +178,7 @@ const useStyles = makeStyles((theme: Theme) =>
             width: "90vw",
             minWidth: "300px",
             maxWidth: "1400px",
-            minHeight: "450px",
+            minHeight: "300px",
             padding: "10px 8px",
             backgroundColor: colors.white,
         },
@@ -133,41 +186,23 @@ const useStyles = makeStyles((theme: Theme) =>
             borderBottom: `2px solid ${theme.palette.text.secondary}`,
         },
         tableFooter: {
-            marginTop: "45px",
+            marginTop: "90px",
             height: "35px",
             width: "100%",
             display: "flex",
             alignItems: "end",
             justifyContent: "space-between",
         },
+        iconButton: {
+            background: "inherit",
+            outline: "none",
+            borderStyle: "none",
+            "&:active": {
+                border: "none",
+                outline: "none",
+            },
+        },
     })
 );
 
-//create dummy data for design purposes -- comment out to use volId data
-function createData(name: string, endDate: Date, hours: number) {
-    return { name, endDate, hours };
-}
-
-const rows = [
-    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
-    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
-    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
-    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
-    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-    createData("January Saturday Spruce Up", new Date("2021-01-10"), 1),
-    createData("2020 North Knoxville Community Clean Up", new Date("2020-02-16"), 4),
-    createData("Keep the Little River Beautiful Knoxville Clean Up", new Date("2020-04-12"), 3),
-    createData("February Saturday Spruce Up 5", new Date("2021-02-05"), 2),
-    createData("2021 South Knoxville Community Clean Up", new Date("2021-03-1"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-    createData("February Saturday Spruce Up", new Date("2021-02-15"), 2),
-    createData("2021 North Knoxville Community Clean Up", new Date("2021-02-16"), 4),
-    createData("Keep the TN River Beautiful Knoxville Clean Up", new Date("2021-02-12"), 3),
-    createData("February Saturday Spruce Up 2", new Date("2021-02-05"), 2),
-    createData("2021 North Knoxville Community Clean Up 2", new Date("2021-02-15"), 1),
-    createData("Keep the TN River Beautiful Knoxville Clean Up 2", new Date("2021-02-22"), 2),
-    createData("February Saturday Spruce Up 3", new Date("2021-02-20"), 2),
-];
+export default VolunteerEventsList;
