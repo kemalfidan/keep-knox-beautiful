@@ -115,37 +115,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
         </>
     );
 };
-/*
-// get volunteer data
-export async function getStaticProps(context: GetStaticPropsContext) {
-    try {
-        const vol: Volunteer = await getVolunteer(context.params?.volId as string);
 
-        return {
-            props: {
-                vol: JSON.parse(JSON.stringify(vol)) as Volunteer,
-            },
-            revalidate: constants.revalidate.volunteerProfile,
-        };
-    } catch (error) {
-        return {
-            props: {},
-            revalidate: constants.revalidate.volunteerProfile,
-        };
-    }
-*/
-/*
-// required for dynamic pages: prerender volunteers at build time
-export async function getStaticPaths() {
-    const volunteers: Volunteer[] = []; //await getVolunteers({});
-
-    const paths = volunteers.map(volunteer => ({
-        params: { name: volunteer._id },
-    }));
-
-    return { paths, fallback: true };
-}
-*/
 // validate valid admin user
 export async function getServerSideProps(context: NextPageContext) {
     try {
@@ -209,6 +179,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "space-evenly",
             [theme.breakpoints.between(0, "sm")]: {
+                justifyContent: "space-between",
                 marginTop: "20px",
                 width: "90vw",
             },
@@ -299,6 +270,8 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "space-between",
             [theme.breakpoints.between(0, "sm")]: {
+                paddingLeft: "0",
+                paddingRight: "35px",
                 flexDirection: "column",
             },
         },
