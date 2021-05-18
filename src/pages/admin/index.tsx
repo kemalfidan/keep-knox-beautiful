@@ -96,7 +96,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
-                <EventsContainer events={currentEvents} />
+                <EventsContainer events={currentEvents} admin />
             </Container>
 
             <Container disableGutters maxWidth="lg">

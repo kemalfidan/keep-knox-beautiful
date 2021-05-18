@@ -223,8 +223,11 @@ export const markVolunteerPresent = async function (volId: string, eventId: stri
         volunteer.registeredEvents?.indexOf(event?._id) === -1 ||
         event.registeredVolunteers?.indexOf(volunteer?._id) === -1
     ) {
-        throw new APIError(500, "The volunteer is not registered for this event.");
+        // could be a effed up case?
+        // throw new APIError(500, "The volunteer is not registered for this event.");
     }
+
+    console.log(volId, eventId);
 
     const volPromise = VolunteerSchema.findByIdAndUpdate(volId, {
         $push: { attendedEvents: eventId },

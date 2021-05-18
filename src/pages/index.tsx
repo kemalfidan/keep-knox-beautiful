@@ -71,9 +71,12 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
-
-                <EventsContainer events={currentEvents} onLoading={handleLoading} loading={loading} pastEvents={false}/>
-
+                <EventsContainer
+                    events={currentEvents}
+                    onLoading={handleLoading}
+                    loading={loading}
+                    pastEvents={false}
+                />
             </Container>
 
             <Container disableGutters maxWidth="lg">
@@ -84,9 +87,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
-
                 <EventsContainer events={pastEvents} onLoading={handleLoading} loading={loading} />
-
             </Container>
         </div>
     );

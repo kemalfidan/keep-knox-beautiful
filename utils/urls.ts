@@ -19,8 +19,9 @@ export default {
     api: {
         events: "/api/events",
         event: (eventId: string) => `/api/events/${eventId}`,
-        eventVolunteers: (eventId: string) => `/api/events/${eventId}/volunteers`,
+        eventVolunteers: (eventId: string, page: number) => `/api/events/${eventId}/volunteers?page=${page}`,
         signup: (eventId: string) => `/api/events/${eventId}/signup`,
+        eventQuickadd: (eventId: string) => `/api/events/${eventId}/quickadd`,
         markPresent: (eventId: string, volId: string) => `/api/events/${eventId}/present/${volId}`,
         markNotPresent: (eventId: string, volId: string) => `/api/events/${eventId}/notPresent/${volId}`,
         volunteers: "/api/volunteers",

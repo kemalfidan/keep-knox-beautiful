@@ -215,7 +215,7 @@ export const deleteEvent = async function (id: string) {
  */
 export const getEventVolunteers = async function (eventId: string, page: number, search = "") {
     await mongoDB();
-    const VOLS_PER_PAGE = 2;
+    const VOLS_PER_PAGE = 5;
     const EVENT_FIELDS_JSON = { _id: 1, name: 1, registeredVolunteers: 1, attendedVolunteers: 1 };
     const VOL_FIELDS = "_id name email phone";
     const SORT_COND = { name: 1 };
@@ -281,7 +281,7 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             };
             volunteers = await getEventVolsQueryWithSearch(query, config);
 
-            numberRegistered = VOLS_PER_PAGE;
+            numberRegistered = volunteers.length;
         } else if (totalRegistered > page * VOLS_PER_PAGE) {
             // mixed w/ registered + attended
             const registeredQuery = {
@@ -306,8 +306,8 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             const attendedPromise = getEventVolsQueryWithSearch(attendedQuery, config);
 
             const [registered, attended] = await Promise.all([registeredPromise, attendedPromise]);
+            numberRegistered = registered.length;
             volunteers = registered.concat(attended);
-            numberRegistered = numberRegisteredMixed;
         } else {
             const query = {
                 eventId: eventId,
@@ -349,8 +349,10 @@ export const getEventVolunteers = async function (eventId: string, page: number,
             };
             const event = await getEventVolsQuery(query, config);
 
+            // since vols can be deleted, numRegistered is based off the array
+            // length rather than what we think the length should be
+            numberRegistered = event?.registeredVolunteers?.length || 0;
             volunteers = event?.registeredVolunteers as Volunteer[];
-            numberRegistered = VOLS_PER_PAGE;
         } else if (totalRegistered > page * VOLS_PER_PAGE) {
             // mixed w/ registered + attended
             // both registered + attended needed, can fetch both in 1 query rather than 2
@@ -374,8 +376,8 @@ export const getEventVolunteers = async function (eventId: string, page: number,
                     },
                 });
 
+            numberRegistered = event?.registeredVolunteers?.length || 0;
             volunteers = event?.registeredVolunteers?.concat(event?.attendedVolunteers as Volunteer[]) as Volunteer[];
-            numberRegistered = numberRegisteredMixed;
         } else {
             // all attended volunteers
             const query = {
@@ -427,12 +429,12 @@ const getEventVolsQueryWithSearch = async function (query: Query, config: Config
     ]);
 };
 
-const getEventVolsQuery = async function (query: Query, config: Config) {
+const getEventVolsQuery = async function (query: Query, config?: Config) {
     return await EventSchema.findById(query.eventId).populate({
         path: query.path,
-        select: config.VOL_FIELDS,
+        select: config?.VOL_FIELDS,
         options: {
-            sort: config.SORT_COND,
+            sort: config?.SORT_COND,
             skip: query.skip,
             limit: query.limit,
         },
