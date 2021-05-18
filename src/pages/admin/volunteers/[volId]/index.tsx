@@ -101,7 +101,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                 </div>
                 <Paper className={classes.nameHeader} elevation={0}>
                     <div className={classes.nameHeaderContent}>
-                        <CoreTypography variant="h2">{/*firstName*/}HarryPotterLongName&apos;s Events</CoreTypography>
+                        <CoreTypography variant="h2">{firstName}&apos;s Events</CoreTypography>
                         <button className={classes.hoursVerificationButton} onClick={handleSendVerificationEmail}>
                             <CoreTypography variant="body2">
                                 <EmailIcon fontSize="large" style={{ verticalAlign: "middle" }} />
