@@ -61,12 +61,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
         event.endDate as Date
     ).getMinutes()}`.slice(-2)} ${new Date(event.endDate as Date).getHours() > 11 ? "PM" : "AM"}`;
 
-    const eventCaptionLength = 40;
-    const eventCaption =
-        event.caption!.length <= eventCaptionLength
-            ? event.caption
-            : event.caption!.slice(0, eventCaptionLength - 3) + "...";
-
     // state
     const [hover, setHover] = useState(false);
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -252,7 +246,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                     ) : null}
                 </EventThumbnail>
                 <CardContent>
-                    <div style={{ height: 105, overflow: "hidden" }}>
+                    <div style={{ height: 100, overflow: "hidden" }}>
                         <CoreTypography gutterBottom variant="h3" className={classes.title} id="eventName">
                             {event.name}
                         </CoreTypography>
@@ -263,8 +257,9 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                                 fontFamily: "Ubuntu",
                             }}
                             id="eventDesc"
+                            noWrap
                         >
-                            {eventCaption}
+                            {event.caption}
                         </CoreTypography>
                     </div>
                     {/* location and time info */}
@@ -274,9 +269,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                             <CoreTypography
                                 variant="caption"
                                 style={{
-                                    whiteSpace: "nowrap",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
                                     color: colors.pink,
                                     fontWeight: 600,
                                     fontFamily: "Ubuntu",
@@ -284,6 +276,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                                 }}
                                 id="eventLoc"
                                 component="p"
+                                noWrap
                             >
                                 {eventLocation}
                             </CoreTypography>
