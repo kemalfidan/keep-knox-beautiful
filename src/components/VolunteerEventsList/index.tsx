@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Event, Volunteer } from "utils/types";
+import { Event, Volunteer, ApiResponse } from "utils/types";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/styles";
@@ -29,9 +29,9 @@ const VolunteerEventsList = (vol: Volunteer) => {
     useEffect(() => {
         const getPaginatedEvents = async () => {
             try {
-                const response = await fetch(`${urls.api.volunteers}/${volId}/events/?page=${page}`, { method: "GET" });
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                const newAttendedEvents: Event[] = (await response.json()).payload as Event[];
+                const r = await fetch(`${urls.api.volunteerEvents(volId)}?page=${page}`, { method: "GET" });
+                const response = (await r.json()) as ApiResponse;
+                const newAttendedEvents: Event[] = response.payload as Event[];
                 setAttendedEvents(newAttendedEvents);
 
                 /* determine if next and prev buttons should be available to click, opacity to .4 if not */

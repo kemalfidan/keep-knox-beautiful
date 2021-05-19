@@ -26,6 +26,7 @@ export default {
         markNotPresent: (eventId: string, volId: string) => `/api/events/${eventId}/notPresent/${volId}`,
         volunteers: "/api/volunteers",
         volunteer: (volId: string) => `/api/volunteers/${volId}`,
+        volunteerEvents: (volId: string) => `/api/volunteers/${volId}/events`,
         sendVerificationEmail: (volId: string) => `/api/volunteers/${volId}/email`,
         login: "/api/admin/login",
         logout: "/api/admin/logout",

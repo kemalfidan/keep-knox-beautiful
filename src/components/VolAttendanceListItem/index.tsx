@@ -1,6 +1,6 @@
 import { Switch, TableCell } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
-import { APIError, EventVolunteer } from "utils/types";
+import { APIError, EventVolunteer, ApiResponse } from "utils/types";
 import urls from "utils/urls";
 
 interface Props {
@@ -18,17 +18,19 @@ const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
         };
         if (present) {
             const resp = await fetch(urls.baseUrl + urls.api.markNotPresent(eventId, eVol.volunteer._id!), fetchOpts);
+            const response = (await resp.json()) as ApiResponse;
             if (resp.status == 200) {
                 setPresent(false);
             } else {
-                alert(`ERROR: ${resp.status}`);
+                alert(`Error: ${response.message || "Unexpected error."}`);
             }
         } else {
             const resp = await fetch(urls.baseUrl + urls.api.markPresent(eventId, eVol.volunteer._id!), fetchOpts);
+            const response = (await resp.json()) as ApiResponse;
             if (resp.status == 200) {
                 setPresent(true);
             } else {
-                alert(`ERROR: ${resp.status}`);
+                alert(`Error: ${response.message || "Unexpected error."}`);
             }
         }
     };

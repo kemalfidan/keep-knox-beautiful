@@ -21,7 +21,7 @@ import React, { useState } from "react";
 import { getVolunteers } from "server/actions/Volunteer";
 import colors from "src/components/core/colors";
 import constants from "utils/constants";
-import { Volunteer, LoadMorePaginatedData } from "utils/types";
+import { Volunteer, LoadMorePaginatedData, ApiResponse } from "utils/types";
 import urls from "utils/urls";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -42,10 +42,8 @@ const VolunteersPage: NextPage<Props> = ({ volsProps, isLastPageProps }) => {
         const r = await fetch(`${urls.api.volunteers}?page=1&search=${query}`, {
             method: "GET",
         });
-        /* eslint-disable */
-        const response = await r.json();
-        const newVolsData: LoadMorePaginatedData = response.payload;
-        /* eslint-enable */
+        const response = (await r.json()) as ApiResponse;
+        const newVolsData = response.payload as LoadMorePaginatedData;
 
         setVols(newVolsData.data);
         setIsLastPage(newVolsData.isLastPage);
@@ -56,10 +54,8 @@ const VolunteersPage: NextPage<Props> = ({ volsProps, isLastPageProps }) => {
         const r = await fetch(`${urls.api.volunteers}?page=${newPage}&search=${search}`, {
             method: "GET",
         });
-        /* eslint-disable */
-        const response = await r.json();
-        const newVolsData: LoadMorePaginatedData = response.payload;
-        /* eslint-enable */
+        const response = (await r.json()) as ApiResponse;
+        const newVolsData = response.payload as LoadMorePaginatedData;
 
         setVols(vols.concat(newVolsData.data));
         setIsLastPage(newVolsData.isLastPage);

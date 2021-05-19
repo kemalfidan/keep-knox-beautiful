@@ -5,7 +5,7 @@ import EventsContainer from "src/components/EventsContainer";
 import CoreTypography from "src/components/core/typography";
 import { getCurrentEventsAdmin, getPastEventsAdmin } from "server/actions/Event";
 import constants from "utils/constants";
-import { Event, Admin, LoadMorePaginatedData } from "utils/types";
+import { Event, Admin, LoadMorePaginatedData, ApiResponse } from "utils/types";
 import urls from "utils/urls";
 import colors from "src/components/core/colors";
 import Router from "next/router";
@@ -38,12 +38,12 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     }
 
     const loadMoreHandler = async () => {
-        const response = await fetch(
+        const r = await fetch(
             `${urls.api.events}?type=past&page=${nextPage.toString()}&search=${searchDate?.toUTCString() || ""}`,
             { method: "GET" }
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const moreEvents = (await response.json()).payload as LoadMorePaginatedData;
+        const response = (await r.json()) as ApiResponse;
+        const moreEvents = response.payload as LoadMorePaginatedData;
 
         if (moreEvents.isLastPage) {
             setLoadMore(false);
@@ -55,11 +55,11 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     };
 
     const handleSearchDateChange = async (date: MaterialUiPickersDate) => {
-        const response = await fetch(`${urls.api.events}?type=past&page=1&search=${date?.toUTCString() || ""}`, {
+        const r = await fetch(`${urls.api.events}?type=past&page=1&search=${date?.toUTCString() || ""}`, {
             method: "GET",
         });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const newPastEvents: LoadMorePaginatedData = (await response.json()).payload as LoadMorePaginatedData;
+        const response = (await r.json()) as ApiResponse;
+        const newPastEvents: LoadMorePaginatedData = response.payload as LoadMorePaginatedData;
 
         // no longer appending - this is back to an initial view
         // load more handler will take of loading next pages for search

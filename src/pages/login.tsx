@@ -8,6 +8,7 @@ import PersonIcon from "@material-ui/icons/Person";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 import urls from "utils/urls";
+import { ApiResponse } from "utils/types";
 
 function Login() {
     const styles = useStyles();
@@ -21,17 +22,17 @@ function Login() {
         e.preventDefault();
         setLoading(true);
 
-        const response = await fetch(`${urls.baseUrl}${urls.api.login}`, {
+        const r = await fetch(`${urls.baseUrl}${urls.api.login}`, {
             method: "POST",
             body: JSON.stringify({
                 email: email.current!.value,
                 password: password.current!.value,
             }),
         });
-        const responseJSON = (await response.json()) as { success: boolean; payload: unknown };
+        const response = (await r.json()) as ApiResponse;
 
         setLoading(false);
-        if (responseJSON.success) {
+        if (response.success) {
             setValidLogin(true);
             await router.push(urls.pages.adminHome);
         } else {
