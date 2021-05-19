@@ -33,19 +33,11 @@ import CoreTypography from "src/components/core/typography";
 import VolQuickAddDialog from "src/components/VolQuickAddDialog";
 import InfiniteScroll from "react-infinite-scroll-component";
 import constants from "utils/constants";
+import AddIcon from "@material-ui/icons/Add";
 
 interface Props {
     event: Event;
     pageVols: PaginatedVolunteers;
-}
-
-function orderVolunteers(vols: Volunteer[]): Volunteer[] {
-    return vols
-        ? vols.sort((v1, v2) => {
-              // sorry typescript, need to sort
-              return Number(v1.name) - Number(v2.name);
-          })
-        : [];
 }
 
 const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
@@ -58,7 +50,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
 
     // helper func to get the vols by search query
     async function getVolsFromSearch(query: string) {
-        const r = await fetch(`${urls.api.eventVolunteers(event._id, page)}&search=${query}`, {
+        const r = await fetch(`${urls.api.eventVolunteers(event._id!, page)}&search=${query}`, {
             method: "GET",
         });
         /* eslint-disable */
@@ -71,7 +63,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
 
     // helper func to get the vols for a certain page
     async function getVolsForPage(newPage: number) {
-        const r = await fetch(`${urls.api.eventVolunteers(event._id, newPage)}&search=${search}`, {
+        const r = await fetch(`${urls.api.eventVolunteers(event._id!, newPage)}&search=${search}`, {
             method: "GET",
         });
         if (Math.floor(r.status / 100) !== 2) {
@@ -139,9 +131,9 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                                         setOpen(true);
                                     }}
                                     variant="contained"
-                                    style={{ backgroundColor: colors.orange, color: "white" }}
+                                    className={styles.addVolunteerButton}
                                 >
-                                    Add +
+                                    Add<AddIcon></AddIcon>
                                 </Button>
                             </Grid>
                         </Grid>
@@ -252,6 +244,19 @@ const useStyles = makeStyles((theme: Theme) => {
                 alignItems: "center",
             },
         },
+        addVolunteerButton: {
+            backgroundColor: theme.palette.accent.main,
+            color: colors.white,
+            marginTop: "10px",
+            width: "100px",
+            height: "35px",
+            "&:hover": {
+                backgroundColor: theme.palette.accent.main,
+            },
+            [theme.breakpoints.down("xs")]: {
+                marginLeft: "0px",
+            },
+        },
     });
 });
 
@@ -265,8 +270,6 @@ export async function getServerSideProps(context: NextPageContext) {
         const volsObj = await getEventVolunteers(eventId, 1);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const paginatedVols: PaginatedVolunteers = JSON.parse(JSON.stringify(volsObj));
-
-        console.log(volsObj);
 
         return {
             props: {

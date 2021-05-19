@@ -17,7 +17,6 @@ interface Props {
 
 const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const classes = useStyles();
-
     const [loading, setLoading] = useState(false);
 
     function handleLoading() {
@@ -84,7 +83,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
-                <EventsContainer events={pastEvents} onLoading={handleLoading} loading={loading} />
+                <EventsContainer events={pastEvents} onLoading={handleLoading} loading={loading} pastEvents={true} />
             </Container>
         </div>
     );

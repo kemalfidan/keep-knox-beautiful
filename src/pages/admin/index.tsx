@@ -31,6 +31,11 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
     const [pastEventsState, setPastEvents] = useState<Event[]>(pastEvents.data);
     const [searchDate, setSearchDate] = useState<MaterialUiPickersDate>(null);
     const [loadMore, setLoadMore] = useState<boolean>(!pastEvents.isLastPage);
+    const [loading, setLoading] = useState(false);
+
+    function handleLoading() {
+        setLoading(true);
+    }
 
     const loadMoreHandler = async () => {
         const response = await fetch(
@@ -94,7 +99,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                             Upcoming events
                         </CoreTypography>
                         <Link href={urls.pages.addEvent}>
-                            <Button className={classes.addEventButton}>
+                            <Button variant="contained" className={classes.addEventButton}>
                                 Add<AddIcon></AddIcon>
                             </Button>
                         </Link>
@@ -102,7 +107,13 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                 </Grid>
             </div>
             <Container disableGutters style={{ marginTop: "-20vh" }}>
-                <EventsContainer events={currentEvents} admin />
+                <EventsContainer
+                    events={currentEvents}
+                    admin
+                    onLoading={handleLoading}
+                    loading={loading}
+                    pastEvents={false}
+                />
             </Container>
 
             <Container disableGutters maxWidth="lg">
@@ -137,7 +148,13 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
             </Container>
 
             <Container disableGutters style={{ marginTop: "0vh", marginBottom: "100px" }}>
-                <EventsContainer events={pastEventsState} />
+                <EventsContainer
+                    events={pastEventsState}
+                    admin
+                    onLoading={handleLoading}
+                    loading={loading}
+                    pastEvents={false}
+                />
                 <div className={classes.center}>
                     {loadMore && (
                         <Button onClick={loadMoreHandler} className={classes.loadMoreButton}>

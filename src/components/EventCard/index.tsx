@@ -45,7 +45,7 @@ interface ThumbProps {
 const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading, pastEvent }) => {
     const classes = useStyles();
     const router = useRouter();
-    const [loading, setLoading] = useState(false);
+    const [loadingInMenu, setLoadingInMenu] = useState(false);
     const [successfulDelete, setSuccessfulDelete] = useState(false);
 
     // display variables for event data
@@ -131,7 +131,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
 
         const handleDelete = async (e: React.MouseEvent<HTMLElement>) => {
             e.stopPropagation();
-            setLoading(true);
+            setLoadingInMenu(true);
             const confirmed = confirm(`Are you sure you want to delete ${event.name}?`);
 
             if (confirmed) {
@@ -147,7 +147,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
             }
 
             // show check for 3 seconds before returning back to normal card display
-            setLoading(false);
+            setLoadingInMenu(false);
             setSuccessfulDelete(true);
             setTimeout(() => {
                 setSuccessfulDelete(false);
@@ -157,7 +157,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
         };
 
         const getIcon = () => {
-            if (loading) {
+            if (loadingInMenu) {
                 return <CircularProgress color="secondary" style={{ marginLeft: "5px", marginTop: "5px" }} />;
             } else if (successfulDelete) {
                 return (
