@@ -32,15 +32,6 @@ export const getVolunteer = async function (id: string) {
     return vol;
 };
 
-export const getVolunteersForAdmin = async function () {
-    await mongoDB();
-
-    // TODO: add admin guard
-    const vols = (await VolunteerSchema.find()) as Volunteer[];
-
-    return vols;
-};
-
 /**
  * @param page Since this data is paginated, page is used to return a certain subset of the data.
  * @param search Optional parameter used to search volunteers by name.

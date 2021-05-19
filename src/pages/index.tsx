@@ -37,7 +37,7 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                         item
                         xs={7}
                         sm={7}
-                        lg={5}
+                        lg={6}
                         style={{
                             display: "flex",
                             flexDirection: "column",
