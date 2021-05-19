@@ -6,10 +6,7 @@ import { useRouter } from "next/router";
 // components
 import { Box, Grid } from "@material-ui/core";
 import Card from "@material-ui/core/Card";
-import CardActionArea from "@material-ui/core/CardActionArea";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -21,6 +18,9 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import RoomOutlinedIcon from "@material-ui/icons/RoomOutlined";
 import ScheduleOutlinedIcon from "@material-ui/icons/ScheduleOutlined";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import PersonOutlineIcon from "@material-ui/icons/PersonOutline";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 // misc
 import { Event, ApiResponse } from "utils/types";
@@ -81,7 +81,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
         event.stopPropagation();
         setAnchorEl(event.currentTarget);
         setMenuOpen(true);
-        console.log(event.currentTarget, anchorEl);
     };
 
     const handleClose = () => {
@@ -192,12 +191,21 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                     style={{ top: "50px" }}
                 >
                     <Link href={urls.pages.updateEvent(event._id!)}>
-                        <MenuItem onClick={handleClose}>Edit</MenuItem>
+                        <MenuItem onClick={handleClose}>
+                            {" "}
+                            <EditIcon /> &nbsp; Edit{" "}
+                        </MenuItem>
                     </Link>
                     <Link href={urls.pages.manageEvent(event._id!)}>
-                        <MenuItem onClick={handleClose}>Manage</MenuItem>
+                        <MenuItem onClick={handleClose}>
+                            {" "}
+                            <PersonOutlineIcon /> &nbsp; Manage{" "}
+                        </MenuItem>
                     </Link>
-                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                    <MenuItem onClick={handleDelete}>
+                        {" "}
+                        <DeleteIcon /> &nbsp; Delete{" "}
+                    </MenuItem>
                 </Menu>
             </React.Fragment>
         );
@@ -223,7 +231,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                 className={`${classes.eventCard} ${loading ? classes.cardLoading : ""}`}
                 elevation={hover ? 20 : 7}
             >
-                {/* <CardActionArea> */}
                 <EventThumbnail localHover={hover}>
                     <Box className={classes.eventDate}>
                         <span>
@@ -302,7 +309,6 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                         </Grid>
                     </Grid>
                 </CardContent>
-                {/* </CardActionArea> */}
             </Card>
         </React.Fragment>
     );
