@@ -136,6 +136,9 @@ export async function getServerSideProps(context: NextPageContext) {
 
         const { volId } = context.query;
         const vol: Volunteer = await getVolunteer(volId as string);
+        if (!vol) {
+            throw new Error("Volunteer not found.");
+        }
 
         return {
             props: {
@@ -143,7 +146,9 @@ export async function getServerSideProps(context: NextPageContext) {
             },
         };
     } catch (error) {
-        console.log(error);
+        return {
+            notFound: true,
+        };
     }
 }
 

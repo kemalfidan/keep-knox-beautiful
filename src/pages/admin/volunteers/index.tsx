@@ -152,6 +152,9 @@ export async function getServerSideProps(context: NextPageContext) {
         }
 
         const volsData: LoadMorePaginatedData = await getVolunteers(1);
+        if (!volsData) {
+            throw new Error("Error fetching volunteer data.");
+        }
 
         return {
             props: {
@@ -160,9 +163,8 @@ export async function getServerSideProps(context: NextPageContext) {
             },
         };
     } catch (error) {
-        console.log(error);
         return {
-            props: {},
+            notFound: true,
         };
     }
 }

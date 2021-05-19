@@ -260,11 +260,17 @@ const useStyles = makeStyles((theme: Theme) => {
 export async function getServerSideProps(context: NextPageContext) {
     // get eventId from url by using context
     const eventId = context.query.eventId as string;
-    const event = await getEvent(eventId);
 
     // this func is run on server-side, so we can safely fetch the event directly
     try {
-        const volsObj = await getEventVolunteers(eventId, 1);
+        const eventPromise = getEvent(eventId);
+        const volsObjPromise = getEventVolunteers(eventId, 1);
+        const [event, volsObj] = await Promise.all([eventPromise, volsObjPromise]);
+
+        if (!event) {
+            throw new Error("Event not found.");
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const paginatedVols: PaginatedVolunteers = JSON.parse(JSON.stringify(volsObj));
 
@@ -277,10 +283,7 @@ export async function getServerSideProps(context: NextPageContext) {
         };
     } catch (e) {
         return {
-            props: {
-                event: event,
-                vols: [],
-            },
+            notFound: true,
         };
     }
 }

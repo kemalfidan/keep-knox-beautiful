@@ -38,8 +38,9 @@ export async function getServerSideProps(context: NextPageContext) {
 
         // this func is run on server-side, so we can safely fetch the event directly
         const event: Event = await getEvent(eventId);
-        event.attendedVolunteers = [];
-        event.registeredVolunteers = [];
+        if (!event) {
+            throw new Error("Event not found.");
+        }
 
         return {
             props: {
@@ -47,7 +48,9 @@ export async function getServerSideProps(context: NextPageContext) {
             },
         };
     } catch (error) {
-        console.log(error);
+        return {
+            notFound: true,
+        };
     }
 }
 

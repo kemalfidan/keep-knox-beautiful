@@ -38,6 +38,9 @@ export async function getServerSideProps(context: NextPageContext) {
 
         // this func is run on server-side, so we can safely fetch the volunteer directly
         const vol: Volunteer = await getVolunteer(volId);
+        if (!vol) {
+            throw new Error("Volunteer not found.");
+        }
 
         return {
             props: {
@@ -45,7 +48,9 @@ export async function getServerSideProps(context: NextPageContext) {
             },
         };
     } catch (error) {
-        console.log(error);
+        return {
+            notFound: true,
+        };
     }
 }
 
