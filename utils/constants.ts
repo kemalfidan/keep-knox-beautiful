@@ -18,11 +18,8 @@ export default {
         donateLink: "http://www.keepknoxvillebeautiful.org/donate",
     },
     revalidate: {
-        upcomingEvents: 20,
-        eventDesc: 30,
-        allVolunteers: 10,
-        eventVolunteers: 5,
-        volunteerProfile: 10,
+        index: 20,
+        eventDescription: 30,
     },
     contentfulImageLimit: 20 * 1000 * 1000, // 20 MB
 };

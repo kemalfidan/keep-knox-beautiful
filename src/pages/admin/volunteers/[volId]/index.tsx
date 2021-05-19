@@ -115,9 +115,9 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
     );
 };
 
-// validate valid admin user
 export async function getServerSideProps(context: NextPageContext) {
     try {
+        // validate valid admin user
         const cookie = context.req?.headers.cookie;
         const response = await fetch(`${urls.baseUrl}${urls.api.validateLogin}`, {
             method: "POST",
@@ -137,18 +137,10 @@ export async function getServerSideProps(context: NextPageContext) {
         const { volId } = context.query;
         const vol: Volunteer = await getVolunteer(volId as string);
 
-        const volunteers: Volunteer[] = []; //await getVolunteers({});
-        const paths = volunteers.map(volunteer => ({
-            params: { name: volunteer._id },
-        }));
-
         return {
             props: {
                 vol: JSON.parse(JSON.stringify(vol)) as Volunteer,
             },
-            //revalidate: constants.revalidate.volunteerProfile,
-            //paths,
-            //fallback: true,
         };
     } catch (error) {
         console.log(error);

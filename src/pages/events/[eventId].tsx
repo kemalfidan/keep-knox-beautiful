@@ -1,4 +1,4 @@
-import { getEvent } from "server/actions/Event";
+import { getEvent, getAllEventIds } from "server/actions/Event";
 import { Event } from "utils/types";
 import { GetStaticPropsContext, NextPage } from "next";
 import Error from "next/error";
@@ -185,19 +185,19 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             props: {
                 event: JSON.parse(JSON.stringify(event)) as Event,
             },
-            revalidate: constants.revalidate.eventDesc,
+            revalidate: constants.revalidate.eventDescription,
         };
     } catch (error) {
         return {
             props: {},
-            revalidate: constants.revalidate.eventDesc,
+            revalidate: constants.revalidate.eventDescription,
         };
     }
 }
 
 // required for dynamic pages: prerender events at build time
 export async function getStaticPaths() {
-    const events: Event[] = []; //await getEvents({});
+    const events: Event[] = await getAllEventIds();
 
     const paths = events.map(event => ({
         params: { name: event._id },

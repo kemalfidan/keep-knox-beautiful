@@ -158,15 +158,11 @@ export async function getServerSideProps(context: NextPageContext) {
                 volsProps: JSON.parse(JSON.stringify(volsData.data)) as Volunteer[],
                 isLastPageProps: volsData.isLastPage,
             },
-            //commented out for now, until I know if the change to getServerSide from getStatic is acceptable
-            //no way to redirect from getStatic: getServerSide seems to make validation much easier
-            //revalidate: constants.revalidate.allVolunteers,
         };
     } catch (error) {
         console.log(error);
         return {
             props: {},
-            //revalidate: constants.revalidate.allVolunteers,
         };
     }
 }

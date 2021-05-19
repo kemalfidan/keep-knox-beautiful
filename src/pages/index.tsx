@@ -99,7 +99,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
                 currentEvents: JSON.parse(JSON.stringify(currentEvents)) as Event[],
                 pastEvents: JSON.parse(JSON.stringify(pastEvents)) as Event[],
             },
-            revalidate: constants.revalidate.upcomingEvents,
+            revalidate: constants.revalidate.index,
         };
     } catch (error) {
         console.log(error);
@@ -107,7 +107,7 @@ export async function getStaticProps(context: GetStaticPropsContext) {
             props: {
                 events: [],
             },
-            revalidate: constants.revalidate.upcomingEvents,
+            revalidate: constants.revalidate.index,
         };
     }
 }

@@ -42,6 +42,18 @@ export const getEvent = async function (id: string) {
 };
 
 /**
+ * Function used at build time. We need to know what event ids exist
+ * so we can pre-render those pages.
+ * @returns An array of all eventIds in our database.
+ */
+export const getAllEventIds = async function () {
+    await mongoDB();
+
+    const allEventIds = await EventSchema.find({}, { _id: 1 });
+    return allEventIds;
+};
+
+/**
  * Get all events that are open for registration - regardless
  *   of whether the event is full or not.
  * @returns All events that the user can register to.
