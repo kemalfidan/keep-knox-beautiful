@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import VolunteerEventsList from "../../../../components/VolunteerEventsList";
 import { getVolunteer } from "server/actions/Volunteer";
-import { Volunteer } from "utils/types";
+import { Volunteer, ApiResponse } from "utils/types";
 import { GetStaticPropsContext, NextPage, NextPageContext } from "next";
 import { Router, useRouter } from "next/router";
-import Error from "next/error";
+import ErrorPage from "next/error";
 import constants from "utils/constants";
 import urls from "utils/urls";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
@@ -25,28 +25,30 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
     const router = useRouter();
     const [emailSuccess, setEmailSuccess] = useState<boolean>(false);
 
-    if (!vol) {
-        return <Error statusCode={404} />;
+    if (!vol || !vol._id) {
+        return <ErrorPage statusCode={404} />;
     }
 
     const firstName = vol.name.split(" ")[0];
 
     const handleEditClick = async () => {
-        if (vol._id) {
-            await router.push(urls.pages.updateVolunteer(vol._id));
-        }
+        await router.push(urls.pages.updateVolunteer(vol._id!));
     };
 
     const handleSendVerificationEmail = async () => {
         try {
-            if (vol._id) {
-                const res = await fetch(`${urls.api.volunteers}/${vol._id}/email`, { method: "PUT" });
+            const confirmed = confirm(`Are you sure you want to send an email to ${vol.name}?`);
+            if (confirmed) {
+                const res = await fetch(urls.api.sendVerificationEmail(vol._id!), { method: "PUT" });
+                const response = (await res.json()) as ApiResponse;
                 if (res.status === 200) {
                     setEmailSuccess(true);
+                } else {
+                    throw new Error(response.message);
                 }
             }
         } catch (error) {
-            console.log(error);
+            alert(`Error sending email: ${(error instanceof Error && error.message) || "Unexpected error."}`);
         }
     };
     return (
@@ -61,9 +63,6 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                                     <div>
                                         <button className={classes.navIcon} onClick={handleEditClick}>
                                             <EditIcon />
-                                        </button>
-                                        <button className={classes.navIcon}>
-                                            <DeleteIcon />
                                         </button>
                                     </div>
                                 </div>
