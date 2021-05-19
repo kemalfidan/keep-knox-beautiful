@@ -122,7 +122,9 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     className={styles.logo}
                     alt={`${constants.org.name.short} logo`}
                 />
-                <CoreTypography variant="h1">Event Description</CoreTypography>
+                <CoreTypography variant="h1" style={{ textAlign: "left" }}>
+                    Event Description
+                </CoreTypography>
             </Container>
             <Container className={styles.contentContainer}>
                 <Container className={styles.leftWrapper}>

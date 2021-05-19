@@ -93,7 +93,6 @@ const Home: NextPage<Props> = ({ currentEvents, pastEvents, width }) => {
                         />
                     </Grid>
 
-                    {/* TODO align button to the left */}
                     <Grid item xs={6} sm={7} lg={6} className={classes.pageTitle}>
                         <CoreTypography variant="h1" style={{ color: "white" }}>
                             Upcoming events
