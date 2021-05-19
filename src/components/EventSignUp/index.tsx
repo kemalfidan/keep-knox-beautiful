@@ -53,7 +53,7 @@ const EventSignUp: React.FC<Props> = ({ id, groupSignUp }) => {
         // error check response
         if (response) {
             if (response.success) {
-                await router.push("/");
+                await router.push(urls.pages.index);
             } else {
                 setError(response?.message || errors.GENERIC_ERROR);
             }

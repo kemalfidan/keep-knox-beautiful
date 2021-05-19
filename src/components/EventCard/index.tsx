@@ -220,7 +220,7 @@ const EventCard: React.FC<Props> = ({ event, isAdmin = false, onLoading, loading
                 onMouseLeave={e => handleHoverLeave(e)}
                 onClick={() => {
                     handleLoading();
-                    void router.push(`/events/${event._id as string}`);
+                    void router.push(urls.pages.event(event._id || ""));
                 }}
                 className={`${classes.eventCard} ${loading ? classes.cardLoading : ""}`}
                 elevation={hover ? 20 : 7}
