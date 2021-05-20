@@ -17,7 +17,9 @@ const evNoImg: Event = {
 
 describe("EventCard.tsx", () => {
     it("renders information from event prop correctly", () => {
-        const component = shallow(<EventCard event={evNoImg} />);
+        const component = shallow(
+            <EventCard event={evNoImg} onLoading={() => undefined} loading={false} pastEvent={false} />
+        );
 
         const evName = component.find("#eventName");
         const evDesc = component.find("#eventDesc");
@@ -25,31 +27,26 @@ describe("EventCard.tsx", () => {
         const evTime = component.find("#eventTime");
 
         expect(evName.children().text()).toBe(evNoImg.name);
-        expect(evDesc.children().text()).toBe("This is an event with a test caption ...");
         expect(evLoc.children().text()).toBe(evNoImg.location?.split(",")[0]);
         expect(evTime.children().reduce((acc, cur) => (acc += cur.text()), "")).toBe("12:00 PM - 2:00 PM");
     });
 
-    // probably unneccessary
-    // it("renders placeholder when image is missing", () => {
-    //     const component = shallow(<EventCard event={evNoImg} />);
-
-    //     const thumbnail = component.find("#eventThumb");
-
-    //     console.log(thumbnail.getElement().props);
-    // });
-
-    // TODO
     it("handles hover", () => {
-        const component = shallow(<EventCard event={evNoImg} />);
+        const component = shallow(
+            <EventCard event={evNoImg} onLoading={() => undefined} loading={false} pastEvent={false} />
+        );
     });
 
     it("interacts with admins on hover", () => {
-        const component = shallow(<EventCard event={evNoImg} />);
+        const component = shallow(
+            <EventCard event={evNoImg} onLoading={() => undefined} loading={false} pastEvent={false} />
+        );
     });
 
     it("matches snapshot", () => {
-        const component = shallow(<EventCard event={evNoImg} />);
+        const component = shallow(
+            <EventCard event={evNoImg} onLoading={() => undefined} loading={false} pastEvent={false} />
+        );
 
         expect(component).toMatchSnapshot();
     });

@@ -12,6 +12,7 @@ import {
 import VolunteerSchema from "server/models/Volunteer";
 import EventSchema from "server/models/Event";
 import { Volunteer, Event } from "utils/types";
+import { addDays } from "date-fns";
 
 jest.mock("server");
 
@@ -52,7 +53,7 @@ describe("getVolunteers() tests", () => {
             phone: "123-123-1234",
         };
         const mockVols = Array(20).fill(testVol, 0, 20);
-        const VOLS_PER_PAGE = 6;
+        const VOLS_PER_PAGE = 10;
         const search = "test search";
         const page = 1;
 
@@ -73,7 +74,7 @@ describe("getVolunteers() tests", () => {
         await VolsMock.getVolunteers(page, search);
         expect(VolunteerSchema.find).toHaveBeenLastCalledWith(expectedFilter, expectedProjection);
         expect(VolsMock.skip).toHaveBeenLastCalledWith((page-1) * VOLS_PER_PAGE);
-        expect(VolsMock.limit).toHaveBeenLastCalledWith(VOLS_PER_PAGE);
+        expect(VolsMock.limit).toHaveBeenLastCalledWith(VOLS_PER_PAGE+1);
     });
 
     test("negative page number", async () => {
@@ -139,44 +140,45 @@ describe("updateVolunteer() tests", () => {
 });
 
 describe("registerVolunteerToEvent() tests", () => {
+    const now = Date.now();
     const newVolunteer: Volunteer = {
         name: "John Smith",
         email: "jsmith@gmail.com",
         phone: "(931) 931-9319",
     };
+    const mockEvent: Event = {
+        _id: "604d6730ca1c1d7fcd4fbdc9",
+        name: "February Spruce Up",
+        description: "We are sprucing in February. Come spruce with us :)",
+        caption: "It's spruce season",
+        maxVolunteers: 10,
+        volunteerCount: 4,
+        location: "1234 Neyland Dr\nKnoxville, TN 37916",
+        startDate: new Date(now),
+        endDate: new Date(addDays(now, 2)),
+        startRegistration: new Date(now),
+        endRegistration: new Date(addDays(now, 1)),
+        hours: 3,
+        image: {
+            assetID: "aASDuiHWIDUOHWEff",
+            url: "https://i.imgur.com/MrGY5EL.jpeg",
+        },
+        registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3"],
+        attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
+    };
+    const mockVolunteer: Volunteer = {
+        _id: "604d6730ca1c1d7fcd4fbde0",
+        name: "John Smith",
+        email: "jsmith@gmail.com",
+        phone: "(931) 931-9319",
+        totalEvents: 2,
+        totalHours: 5,
+        registeredEvents: ["604d6730ca1c1d7fcd4fbdc2"],
+        attendedEvents: ["604d6730ca1c1d7fcd4fbdc3", "604d6730ca1c1d7fcd4fbdc4"],
+    };
 
     test("successful sign up", async () => {
         const eventId = "604d6730ca1c1d7fcd4fbdc9";
-        const mockEvent: Event = {
-            _id: "604d6730ca1c1d7fcd4fbdc9",
-            name: "February Spruce Up",
-            description: "We are sprucing in February. Come spruce with us :)",
-            caption: "It's spruce season",
-            maxVolunteers: 10,
-            volunteerCount: 4,
-            location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
-            hours: 3,
-            image: {
-                assetID: "aASDuiHWIDUOHWEff",
-                url: "https://i.imgur.com/MrGY5EL.jpeg",
-            },
-            registeredVolunteers: ["604d6730ca1c1d7fcd4fbdd2", "604d6730ca1c1d7fcd4fbdd3"],
-            attendedVolunteers: ["604d6730ca1c1d7fcd4fbdd4", "604d6730ca1c1d7fcd4fbdd5"],
-        };
-        const mockVolunteer: Volunteer = {
-            _id: "604d6730ca1c1d7fcd4fbde0",
-            name: "John Smith",
-            email: "jsmith@gmail.com",
-            phone: "(931) 931-9319",
-            totalEvents: 2,
-            totalHours: 5,
-            registeredEvents: ["604d6730ca1c1d7fcd4fbdc2"],
-            attendedEvents: ["604d6730ca1c1d7fcd4fbdc3", "604d6730ca1c1d7fcd4fbdc4"],
-        };
         const options = { new: true, upsert: true };
 
         // insert vol into this event and update vol's fields
@@ -188,11 +190,11 @@ describe("registerVolunteerToEvent() tests", () => {
             maxVolunteers: 10,
             volunteerCount: 5,
             location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
-            hours: 3,
+            startDate: new Date(now),
+            endDate: new Date(addDays(now, 2)),
+            startRegistration: new Date(now),
+            endRegistration: new Date(addDays(now, 1)),
+                hours: 3,
             image: {
                 assetID: "aASDuiHWIDUOHWEff",
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
@@ -251,11 +253,11 @@ describe("registerVolunteerToEvent() tests", () => {
             maxVolunteers: 10,
             volunteerCount: 4,
             location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
-            hours: 3,
+            startDate: new Date(now),
+            endDate: new Date(addDays(now, 2)),
+            startRegistration: new Date(now),
+            endRegistration: new Date(addDays(now, 1)),
+                hours: 3,
             image: {
                 assetID: "aASDuiHWIDUOHWEff",
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
@@ -299,11 +301,11 @@ describe("registerVolunteerToEvent() tests", () => {
             maxVolunteers: 4,
             volunteerCount: 4,
             location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
-            hours: 3,
+            startDate: new Date(now),
+            endDate: new Date(addDays(now, 2)),
+            startRegistration: new Date(now),
+            endRegistration: new Date(addDays(now, 1)),
+                hours: 3,
             image: {
                 assetID: "aASDuiHWIDUOHWEff",
                 url: "https://i.imgur.com/MrGY5EL.jpeg",
@@ -334,6 +336,7 @@ describe("registerVolunteerToEvent() tests", () => {
 });
 
 describe("sudoRegisterVolunteerToEvent() tests", () => {
+    const now = Date.now();
     const newVolunteer: Volunteer = {
         name: "John Smith",
         email: "jsmith@gmail.com",
@@ -350,10 +353,10 @@ describe("sudoRegisterVolunteerToEvent() tests", () => {
             maxVolunteers: 10,
             volunteerCount: 4,
             location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
+            startDate: new Date(now),
+            endDate: new Date(addDays(now, 2)),
+            startRegistration: new Date(now),
+            endRegistration: new Date(addDays(now, 1)),
             hours: 3,
             image: {
                 assetID: "aASDuiHWIDUOHWEff",
@@ -383,10 +386,10 @@ describe("sudoRegisterVolunteerToEvent() tests", () => {
             maxVolunteers: 10,
             volunteerCount: 5,
             location: "1234 Neyland Dr\nKnoxville, TN 37916",
-            startDate: new Date(Date.now()),
-            endDate: new Date(Date.now()),
-            startRegistration: new Date(Date.now()),
-            endRegistration: new Date(Date.now()),
+            startDate: new Date(now),
+            endDate: new Date(addDays(now, 2)),
+            startRegistration: new Date(now),
+            endRegistration: new Date(addDays(now, 1)),
             hours: 3,
             image: {
                 assetID: "aASDuiHWIDUOHWEff",
@@ -423,7 +426,7 @@ describe("sudoRegisterVolunteerToEvent() tests", () => {
         expect(VolunteerSchema.updateOne).toHaveBeenCalledTimes(1);
     });
 
-    test("fail bc event doesnt exist", async () => {
+    test("fail since event doesnt exist", async () => {
         expect.assertions(3);
         const mockEvent = undefined;
         const eventId = "604d6730ca1c1d7fcd4fbdc4";

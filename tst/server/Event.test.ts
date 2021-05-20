@@ -76,7 +76,7 @@ describe("get events tests", () => {
                 },
             },
             EVENT_FIELDS);
-            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: 1 });
         });
     
         test("getCurrentEvents failure", async () => {
@@ -97,7 +97,7 @@ describe("get events tests", () => {
                 },
             },
             EVENT_FIELDS);
-            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: -1 });
+            expect(mockObj.sort).toHaveBeenLastCalledWith({ startDate: 1 });
         });    
     });
 
