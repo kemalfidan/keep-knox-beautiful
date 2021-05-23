@@ -1,7 +1,7 @@
 const prod = process.env.NODE_ENV === "production";
 
 export default {
-    baseUrl: prod ? "https://keep-knox-beautiful-git-develop-kfidan1.vercel.app" : "http://localhost:3000",
+    baseUrl: prod ? "keep-knox-beautiful.vercel.app" : "http://localhost:3000",
     dbUrl: process.env.MONGO_DB ?? "mongodb://localhost:27017",
     pages: {
         index: "/",
