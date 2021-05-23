@@ -85,7 +85,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
     const noSignUp = () => {
         if (event.maxVolunteers != 0) {
             return (
-                <Container className={styles.center}>
+                <Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <Container className={styles.signUpHeader}>
                         <CoreTypography variant="h4" style={{ float: "left" }}>
                             Sign Up to Volunteer
@@ -230,8 +230,11 @@ const useStyles = makeStyles((theme: Theme) =>
             minHeight: "110px",
             display: "flex",
             alignItems: "center",
-            maxWidth: "500px",
             textAlignLast: "center",
+            [theme.breakpoints.between(0, "sm")]: {
+                justifyContent: "center",
+                minHeight: "70px",
+            },
         },
         caption: {
             marginTop: "50px",
@@ -244,6 +247,11 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingBottom: "100px",
             [theme.breakpoints.between(0, "sm")]: {
                 flexDirection: "column",
+                overflowX: "hidden",
+                paddingLeft: "0px",
+                paddingTop: "50px",
+                paddingBottom: "0px",
+                paddingRight: "0px",
             },
         },
         leftWrapper: {
@@ -251,18 +259,18 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             alignItems: "center",
             paddingRight: "0px",
+            [theme.breakpoints.between(0, "sm")]: {
+                paddingLeft: "0px",
+            },
         },
         rightWrapper: {
             display: "flex",
             flexDirection: "column",
             maxWidth: "700px",
-            minWidth: "400px",
             paddingLeft: "70px",
-            [theme.breakpoints.down("sm")]: {
-                padding: "0",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+            [theme.breakpoints.between(0, "sm")]: {
+                paddingLeft: "0px",
+                paddingRight: "0px",
             },
         },
         cardContainer: {
@@ -270,6 +278,14 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingBottom: "15px",
             display: "flex",
             flexDirection: "row",
+            [theme.breakpoints.between(0, "sm")]: {
+                justifyContent: "center",
+            },
+            [theme.breakpoints.between(0, "xs")]: {
+                flexDirection: "column",
+                alignItems: "center",
+                textAlign: "center",
+            },
         },
         card: {
             width: "180px",
@@ -288,9 +304,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         signUpHeader: {
             marginTop: "20px",
-            width: "450px",
             padding: "0",
             margin: "0",
+            [theme.breakpoints.between(0, "sm")]: {
+                width: "90%",
+            },
         },
         descContainer: {
             padding: "20px",
@@ -326,10 +344,9 @@ const useStyles = makeStyles((theme: Theme) =>
         signUpForm: {
             marginBottom: "100px",
             padding: "0",
-            [theme.breakpoints.down("sm")]: {
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+
+            [theme.breakpoints.between(0, "sm")]: {
+                width: "90%",
             },
         },
     })

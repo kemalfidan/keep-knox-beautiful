@@ -182,7 +182,6 @@ const useStyles = makeStyles((theme: Theme) =>
             padding: "0",
             margin: "0",
             flexDirection: "column",
-            width: "450px",
         },
         textWrapper: {
             paddingBottom: "20px",
