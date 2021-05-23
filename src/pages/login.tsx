@@ -22,7 +22,7 @@ function Login() {
         e.preventDefault();
         setLoading(true);
 
-        const r = await fetch(`${urls.baseUrl}${urls.api.login}`, {
+        const r = await fetch(urls.api.login, {
             method: "POST",
             body: JSON.stringify({
                 email: email.current!.value,
@@ -44,7 +44,7 @@ function Login() {
         <React.Fragment>
             <Container className={styles.container}>
                 <CoreTypography variant="h2" style={{ fontFamily: "Roboto", paddingBottom: "25px" }}>
-                    Welcome Back! {`${urls.baseUrl}${urls.api.login}`} 
+                    Welcome Back!
                 </CoreTypography>
                 <form onSubmit={onSubmit} className={styles.form}>
                     <input
