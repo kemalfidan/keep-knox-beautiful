@@ -200,10 +200,13 @@ export async function getStaticPaths() {
     const events: Event[] = await getAllEventIds();
 
     const paths = events.map(event => ({
-        params: { name: event._id },
+        params: { eventId: (event._id as string).toString() },
     }));
 
-    return { paths, fallback: true };
+    return {
+        paths: paths, // all the eventId pages to create at build time
+        fallback: true, // new events may be added so we need to fallback
+    };
 }
 
 const useStyles = makeStyles((theme: Theme) =>
