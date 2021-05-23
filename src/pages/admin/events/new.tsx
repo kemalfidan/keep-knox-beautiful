@@ -25,6 +25,10 @@ export async function getServerSideProps(context: NextPageContext) {
             });
             context.res?.end();
         }
+
+        return {
+            props: {},
+        };
     } catch (error) {
         console.log(error);
     }

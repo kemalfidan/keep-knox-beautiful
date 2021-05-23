@@ -16,7 +16,7 @@ export default function Footer() {
                     <a href={urls.pages.login}>
                         <img
                             src={`/${constants.org.images.logo}`}
-                            width="80px"
+                            className={styles.image}
                             alt={`${constants.org.name.short} logo`}
                         ></img>
                     </a>
@@ -46,6 +46,12 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: "10px",
             paddingBottom: "10px",
             paddingLeft: "0px",
+        },
+        image: {
+            width: "80px",
+            [theme.breakpoints.between(0, "sm")]: {
+                width: "60px",
+            },
         },
         textWrapper: {
             textAlign: "center",
