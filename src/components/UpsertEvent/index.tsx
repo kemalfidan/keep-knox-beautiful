@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { ApiResponse, Event } from "utils/types";
+import { isBefore } from "date-fns";
 
 // quill
 const ReactQuill = dynamic(import("react-quill"), { ssr: false, loading: () => <p>Loading ...</p> });
@@ -52,6 +53,8 @@ interface IErrors {
     fileTooLarge?: boolean;
     submissionError?: boolean;
     emptyQuill?: boolean;
+    startDateError?: boolean;
+    registrationDateError?: boolean;
 }
 
 interface Props {
@@ -110,22 +113,49 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
         setValues(values => ({ ...values, [event.target.id]: event.target.checked }));
     };
 
+    // most error checking is done on input but this function runs when form is submitted
+    // returns true if any errors are found
+    const errorCheckFields = async () => {
+        const emptyDescription = "<p><br></p>";
+        let anyErrors = false;
+
+        // clear past errors since this is a new submission
+        setErrors(errors => ({ ...errors, ["submissionError"]: false }));
+        setErrors(errors => ({ ...errors, ["startDateError"]: false }));
+        setErrors(errors => ({ ...errors, ["registrationDateError"]: false }));
+        setErrors(errors => ({ ...errors, ["emptyQuill"]: false }));
+
+        // start and registration date checking
+        if (isBefore(values.endDate as Date, values.startDate as Date)) {
+            setErrors(errors => ({ ...errors, ["startDateError"]: true }));
+            anyErrors = true;
+        }
+        if (isBefore(values.endRegistration as Date, values.startRegistration as Date)) {
+            setErrors(errors => ({ ...errors, ["registrationDateError"]: true }));
+            anyErrors = true;
+        }
+
+        // quill error checking
+        if (!values.description || values.description == "" || values.description == emptyDescription) {
+            setErrors({ ...errors, ["emptyQuill"]: true });
+            anyErrors = true;
+        }
+
+        // set on upload
+        if (errors.fileTooLarge) {
+            anyErrors = true;
+        }
+
+        return anyErrors;
+    };
+
     // handle form submission, essentially just creating formdata to send
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        const emptyDescription = "<p><br></p>";
 
-        // clear past submission error since this is a new submission
-        if (errors.submissionError) {
-            setErrors({ ...errors, ["submissionError"]: false });
-        }
-        if (!values.description || values.description == "" || values.description == emptyDescription) {
-            setErrors({ ...errors, ["emptyQuill"]: true });
+        if (await errorCheckFields()) {
             return;
-        } else {
-            setErrors({ ...errors, ["emptyQuill"]: false });
         }
-        if (errors.fileTooLarge) return;
 
         setLoading(true);
         const fd = new FormData();
@@ -230,7 +260,9 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
     return (
         <>
             <Container maxWidth="xl" className={styles.pageHeader}>
-                <CoreTypography variant="h1">Add New Event</CoreTypography>
+                <CoreTypography variant="h1">
+                    {existingEvent && existingEvent._id ? "Update Event" : "Add New Event"}
+                </CoreTypography>
             </Container>
 
             <Container maxWidth="xl" className={styles.bodyWrapper}>
@@ -432,9 +464,14 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
                             </div>
                         </div>
 
-                        <CoreTypography variant="body2" className={styles.error} style={{ marginTop: "40px" }}>
-                            {errors.submissionError && errorConstants.FORM_SUBMISSION_ERROR}
-                        </CoreTypography>
+                        <Container maxWidth="md" className={styles.errorMessages}>
+                            <CoreTypography variant="body2" className={styles.error}>
+                                {errors.submissionError && errorConstants.FORM_SUBMISSION_ERROR}
+                                {errors.startDateError && "The event's end date can not be before the start date. "}
+                                {errors.registrationDateError &&
+                                    "The registration end date can not be before the registration start date. "}
+                            </CoreTypography>
+                        </Container>
                         {loading && <LinearProgress color="secondary" />}
 
                         <Button
@@ -521,6 +558,13 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         error: {
             color: theme.palette.error.main,
+        },
+        errorMessages: {
+            marginTop: "40px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
         },
     })
 );
