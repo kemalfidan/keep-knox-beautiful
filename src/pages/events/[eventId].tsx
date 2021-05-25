@@ -38,6 +38,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                         backgroundColor: theme.palette.secondary.main,
                         width: "90%",
                         height: "30%",
+                        minHeight: "250px",
                     }}
                 >
                     <img
