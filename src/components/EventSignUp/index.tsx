@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import DescriptionIcon from "@material-ui/icons/Description";
 import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import LinearProgress from "@material-ui/core/LinearProgress";
 import CoreTypography from "src/components/core/typography";
 import colors from "src/components/core/colors";
 import urls from "utils/urls";
@@ -144,12 +144,12 @@ const EventSignUp: React.FC<Props> = ({ id, groupSignUp }) => {
                             </CoreTypography>
                         </label>
                     </Container>
-                    {loading && <CircularProgress color="secondary" />}
+                    {loading && <LinearProgress color="secondary" style={{ marginTop: "20px" }} />}
                     <Button
                         variant="contained"
                         type="submit"
                         className={styles.button}
-                        style={{ marginTop: "40px", float: "right" }}
+                        style={{ marginTop: "20px", float: "right" }}
                     >
                         <CoreTypography variant="button">Register</CoreTypography>
                     </Button>

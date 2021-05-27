@@ -11,7 +11,7 @@ import Container from "@material-ui/core/Container";
 import CardContent from "@material-ui/core/CardContent";
 import ScheduleIcon from "@material-ui/icons/Schedule";
 import LocationOnIcon from "@material-ui/icons/LocationOn";
-import { isSameDay, format } from "date-fns";
+import { isSameDay, format, isBefore } from "date-fns";
 import EventSignUp from "src/components/EventSignUp";
 import theme from "utils/theme";
 
@@ -82,9 +82,26 @@ const EventPage: NextPage<Props> = ({ event }) => {
         }
     };
 
-    // if signups are not required
-    const noSignUp = () => {
-        if (event.maxVolunteers != 0) {
+    const getSignUpDisplay = () => {
+        const registrationEnd = new Date(event.endRegistration as Date);
+        const now = new Date(Date.now());
+        if (isBefore(registrationEnd, now)) {
+            return (
+                <Container>
+                    <CoreTypography variant="body1" style={{ paddingTop: "30px" }}>
+                        Registration for this event has passed.
+                    </CoreTypography>
+                </Container>
+            );
+        } else if (event.maxVolunteers == 0) {
+            return (
+                <Container>
+                    <CoreTypography variant="body1" style={{ paddingTop: "30px" }}>
+                        Signing up is not required for this event.
+                    </CoreTypography>
+                </Container>
+            );
+        } else {
             return (
                 <Container style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
                     <Container className={styles.signUpHeader}>
@@ -102,14 +119,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <Container maxWidth="xl" className={styles.signUpForm}>
                         <EventSignUp id={event._id as string} groupSignUp={event.groupSignUp as boolean} />
                     </Container>
-                </Container>
-            );
-        } else {
-            return (
-                <Container>
-                    <CoreTypography variant="body1" style={{ paddingTop: "30px" }}>
-                        Signing up is not required for this event.
-                    </CoreTypography>
                 </Container>
             );
         }
@@ -170,7 +179,7 @@ const EventPage: NextPage<Props> = ({ event }) => {
                             </CardContent>
                         </Card>
                     </div>
-                    {noSignUp()}
+                    {getSignUpDisplay()}
                 </Container>
             </Container>
         </>
