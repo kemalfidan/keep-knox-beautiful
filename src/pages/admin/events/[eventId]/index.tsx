@@ -215,7 +215,6 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         table: {
-            minWidth: 500,
             marginBottom: 50,
         },
         container: {

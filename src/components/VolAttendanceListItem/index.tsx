@@ -1,7 +1,11 @@
-import { Switch, TableCell } from "@material-ui/core";
-import React, { useEffect, useState } from "react";
-import { APIError, EventVolunteer, ApiResponse } from "utils/types";
+import { TableCell, Button, CircularProgress } from "@material-ui/core";
+import React, { useState } from "react";
+import { EventVolunteer, ApiResponse } from "utils/types";
 import urls from "utils/urls";
+import CheckIcon from "@material-ui/icons/Check";
+import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
+import colors from "src/components/core/colors";
+import CoreTypography from "../core/typography";
 
 interface Props {
     eventId: string;
@@ -9,13 +13,36 @@ interface Props {
 }
 
 const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
+    const styles = useStyles();
     const [present, setPresent] = useState(eVol.present);
+    const [loading, setLoading] = useState(false);
+
+    const getCheckBox = () => {
+        if (loading) {
+            return (
+                <Button onClick={toggleAttendance} className={styles.uncheckedBox}>
+                    <CircularProgress size={25} style={{ color: "black" }} />
+                </Button>
+            );
+        }
+        if (present) {
+            return (
+                <Button onClick={toggleAttendance} className={styles.checkedBox}>
+                    <CheckIcon style={{ fontSize: "2em" }} />
+                </Button>
+            );
+        } else {
+            return <Button onClick={toggleAttendance} className={styles.uncheckedBox}></Button>;
+        }
+    };
 
     const toggleAttendance = async function () {
         const fetchOpts: RequestInit = {
             method: "POST",
             mode: "same-origin",
         };
+
+        setLoading(true);
         if (present) {
             const resp = await fetch(urls.baseUrl + urls.api.markNotPresent(eventId, eVol.volunteer._id!), fetchOpts);
             const response = (await resp.json()) as ApiResponse;
@@ -33,20 +60,41 @@ const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
                 alert(`Error: ${response.message || "Unexpected error."}`);
             }
         }
+        setLoading(false);
     };
     return (
         <React.Fragment>
-            <TableCell>{eVol.volunteer.name}</TableCell>
-            <TableCell align="right">
-                <Switch
-                    onClick={toggleAttendance}
-                    checked={present}
-                    name="presentSwitch"
-                    inputProps={{ "aria-label": "secondary checkbox" }}
-                />
+            <TableCell>
+                <CoreTypography variant="body1">{eVol.volunteer.name}</CoreTypography>
             </TableCell>
+            <TableCell align="right">{getCheckBox()}</TableCell>
         </React.Fragment>
     );
 };
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        checkedBox: {
+            backgroundColor: colors.green,
+            border: "2px solid black",
+            width: "50px",
+            height: "64px",
+            borderRadius: "50%",
+            "&:hover": {
+                backgroundColor: colors.green,
+            },
+        },
+        uncheckedBox: {
+            backgroundColor: colors.white,
+            border: "2px solid black",
+            width: "50px",
+            height: "64px",
+            borderRadius: "50%",
+            "&:hover": {
+                backgroundColor: colors.white,
+            },
+        },
+    })
+);
 
 export default VolAttendanceListItem;
