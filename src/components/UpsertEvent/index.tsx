@@ -250,8 +250,8 @@ const UpsertEvent: React.FC<Props> = ({ existingEvent }) => {
         } else if (existingEvent && existingEvent.image && existingEvent.image.url) {
             // show a link to the existing image if it exists and only if the user hasn't uploaded a new image
             return (
-                <a href={existingEvent.image.url} target="_blank" rel="noreferrer">
-                    <CoreTypography variant="body2">Existing image</CoreTypography>
+                <a href={existingEvent.image.url} target="_blank" rel="noreferrer" style={{ paddingTop: "15px" }}>
+                    <CoreTypography variant="body2">Existing Image</CoreTypography>
                 </a>
             );
         }

@@ -37,7 +37,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
                         justifyContent: "center",
                         backgroundColor: theme.palette.secondary.main,
                         width: "90%",
-                        height: "30%",
                         minHeight: "250px",
                     }}
                 >
@@ -119,6 +118,14 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     <Container maxWidth="xl" className={styles.signUpForm}>
                         <EventSignUp id={event._id as string} groupSignUp={event.groupSignUp as boolean} />
                     </Container>
+                </Container>
+            );
+        } else {
+            return (
+                <Container>
+                    <CoreTypography variant="body1" className={styles.noSignUpText}>
+                        Signing up is not required for this event.
+                    </CoreTypography>
                 </Container>
             );
         }
@@ -354,9 +361,15 @@ const useStyles = makeStyles((theme: Theme) =>
         signUpForm: {
             marginBottom: "100px",
             padding: "0",
-
             [theme.breakpoints.between(0, "sm")]: {
                 width: "90%",
+            },
+        },
+        noSignUpText: {
+            paddingTop: "30px",
+            [theme.breakpoints.between(0, "sm")]: {
+                paddingTop: "20px",
+                paddingBottom: "50px",
             },
         },
     })
