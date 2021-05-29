@@ -10,11 +10,11 @@ import CoreTypography from "../core/typography";
 interface Props {
     eventId: string;
     eVol: EventVolunteer;
+    refreshFunc(): void;
 }
 
-const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
+const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol, refreshFunc }) => {
     const styles = useStyles();
-    const [present, setPresent] = useState(eVol.present);
     const [loading, setLoading] = useState(false);
 
     const getCheckBox = () => {
@@ -25,7 +25,8 @@ const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
                 </Button>
             );
         }
-        if (present) {
+
+        if (eVol.present) {
             return (
                 <Button onClick={toggleAttendance} className={styles.checkedBox}>
                     <CheckIcon style={{ fontSize: "2em" }} />
@@ -43,11 +44,11 @@ const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
         };
 
         setLoading(true);
-        if (present) {
+        if (eVol.present) {
             const resp = await fetch(urls.baseUrl + urls.api.markNotPresent(eventId, eVol.volunteer._id!), fetchOpts);
             const response = (await resp.json()) as ApiResponse;
             if (resp.status == 200) {
-                setPresent(false);
+                refreshFunc();
             } else {
                 alert(`Error: ${response.message || "Unexpected error."}`);
             }
@@ -55,7 +56,7 @@ const VolAttendanceListItem: React.FC<Props> = ({ eventId, eVol }) => {
             const resp = await fetch(urls.baseUrl + urls.api.markPresent(eventId, eVol.volunteer._id!), fetchOpts);
             const response = (await resp.json()) as ApiResponse;
             if (resp.status == 200) {
-                setPresent(true);
+                refreshFunc();
             } else {
                 alert(`Error: ${response.message || "Unexpected error."}`);
             }

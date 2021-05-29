@@ -22,6 +22,7 @@ import {
     createStyles,
     Switch,
     Button,
+    LinearProgress,
 } from "@material-ui/core";
 import { Search } from "@material-ui/icons";
 import { styles } from "@material-ui/pickers/views/Calendar/Calendar";
@@ -45,23 +46,30 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
     const [vols, setVols] = useState<Volunteer[]>(pageVols.volunteers);
+    const [numReg, setNumReg] = useState(pageVols.registeredCount);
     const [page, setPage] = useState<number>(1);
-    const [isLastPage, setIsLastPage] = useState<boolean>(false);
+    const [isLastPage, setIsLastPage] = useState<boolean>(vols.length < 5); // vols per page const
+    const [working, setWorking] = useState(false);
 
     // helper func to get the vols by search query
     async function getVolsFromSearch(query: string) {
+        setPage(1);
         const r = await fetch(`${urls.api.eventVolunteers(event._id!, page)}&search=${query}`, {
             method: "GET",
         });
         const response = (await r.json()) as ApiResponse;
         const newVolsData: PaginatedVolunteers = response.payload as PaginatedVolunteers;
 
+        // reset
         setVols(newVolsData.volunteers);
+        setNumReg(newVolsData.registeredCount);
+        setIsLastPage(vols.length < 5);
+        setWorking(false);
     }
 
-    // helper func to get the vols for a certain page
-    async function getVolsForPage(newPage: number) {
-        const r = await fetch(`${urls.api.eventVolunteers(event._id!, newPage)}&search=${search}`, {
+    async function refreshVols() {
+        setWorking(true);
+        const r = await fetch(`${urls.api.eventVolunteers(event._id!, 1)}&search=${search}`, {
             method: "GET",
         });
         if (Math.floor(r.status / 100) !== 2) {
@@ -70,12 +78,16 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
 
         const response = (await r.json()) as ApiResponse;
         const newVolsData: PaginatedVolunteers = response.payload as PaginatedVolunteers;
-        if (newVolsData === undefined) {
+        // check if resp vols are empty
+        if (!newVolsData || newVolsData.volunteers.length === 0) {
             setIsLastPage(true);
         } else {
-            setVols(vols.concat(newVolsData.volunteers));
+            setVols(newVolsData.volunteers);
+            setPage(1);
+            setNumReg(newVolsData.registeredCount);
+            setIsLastPage(vols.length < 5);
         }
-        // setIsLastPage(newVolsData.isLastPage);
+        setWorking(false);
     }
 
     const handleSearchChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -84,11 +96,30 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
         await getVolsFromSearch(event.target.value);
     };
     const handleLoadMore = async () => {
-        await getVolsForPage(page + 1);
-        setPage(page + 1);
+        setWorking(true);
+        const r = await fetch(`${urls.api.eventVolunteers(event._id!, page + 1)}&search=${search}`, {
+            method: "GET",
+        });
+        if (Math.floor(r.status / 100) !== 2) {
+            alert(`Error: ${r.status}, ${r.statusText}`);
+        }
+
+        const response = (await r.json()) as ApiResponse;
+        const newVolsData: PaginatedVolunteers = response.payload as PaginatedVolunteers;
+        // check if resp vols are empty
+        if (!newVolsData || newVolsData.volunteers.length === 0) {
+            setIsLastPage(true);
+        } else {
+            setPage(page + 1);
+            setVols(vols.concat(newVolsData.volunteers)); // join arrays
+            setNumReg(newVolsData.registeredCount + numReg); // add reg nums
+            setIsLastPage(vols.length < 5);
+        }
+        setWorking(false);
     };
 
     const createAndRegisterVol = async function (vol: Volunteer) {
+        setWorking(true);
         try {
             const r = await fetch(`${urls.baseUrl}${urls.api.eventQuickadd(event._id!)}`, {
                 method: "POST",
@@ -104,18 +135,34 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                 alert("Error: Unexpected error when creating volunteer.");
             }
             setOpen(false);
+
+            // refresh the table
+            await refreshVols();
         } catch (e) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
             alert(`Error: ${e}`);
             console.error(e);
+            setWorking(false);
         }
+    };
+
+    interface ShowProps {
+        show: boolean;
+    }
+
+    // linear progress loader that is conditionally rendered
+    const LineLoader = function ({ show }: ShowProps) {
+        if (show) {
+            return <LinearProgress />;
+        }
+        return null;
     };
 
     return (
         <Container maxWidth={false} className={styles.container}>
             <div className={styles.jumbotron}>
                 <Grid container spacing={0} direction="row" justify="center" style={{ width: "100%" }}>
-                    <Grid item xs={12} sm={7} lg={6} className={styles.pageTitle}>
+                    <Grid item xs={10} sm={7} lg={6} className={styles.pageTitle}>
                         <CoreTypography variant="h1" style={{ color: "white", textAlign: "center" }}>
                             {event.name}
                         </CoreTypography>
@@ -137,8 +184,8 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                     </Grid>
                 </Grid>
             </div>
-            <Grid container direction="row" spacing={6} justify="center">
-                <Grid item xs={10} md={8}>
+            <Grid container direction="row" justify="center">
+                <Grid item xs={12} lg={9}>
                     <Grid container direction="row" justify="flex-end">
                         <TextField
                             variant="outlined"
@@ -158,15 +205,16 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                         />
                     </Grid>
                 </Grid>
-                <Grid item xs={10} md={8} lg={6}>
+                <Grid item xs={10} sm={8} md={6} lg={5}>
                     <InfiniteScroll
                         dataLength={vols.length}
                         next={handleLoadMore}
                         hasMore={!isLastPage}
-                        loader={<h4>Loading...</h4>}
+                        loader={<h4 style={{ textAlign: "center" }}>Loading...</h4>}
                     >
-                        <TableContainer component={Paper}>
-                            <Table className={styles.table} aria-label="volunteer table">
+                        <TableContainer component={Paper} className={styles.table}>
+                            <LineLoader show={working} />
+                            <Table aria-label="volunteer table">
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={{ fontWeight: "bold" }}>
@@ -179,17 +227,20 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                                 </TableHead>
                                 <TableBody>
                                     {vols.map((vol, i) => {
-                                        const evol: EventVolunteer = {
+                                        const ev: EventVolunteer = {
                                             volunteer: vol,
-                                            present: i >= pageVols.registeredCount,
+                                            present: i >= numReg,
                                         };
                                         return (
                                             <TableRow className={styles.tr} key={i}>
                                                 <VolAttendanceListItem
                                                     eventId={event._id!}
-                                                    eVol={{
-                                                        present: i >= pageVols.registeredCount ? true : false,
-                                                        volunteer: vol,
+                                                    eVol={ev}
+                                                    refreshFunc={async () => {
+                                                        // refresh the table
+                                                        setWorking(true);
+                                                        await refreshVols();
+                                                        setWorking(false);
                                                     }}
                                                 />
                                             </TableRow>

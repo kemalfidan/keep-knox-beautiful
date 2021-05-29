@@ -9,11 +9,12 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { Volunteer } from "utils/types";
 import InputMask from "react-input-mask";
+import { CircularProgress } from "@material-ui/core";
 
 interface Props {
     open: boolean;
     closeDialog(): void;
-    createAndRegisterVol(vol: Volunteer): void;
+    createAndRegisterVol(vol: Volunteer): Promise<void>;
 }
 
 interface IFormValues {
@@ -29,7 +30,10 @@ interface IErrors {
 const VolQuickAddDialog: React.FC<Props> = function ({ open, closeDialog, createAndRegisterVol }) {
     const [values, setValues] = useState<IFormValues>({
         name: "",
+        email: "",
+        phoneNumber: "",
     });
+    const [working, setWorking] = useState(false);
 
     const handleTextChange = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         setValues(values => ({ ...values, [event.target.id]: event.target.value }));
@@ -39,6 +43,36 @@ const VolQuickAddDialog: React.FC<Props> = function ({ open, closeDialog, create
         // eslint-disable-next-line @typescript-eslint/unbound-method
         event.preventDefault();
         setValues(values => ({ ...values, ["phoneNumber"]: event.target?.value }));
+    };
+
+    const SubmitBtn = function () {
+        if (!working) {
+            return (
+                <Button
+                    onClick={async () => {
+                        setWorking(true);
+                        await createAndRegisterVol(values as Volunteer);
+
+                        // reset values
+                        setValues({ name: "", email: "", phoneNumber: "" });
+                        setWorking(false);
+                    }}
+                    color="primary"
+                >
+                    Add
+                </Button>
+            );
+        }
+
+        if (values.name === "") {
+            return <Button disabled>Add</Button>;
+        }
+
+        return (
+            <Button color="primary">
+                <CircularProgress />
+            </Button>
+        );
     };
 
     return (
@@ -79,14 +113,7 @@ const VolQuickAddDialog: React.FC<Props> = function ({ open, closeDialog, create
                 <Button onClick={closeDialog} color="secondary" variant="outlined">
                     Cancel
                 </Button>
-                <Button
-                    onClick={() => {
-                        createAndRegisterVol(values as Volunteer);
-                    }}
-                    color="primary"
-                >
-                    Add
-                </Button>
+                <SubmitBtn />
             </DialogActions>
         </Dialog>
     );

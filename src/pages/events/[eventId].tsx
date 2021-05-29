@@ -120,14 +120,6 @@ const EventPage: NextPage<Props> = ({ event }) => {
                     </Container>
                 </Container>
             );
-        } else {
-            return (
-                <Container>
-                    <CoreTypography variant="body1" className={styles.noSignUpText}>
-                        Signing up is not required for this event.
-                    </CoreTypography>
-                </Container>
-            );
         }
     };
 
