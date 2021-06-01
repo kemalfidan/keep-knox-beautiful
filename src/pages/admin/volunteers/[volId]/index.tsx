@@ -166,7 +166,7 @@ const useStyles = makeStyles((theme: Theme) =>
             alignItems: "center",
             justifyContent: "space-between",
             width: "90vw",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 flexDirection: "column",
             },
         },
@@ -174,7 +174,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             alignItems: "center",
             justifyContent: "space-evenly",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 justifyContent: "space-between",
                 marginTop: "20px",
                 width: "90vw",
@@ -187,7 +187,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: theme.spacing(65),
                 height: theme.spacing(30),
             },
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 width: "90vw",
                 "&>*": {
                     width: "90vw",
@@ -203,7 +203,7 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             alignItems: "left",
             justifyContent: "space-between",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 paddingLeft: "10px",
             },
         },
@@ -212,7 +212,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 width: "100%",
                 paddingRight: "5px",
             },
@@ -228,7 +228,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: theme.spacing(27),
                 height: theme.spacing(30),
             },
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 marginLeft: "0px",
                 "&>*": {
                     margin: theme.spacing(1),
@@ -242,7 +242,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         rightCardFont: {
             fontSize: "130px",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 fontSize: "75px",
             },
         },
@@ -256,7 +256,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 margin: theme.spacing(1),
                 height: theme.spacing(7),
             },
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 width: "90vw",
                 marginTop: "35px",
                 "&>*": {
@@ -272,7 +272,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 paddingLeft: "0",
                 paddingRight: "35px",
                 flexDirection: "column",
@@ -285,7 +285,7 @@ const useStyles = makeStyles((theme: Theme) =>
             border: "none",
             padding: "4px 10px",
             borderRadius: "10px",
-            [theme.breakpoints.between(0, "sm")]: {
+            [theme.breakpoints.between(0, "md")]: {
                 padding: "4px 10px",
             },
             "&:active": {
