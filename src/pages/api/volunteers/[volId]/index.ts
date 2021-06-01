@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { getVolunteer, updateVolunteer } from "server/actions/Volunteer";
+import { getVolunteer, updateVolunteer, deleteVolunteer } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { Volunteer, APIError } from "utils/types";
 import constants from "utils/constants";
@@ -14,7 +14,8 @@ export const config = {
 };
 
 // @route   GET /api/volunteers/[volId] - Returns a single Volunteer object for volunteer volId. - Private
-// @route   POST /api/volunteers/[volId] - Updates existing Volunteer object with _id of volId. - Private
+// @route   DELETE /api/volunteers/[volId] - Deletes a Volunteer whose _id matches volId. - Private
+// @route   POST /api/volunteers/[volId] - Updates existing Volunteer object whose _id matches volId. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (!req || !req.query || !req.query.volId) {
@@ -29,6 +30,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             res.status(200).json({
                 success: true,
                 payload: vol,
+            });
+        } else if (req.method == "DELETE") {
+            authenticate(req, res);
+            await deleteVolunteer(id);
+            res.status(200).json({
+                success: true,
+                payload: {},
             });
         } else if (req.method == "POST") {
             authenticate(req, res);

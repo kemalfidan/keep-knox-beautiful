@@ -64,6 +64,9 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                                         <button className={classes.navIcon} onClick={handleEditClick}>
                                             <EditIcon />
                                         </button>
+                                        <button className={classes.navIcon} onClick={handleEditClick}>
+                                            <DeleteIcon />
+                                        </button>
                                     </div>
                                 </div>
                             </CoreTypography>

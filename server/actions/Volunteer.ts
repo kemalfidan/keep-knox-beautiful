@@ -66,13 +66,28 @@ export const getVolunteers = async function (page: number, search = "") {
 /**
  * @param vol The volunteer to insert into our database.
  */
-export const addVolunteer = async function (vol: Volunteer) {
+ export const addVolunteer = async function (vol: Volunteer) {
     await mongoDB();
     if (!vol) {
-        throw new APIError(400, "Invalid volunteer");
+        throw new APIError(400, "Invalid volunteer.");
     }
 
     await VolunteerSchema.create(vol);
+};
+
+/**
+ * @param id The _id of the volunteer we want to delete.
+ */
+ export const deleteVolunteer = async function (id: string) {
+    await mongoDB();
+    if (!id) {
+        throw new APIError(400, "Invalid volunteer id.");
+    }
+
+    const model = await VolunteerSchema.findByIdAndDelete(id);
+    if (!model) {
+        throw new APIError(404, "Volunteer not found.");
+    }
 };
 
 /**
