@@ -17,7 +17,7 @@ import urls from "utils/urls";
 
 const VolunteerEventsList = (vol: Volunteer) => {
     const classes = useStyles();
-    const eventsPerPage = 3;
+    const eventsPerPage = 5;
     const [page, setPage] = useState<number>(1);
     const [attendedEvents, setAttendedEvents] = useState<Event[]>([]);
     const [prevAvailable, setPrevAvailable] = useState<boolean>(false);

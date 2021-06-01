@@ -296,7 +296,7 @@ export const markVolunteerNotPresent = async function (volId: string, eventId: s
  */
 export const getVolunteerEvents = async function (volId: string, page: number) {
     await mongoDB();
-    const EVENTS_PER_PAGE = 3;
+    const EVENTS_PER_PAGE = 5;
     const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
 
     if (!volId) {

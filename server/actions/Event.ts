@@ -153,7 +153,7 @@ export const getPastEventsAdmin = async function (page: number, search?: Date) {
     }
     page -= 1;
 
-    const EVENTS_PER_PAGE = 2;
+    const EVENTS_PER_PAGE = 3;
     const EVENT_FIELDS = { name: 1, caption: 1, location: 1, startDate: 1, endDate: 1, image: 1 };
     const now = new Date(Date.now());
     let events: Event[];
