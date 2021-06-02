@@ -2,11 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next";
 import errors from "utils/errors";
 import { Admin, APIError } from "utils/types";
 import { createAdmin } from "server/actions/Admin";
+import authenticate from "server/actions/Authenticate";
 
 // @route   POST /api/admin/signup - Create a new admin. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method === "POST") {
+            authenticate(req, res);
             const newAdmin = req.body as Admin;
             await createAdmin(newAdmin);
 

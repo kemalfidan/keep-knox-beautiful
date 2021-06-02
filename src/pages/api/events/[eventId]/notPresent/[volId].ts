@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { markVolunteerNotPresent } from "server/actions/Volunteer";
 import errors from "utils/errors";
 import { APIError } from "utils/types";
+import authenticate from "server/actions/Authenticate";
 
 // POST /api/events/[eventId]/notPresent/[volId] will unmark volunteer volId as present for event eventId. - Private
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -11,6 +12,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
 
         if (req.method == "POST") {
+            authenticate(req, res);
             const eventId = req.query.eventId as string;
             const volId = req.query.volId as string;
 
