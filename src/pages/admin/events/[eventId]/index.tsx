@@ -135,7 +135,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event, regCount }) => {
             if (response.success) {
                 setOpen(false);
             } else {
-                alert("Error: Unexpected error when creating volunteer.");
+                alert(`Error: ${response.message}`);
             }
             setOpen(false);
             setVolsAdded(volsAdded + 1);

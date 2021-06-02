@@ -179,7 +179,7 @@ export const sudoRegisterVolunteerToEvent = async function (vol: Volunteer, even
     // VolunteerSchema.
     const volunteer = await VolunteerSchema.findOneAndUpdate({ email: vol.email }, vol, { new: true, upsert: true });
     if (event.registeredVolunteers?.indexOf(volunteer._id) !== -1) {
-        throw new APIError(404, "You have already been registered to this event.");
+        throw new APIError(404, "The volunteer already been registered to this event.");
     }
 
     volunteer.registeredEvents?.push(eventId);
