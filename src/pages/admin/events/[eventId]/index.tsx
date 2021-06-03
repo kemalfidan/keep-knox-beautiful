@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
+import Link from "next/link";
 import { Event, Volunteer, EventVolunteer, PaginatedVolunteers, ApiResponse } from "utils/types";
 import UpsertEvent from "src/components/UpsertEvent";
 import { getEvent, getEventVolunteers, getAttendedCount } from "server/actions/Event";
@@ -16,7 +17,6 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Link,
     makeStyles,
     Theme,
     createStyles,
@@ -241,21 +241,23 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event, regCount }) => {
                                             present: i >= numReg,
                                         };
                                         return (
-                                            <TableRow className={styles.tr} key={i}>
-                                                <VolAttendanceListItem
-                                                    eventId={event._id!}
-                                                    eVol={ev}
-                                                    refreshFunc={async () => {
-                                                        // refresh the table
-                                                        setWorking(true);
-                                                        await refreshVols();
-                                                        setChangedRegistered(
-                                                            ev.present ? changeRegistered - 1 : changeRegistered + 1
-                                                        );
-                                                        setWorking(false);
-                                                    }}
-                                                />
-                                            </TableRow>
+                                            <Link href={urls.pages.volunteer(vol._id!)}>
+                                                <TableRow className={styles.tr} key={i}>
+                                                    <VolAttendanceListItem
+                                                        eventId={event._id!}
+                                                        eVol={ev}
+                                                        refreshFunc={async () => {
+                                                            // refresh the table
+                                                            setWorking(true);
+                                                            await refreshVols();
+                                                            setChangedRegistered(
+                                                                ev.present ? changeRegistered - 1 : changeRegistered + 1
+                                                            );    
+                                                            setWorking(false);
+                                                        }}
+                                                    />
+                                                </TableRow>
+                                            </Link>
                                         );
                                     })}
                                 </TableBody>

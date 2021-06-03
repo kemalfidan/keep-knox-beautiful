@@ -1,5 +1,5 @@
-import { TableCell, Button, CircularProgress } from "@material-ui/core";
 import React, { useState } from "react";
+import { TableCell, Button, CircularProgress } from "@material-ui/core";
 import { EventVolunteer, ApiResponse } from "utils/types";
 import urls from "utils/urls";
 import CheckIcon from "@material-ui/icons/Check";
