@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import VolunteerEventsList from "../../../../components/VolunteerEventsList";
 import { getVolunteer } from "server/actions/Volunteer";
 import { Volunteer, ApiResponse } from "utils/types";
-import { GetStaticPropsContext, NextPage, NextPageContext } from "next";
-import { Router, useRouter } from "next/router";
+import { NextPage, NextPageContext } from "next";
+import { useRouter } from "next/router";
 import ErrorPage from "next/error";
-import constants from "utils/constants";
 import urls from "utils/urls";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { Paper } from "@material-ui/core";
 import CoreTypography from "src/components/core/typography";
+import IconButton from "@material-ui/core/IconButton";
 import EmailIcon from "@material-ui/icons/Email";
 import PhoneIcon from "@material-ui/icons/Phone";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -34,6 +34,24 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
     const handleEditClick = async () => {
         await router.push(urls.pages.updateVolunteer(vol._id!));
     };
+    const handleDeleteClick = async () => {
+        try {
+            const confirmed = confirm(
+                `Are you sure you want to delete ${vol.name} from the system? This action is irreversible.`
+            );
+            if (confirmed) {
+                const res = await fetch(urls.api.volunteer(vol._id!), { method: "DELETE" });
+                const response = (await res.json()) as ApiResponse;
+                if (res.status === 200) {
+                    alert(`Volunteer ${vol.name} has been successfully deleted.`);
+                } else {
+                    throw new Error(response.message);
+                }
+            }
+        } catch (error) {
+            alert(`Error : ${(error instanceof Error && error.message) || "Unexpected error."}`);
+        }
+    };
 
     const handleSendVerificationEmail = async () => {
         try {
@@ -51,6 +69,7 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
             alert(`Error sending email: ${(error instanceof Error && error.message) || "Unexpected error."}`);
         }
     };
+
     return (
         <>
             <div className={classes.container}>
@@ -60,13 +79,13 @@ const VolunteerPage: NextPage<Props> = ({ vol }) => {
                             <CoreTypography variant={vol.name.length < 15 ? "h1" : "h2"}>
                                 <div className={classes.nameCardTopRow}>
                                     {vol.name}
-                                    <div>
-                                        <button className={classes.navIcon} onClick={handleEditClick}>
+                                    <div className={classes.iconContainer}>
+                                        <IconButton onClick={handleEditClick}>
                                             <EditIcon />
-                                        </button>
-                                        <button className={classes.navIcon} onClick={handleEditClick}>
+                                        </IconButton>
+                                        <IconButton onClick={handleDeleteClick}>
                                             <DeleteIcon />
-                                        </button>
+                                        </IconButton>
                                     </div>
                                 </div>
                             </CoreTypography>
@@ -162,6 +181,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: "column",
             alignItems: "center",
             margin: "45px",
+        },
+        iconContainer: {
+            paddingLeft: "5px",
         },
         volInfoContainer: {
             display: "flex",
@@ -293,15 +315,6 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             "&:active": {
                 transform: "scale(0.75)",
-            },
-        },
-        navIcon: {
-            border: "none",
-            backgroundColor: "inherit",
-            outline: "none",
-            verticalAlign: "top",
-            "&:active": {
-                transform: "scale(0.95)",
             },
         },
     })
