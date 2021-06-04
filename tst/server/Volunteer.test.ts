@@ -749,15 +749,22 @@ describe("getVolunteerEvents() tests", () => {
                 caption: "It's spruce season",
             },
         ];
+        const mockVol = {
+            _id: "604d6730ca1c1d7fcd4fbde0",
+            name: "John Smith",
+            email: "jsmith@gmail.com",
+            phone: "(931) 931-9319",
+            attendedEvents: mockEvents,
+        }
 
         const VolsMock: any = {
             getVolunteerEvents, // to be tested,
             populate: jest.fn(() => []),
         };
         VolunteerSchema.findById = jest.fn(() => VolsMock);
-        VolsMock.populate.mockImplementation(() => mockEvents); // mock final return val
+        VolsMock.populate.mockImplementation(() => mockVol); // mock final return val
 
-        const EVENTS_PER_PAGE = 3;
+        const EVENTS_PER_PAGE = 5;
         const page = 2;
         const EVENT_FIELDS = { _id: 1, name: 1, startDate: 1, hours: 1 };
 
@@ -769,7 +776,7 @@ describe("getVolunteerEvents() tests", () => {
             options: {
                 sort: { startDate: -1, name: 1 },
                 skip: (page-1) * EVENTS_PER_PAGE,
-                limit: EVENTS_PER_PAGE,
+                limit: EVENTS_PER_PAGE + 1,
             },
         });
     });

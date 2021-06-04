@@ -50,7 +50,7 @@ describe("get events tests", () => {
     { name: "test1" }, { name: "test2" }, { name: "test1" }, { name: "test2" }, { name: "test1" }];
     const undefinedEvents = undefined;
     const EVENT_FIELDS = { name: 1, caption: 1, location: 1, startDate: 1, endDate: 1, image: 1 };
-    const EVENTS_PER_PAGE = 2;
+    const EVENTS_PER_PAGE = 3;
     const PAST_EVENTS_LIMIT = 3;
     const page = 1;
 
