@@ -1,11 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getVolunteerEvents } from "server/actions/Volunteer";
 import errors from "utils/errors";
-import { Event, APIError } from "utils/types";
+import { LoadMorePaginatedData, APIError } from "utils/types";
 import authenticate from "server/actions/Authenticate";
 
 // @route   /api/volunteers/[volId]/events - Returns a list of paginated
-//   events that a single volunteer attended. - Private.
+//   events that a single volunteer attended by the LoadMorePaginatedData type. - Private.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     try {
         if (req.method == "GET") {
@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const volId = req.query.volId as string;
             const page = Number(req.query.page);
 
-            const events: Event[] = await getVolunteerEvents(volId, page);
+            const events: LoadMorePaginatedData = await getVolunteerEvents(volId, page);
             res.status(200).json({
                 success: true,
                 payload: events,

@@ -315,14 +315,18 @@ export const getVolunteerEvents = async function (volId: string, page: number) {
         options: {
             sort: { startDate: -1, name: 1 },
             skip: page * EVENTS_PER_PAGE,
-            limit: EVENTS_PER_PAGE,
+            limit: EVENTS_PER_PAGE + 1,
         },
     })) as Volunteer;
+    // +1 in limit() to see if this is the last page
 
-    if (!volunteer) {
+    if (!volunteer || !volunteer.attendedEvents) {
         throw new APIError(404, "Volunteer not found.");
     }
-    return (volunteer.attendedEvents as unknown) as Event[];
+    return {
+        data: volunteer.attendedEvents.slice(0, EVENTS_PER_PAGE),
+        isLastPage: volunteer.attendedEvents.length < EVENTS_PER_PAGE + 1,
+    } as LoadMorePaginatedData;
 };
 
 /*

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Event, Volunteer, ApiResponse } from "utils/types";
+import { Event, Volunteer, ApiResponse, LoadMorePaginatedData } from "utils/types";
 import CoreTypography from "src/components/core/typography/CoreTypography";
 import colors from "src/components/core/colors";
 import { createStyles, makeStyles, Theme, withStyles } from "@material-ui/core/styles";
@@ -23,7 +23,7 @@ const VolunteerEventsList = (vol: Volunteer) => {
     const [prevAvailable, setPrevAvailable] = useState<boolean>(false);
     const [nextAvailable, setNextAvailable] = useState<boolean>(false);
     const volId = vol._id || "";
-    const totalEvents = vol.attendedEvents?.length || 0;
+    const emptyRows = attendedEvents ? eventsPerPage - attendedEvents.length : eventsPerPage;
 
     /* get the attended events for current page */
     useEffect(() => {
@@ -31,46 +31,41 @@ const VolunteerEventsList = (vol: Volunteer) => {
             try {
                 const r = await fetch(`${urls.api.volunteerEvents(volId)}?page=${page}`, { method: "GET" });
                 const response = (await r.json()) as ApiResponse;
-                const newAttendedEvents: Event[] = response.payload as Event[];
-                setAttendedEvents(newAttendedEvents);
+                const paginatedType = response.payload as LoadMorePaginatedData;
+                const newAttendedEvents: Event[] = paginatedType.data;
 
-                /* determine if next and prev buttons should be available to click, opacity to .4 if not */
-                if (prevAvailable && page === 1) {
+                setAttendedEvents(newAttendedEvents);
+                setNextAvailable(!paginatedType.isLastPage);
+                if (page === 1) {
                     setPrevAvailable(false);
-                } else if (!prevAvailable && page > 1) {
-                    setPrevAvailable(true);
-                }
-                if (totalEvents >= eventsPerPage * page) {
-                    setNextAvailable(true);
                 } else {
-                    setNextAvailable(false);
+                    setPrevAvailable(true);
                 }
             } catch (error) {
                 console.log(error);
             }
         };
+        
         void getPaginatedEvents();
-    }, [volId, page, prevAvailable, nextAvailable, totalEvents]); //only rerun when page changes
+    }, [volId, page, prevAvailable, nextAvailable]); //only rerun when page changes
 
     /* logic to handle clicks and whether next or prev pages are available */
     const handlePageChange = (direction: string) => {
         switch (direction) {
             case "next":
                 if (nextAvailable) {
-                    setPage(page + 1);
+                    setPage((page) => page + 1);
                 }
                 break;
             case "prev":
                 if (prevAvailable) {
-                    setPage(page - 1);
+                    setPage((page) => page - 1);
                 }
                 break;
             default:
                 break;
         }
     };
-
-    const emptyRows = attendedEvents ? eventsPerPage - attendedEvents.length : eventsPerPage;
 
     return (
         <TableContainer component={Paper} className={classes.tableContainer}>
@@ -120,7 +115,7 @@ const VolunteerEventsList = (vol: Volunteer) => {
                             <TableCell colSpan={3} style={{ border: "none" }} />
                         </TableRow>
                     )}
-                    {page == 1 && emptyRows == eventsPerPage && (
+                    {page == 1 && attendedEvents.length === 0 && (
                         <TableRow style={{ height: 58 * emptyRows }}>
                             <TableCell
                                 colSpan={3}
@@ -134,25 +129,24 @@ const VolunteerEventsList = (vol: Volunteer) => {
                     )}
                 </TableBody>
             </Table>
-            <div className={classes.tableFooter}>
-                <div />
-                <div>
-                    <button
-                        className={classes.iconButton}
-                        style={prevAvailable ? { opacity: "1" } : { opacity: ".4" }}
-                        onClick={() => handlePageChange("prev")}
-                    >
-                        <ChevronLeftIcon />
-                    </button>
-                    <button
-                        className={classes.iconButton}
-                        style={nextAvailable ? { opacity: "1" } : { opacity: ".4" }}
-                        onClick={() => handlePageChange("next")}
-                    >
-                        <ChevronRightIcon />
-                    </button>
-                </div>
-                <div />
+            <div className={`${classes.tableFooter} ${classes.center}`}>
+                <button
+                    className={classes.iconButton}
+                    style={prevAvailable ? { opacity: "1" } : { opacity: ".4" }}
+                    onClick={() => handlePageChange("prev")}
+                >
+                    <ChevronLeftIcon />
+                </button>
+                <CoreTypography style={{paddingBottom: "2px"}}>
+                    {page}
+                </CoreTypography>
+                <button
+                    className={classes.iconButton}
+                    style={nextAvailable ? { opacity: "1" } : { opacity: ".4" }}
+                    onClick={() => handlePageChange("next")}
+                >
+                    <ChevronRightIcon />
+                </button>
             </div>
         </TableContainer>
     );
@@ -201,6 +195,11 @@ const useStyles = makeStyles((theme: Theme) =>
                 border: "none",
                 outline: "none",
             },
+        },
+        center: {
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
         },
     })
 );
