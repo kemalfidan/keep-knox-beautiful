@@ -45,7 +45,7 @@ const VolunteerEventsList = (vol: Volunteer) => {
                 console.log(error);
             }
         };
-        
+
         void getPaginatedEvents();
     }, [volId, page, prevAvailable, nextAvailable]); //only rerun when page changes
 
@@ -54,12 +54,12 @@ const VolunteerEventsList = (vol: Volunteer) => {
         switch (direction) {
             case "next":
                 if (nextAvailable) {
-                    setPage((page) => page + 1);
+                    setPage(page => page + 1);
                 }
                 break;
             case "prev":
                 if (prevAvailable) {
-                    setPage((page) => page - 1);
+                    setPage(page => page - 1);
                 }
                 break;
             default:
@@ -137,9 +137,7 @@ const VolunteerEventsList = (vol: Volunteer) => {
                 >
                     <ChevronLeftIcon />
                 </button>
-                <CoreTypography style={{paddingBottom: "2px"}}>
-                    {page}
-                </CoreTypography>
+                <CoreTypography style={{ paddingBottom: "2px" }}>{page}</CoreTypography>
                 <button
                     className={classes.iconButton}
                     style={nextAvailable ? { opacity: "1" } : { opacity: ".4" }}

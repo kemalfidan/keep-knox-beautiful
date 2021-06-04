@@ -135,7 +135,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event, regCount }) => {
             if (response.success) {
                 setOpen(false);
             } else {
-                alert(`Error: ${response.message}`);
+                alert(`Error: ${response.message || "Unexpected error."}`);
             }
             setOpen(false);
             setVolsAdded(volsAdded + 1);
@@ -241,7 +241,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event, regCount }) => {
                                             present: i >= numReg,
                                         };
                                         return (
-                                            <Link href={urls.pages.volunteer(vol._id!)}>
+                                            <Link href={urls.pages.volunteer(vol._id!)} key={vol._id}>
                                                 <TableRow className={styles.tr} key={i}>
                                                     <VolAttendanceListItem
                                                         eventId={event._id!}
