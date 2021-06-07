@@ -3,7 +3,7 @@ import { NextPage, NextPageContext } from "next";
 import Router from "next/router";
 import { Event, Volunteer, EventVolunteer, PaginatedVolunteers, ApiResponse } from "utils/types";
 import UpsertEvent from "src/components/UpsertEvent";
-import { getEvent, getEventVolunteers } from "server/actions/Event";
+import { getEvent, getEventVolunteers, getAttendedCount } from "server/actions/Event";
 import {
     Container,
     Grid,
@@ -38,10 +38,11 @@ import AddIcon from "@material-ui/icons/Add";
 
 interface Props {
     event: Event;
+    regCount: number;
     pageVols: PaginatedVolunteers;
 }
 
-const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
+const ManageVolunteers: NextPage<Props> = ({ pageVols, event, regCount }) => {
     const styles = useStyles();
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState("");
@@ -50,6 +51,8 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
     const [page, setPage] = useState<number>(1);
     const [isLastPage, setIsLastPage] = useState<boolean>(vols.length < 5); // vols per page const
     const [working, setWorking] = useState(false);
+    const [volsAdded, setVolsAdded] = useState(0);
+    const [changeRegistered, setChangedRegistered] = useState(0);
 
     // helper func to get the vols by search query
     async function getVolsFromSearch(query: string) {
@@ -135,6 +138,7 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                 alert("Error: Unexpected error when creating volunteer.");
             }
             setOpen(false);
+            setVolsAdded(volsAdded + 1);
 
             // refresh the table
             await refreshVols();
@@ -218,10 +222,15 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell style={{ fontWeight: "bold" }}>
-                                            <CoreTypography variant="h3">Volunteers</CoreTypography>
+                                            <CoreTypography variant="h3">
+                                                Volunteers (
+                                                {event.volunteerCount ? event.volunteerCount + volsAdded : ""})
+                                            </CoreTypography>
                                         </TableCell>
                                         <TableCell style={{ fontWeight: "bold" }} align="right">
-                                            <CoreTypography variant="h3">Present</CoreTypography>
+                                            <CoreTypography variant="h3">
+                                                Present ({regCount + changeRegistered})
+                                            </CoreTypography>
                                         </TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -240,6 +249,9 @@ const ManageVolunteers: NextPage<Props> = ({ pageVols, event }) => {
                                                         // refresh the table
                                                         setWorking(true);
                                                         await refreshVols();
+                                                        setChangedRegistered(
+                                                            ev.present ? changeRegistered - 1 : changeRegistered + 1
+                                                        );
                                                         setWorking(false);
                                                     }}
                                                 />
@@ -317,7 +329,8 @@ export async function getServerSideProps(context: NextPageContext) {
     try {
         const eventPromise = getEvent(eventId);
         const volsObjPromise = getEventVolunteers(eventId, 1);
-        const [event, volsObj] = await Promise.all([eventPromise, volsObjPromise]);
+        const regCountPromise = getAttendedCount(eventId);
+        const [event, volsObj, regCount] = await Promise.all([eventPromise, volsObjPromise, regCountPromise]);
 
         if (!event) {
             throw new Error("Event not found.");
@@ -330,6 +343,7 @@ export async function getServerSideProps(context: NextPageContext) {
             props: {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 event: JSON.parse(JSON.stringify(event)),
+                regCount: regCount,
                 pageVols: paginatedVols,
             },
         };

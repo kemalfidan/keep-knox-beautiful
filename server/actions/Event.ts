@@ -42,6 +42,24 @@ export const getEvent = async function (id: string) {
 };
 
 /**
+ * @param id EventId string to identify an event in our database.
+ * @returns The number of volunteers attending an given
+ */
+export const getAttendedCount = async function (id: string) {
+    await mongoDB();
+    if (!id || id == "") {
+        throw new APIError(400, "Invalid id");
+    }
+
+    const event = await EventSchema.findById(id, { attendedVolunteers: 1, _id: 0 });
+    if (!event) {
+        throw new APIError(404, "Event does not exist");
+    }
+
+    return event.attendedVolunteers?.length;
+};
+
+/**
  * Function used at build time. We need to know what event ids exist
  * so we can pre-render those pages.
  * @returns An array of all eventIds in our database.
