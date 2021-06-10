@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         if (req.method === "POST") {
             authenticate(req, res);
-            const newAdmin = req.body as Admin;
+            const newAdmin = JSON.parse(req.body) as Admin;
             await createAdmin(newAdmin);
 
             res.status(200).json({

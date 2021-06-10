@@ -32,6 +32,11 @@ const Header: React.FC<Props> = ({ isAdmin }) => {
         }
     };
 
+    const handleNewAdmin = async (event: React.SyntheticEvent) => {
+        event.preventDefault();
+        await router.push(urls.pages.createAdminAccount);
+    };
+
     const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
         setAnchorMenu(event.currentTarget);
     };
@@ -84,6 +89,9 @@ const Header: React.FC<Props> = ({ isAdmin }) => {
                             open={Boolean(anchorMenu)}
                             onClose={handleMenuClose}
                         >
+                            <MenuItem onClick={handleNewAdmin}>
+                                <CoreTypography variant="body1">Add New Admin</CoreTypography>
+                            </MenuItem>
                             <MenuItem onClick={handleLogout}>
                                 <CoreTypography variant="body1">Logout</CoreTypography>
                             </MenuItem>
