@@ -1,8 +1,8 @@
 export default {
     white: "#FFFFFF",
-    green: "#87CD9B",
+    green: "#ABD8B8",
     lightGreen: "#CEECDA",
-    blue: "#97BBCB",
+    blue: "#749FB8",
     gray: "#A8B3B8",
     lightGray: "#D2D2D2",
     pink: "#F298AE",

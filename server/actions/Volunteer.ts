@@ -66,7 +66,7 @@ export const getVolunteers = async function (page: number, search = "") {
 /**
  * @param vol The volunteer to insert into our database.
  */
- export const addVolunteer = async function (vol: Volunteer) {
+export const addVolunteer = async function (vol: Volunteer) {
     await mongoDB();
     if (!vol) {
         throw new APIError(400, "Invalid volunteer.");
@@ -78,7 +78,7 @@ export const getVolunteers = async function (page: number, search = "") {
 /**
  * @param id The _id of the volunteer we want to delete.
  */
- export const deleteVolunteer = async function (id: string) {
+export const deleteVolunteer = async function (id: string) {
     await mongoDB();
     if (!id) {
         throw new APIError(400, "Invalid volunteer id.");
@@ -377,12 +377,12 @@ export const sendVerificationEmail = async function (volId: string) {
     const transporter = createTransport({
         service: "gmail",
         auth: {
-            user: process.env.EMAIL_ADDRESS,
-            pass: process.env.EMAIL_PASS,
+            user: process.env.AUTH_EMAIL_ADDRESS,
+            pass: process.env.AUTH_EMAIL_PASS,
         },
     });
     const mailOptions = {
-        from: process.env.EMAIL_ADDRESS,
+        from: `"${constants.org.name.full}" <${process.env.FROM_EMAIL_ADDRESS || ""}>`,
         to: volunteer.email,
         subject: `${constants.org.name.full} Volunteer Verification`,
         text: body,
